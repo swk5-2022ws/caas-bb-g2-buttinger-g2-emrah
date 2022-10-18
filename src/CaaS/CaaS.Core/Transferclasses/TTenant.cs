@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Transferclasses
 {
-    internal class TTenant
+    public class TTenant
     {
     }
 }
