@@ -1,0 +1,6 @@
+# ignore dir created by Gradle
+.gradle/
+# ignore Gradle output dir
+build/
+*.pdf
+*.html

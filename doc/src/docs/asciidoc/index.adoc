@@ -1,0 +1,22 @@
+:source-highlighter: coderay
+:imagesdir: images
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+// See http://asciidoctor.org/docs/user-manual/#naming-docinfo-files
+// to learn how to name the docinfo files in order that they are found
+// by the processor.
+:docinfo: shared-head
+
+== Documentation
+
+This manual is not intended for end users. It is intended
+e.g. for:
+
+. Developers who want to understand what features are currently
+  supported and how they are implemented.
+
+. Engineers who have to troubleshoot problems.
+
+include::chapters/datamodel.adoc[leveloffset=+1]
