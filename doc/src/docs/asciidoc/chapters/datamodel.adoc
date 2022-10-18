@@ -2,4 +2,6 @@
 
 === Diagram
 
-The following configuration files exist:
+[[class_diagram]]
+.class_diagram
+image::../images/classdiagram.svg[align="center"]
