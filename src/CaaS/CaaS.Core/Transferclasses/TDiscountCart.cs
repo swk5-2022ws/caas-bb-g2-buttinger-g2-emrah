@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaaS.Core.Transferclasses
+namespace CaaS.Core.Transferrecordes
 {
-    public class TDiscountCart
+    public record TDiscountCart
     {
     }
 }
