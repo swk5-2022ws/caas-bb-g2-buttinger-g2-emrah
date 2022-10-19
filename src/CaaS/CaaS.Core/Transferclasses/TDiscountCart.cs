@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaaS.Core.Interfaces
+namespace CaaS.Core.Transferclasses
 {
-    public interface IDiscountActionRepository
+    public class TDiscountCart
     {
     }
 }

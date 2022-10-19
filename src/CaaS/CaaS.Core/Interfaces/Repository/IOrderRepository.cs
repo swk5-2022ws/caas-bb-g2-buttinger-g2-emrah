@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CaaS.Core.Interfaces
+namespace CaaS.Core.Interfaces.Repository
 {
     public interface IOrderRepository
     {
@@ -20,13 +20,13 @@ namespace CaaS.Core.Interfaces
         /// </summary>
         /// <param name="id">Shop id</param>
         /// <returns>All orders for a shop.</returns>
-        IList<TOrder> GetOrdersByShop(Guid id);
+        IList<TOrder> GetOrdersByShopId(Guid id);
         /// <summary>
         /// Gets all orders for a specific customer.
         /// </summary>
         /// <param name="id">Customer id</param>
         /// <returns>All orders for a customer.</returns>
-        IList<TOrder> GetOrdersByCustomer(Guid id);
+        IList<TOrder> GetOrdersByCustomerId(Guid id);
         /// <summary>
         /// Creates a new order from a cart.
         /// </summary>

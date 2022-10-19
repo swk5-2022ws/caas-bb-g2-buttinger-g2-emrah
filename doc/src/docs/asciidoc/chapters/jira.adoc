@@ -1,0 +1,27 @@
+== Issue Tracking
+
+Aufgrund unser gemeinsamen Erfahrungen haben wir uns für das System Jira entschieden. Mit den gratis Azure Studentguthaben hosten wir dieses in einer Azure WebApp.
+
+=== Jira
+
+Direkt von Atlassian gehostet. Für 10 Leute gratis und für unsere Zwecke ausreichend.
+
+Wurde mit dem Taskmanagementpreset konfiguriert.
+
+https://caas-swk5.atlassian.net/jira/core/projects/FIRST/board
+
+
+
+
+
+
+
+
+Definition of Done:
+* Implementiert
+* Unit-Tests erstellt
+* Alle Testsuites in Ordnung
+* Push auf Git in working Branch triggert die Tests. Diese müssen auch durchlaufen.
+* Dokumentiert
+* Dann darf ein Ticket auf done gestellt werden.
+
