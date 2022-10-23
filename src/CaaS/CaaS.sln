@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaaS.Core", "CaaS.Core\CaaS.Core.csproj", "{FCF7CC05-DADB-49DC-856C-755FC4B08653}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Core", "CaaS.Core\CaaS.Core.csproj", "{FCF7CC05-DADB-49DC-856C-755FC4B08653}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaaS.Core.Test", "CaaS.Core.Test\CaaS.Core.Test.csproj", "{67B751AB-B00B-400F-B9EC-E244FBF709A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Core.Test", "CaaS.Core.Test\CaaS.Core.Test.csproj", "{67B751AB-B00B-400F-B9EC-E244FBF709A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaaS.Api", "CaaS.Api\CaaS.Api.csproj", "{94A2E1AC-D66F-4FEE-B6FE-88DC871834A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api", "CaaS.Api\CaaS.Api.csproj", "{94A2E1AC-D66F-4FEE-B6FE-88DC871834A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaaS.Api.Test", "CaaS.Api.Test\CaaS.Api.Test.csproj", "{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api.Test", "CaaS.Api.Test\CaaS.Api.Test.csproj", "{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{A7B0F548-96A9-4A61-ABAC-67A4794699AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db_dev", "db_dev", "{90583840-94C8-4F9D-96F0-B836864CF8C7}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\db_dev\caas_schema.sql = Docker\db_dev\caas_schema.sql
+		Docker\db_dev\Dockerfile = Docker\db_dev\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +44,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90583840-94C8-4F9D-96F0-B836864CF8C7} = {A7B0F548-96A9-4A61-ABAC-67A4794699AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {938ED132-689A-4A78-8D61-86BCDE9F9B5E}
