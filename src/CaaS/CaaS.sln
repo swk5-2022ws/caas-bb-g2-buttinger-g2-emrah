@@ -11,7 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api", "CaaS.Api\CaaS.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api.Test", "CaaS.Api.Test\CaaS.Api.Test.csproj", "{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caas.Core.Common", "Caas.Core.Common\Caas.Core.Common.csproj", "{7B126CCC-01F4-4646-A088-5D7BB89E55E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Caas.Core.Common", "Caas.Core.Common\Caas.Core.Common.csproj", "{7B126CCC-01F4-4646-A088-5D7BB89E55E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{23226C40-B51F-4AAE-BC9E-EE8A21309631}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db_dev", "db_dev", "{045B6764-BAED-4A85-B243-2913489DBEF9}"
+	ProjectSection(SolutionItems) = preProject
+		Docker\db_dev\caas_schema.sql = Docker\db_dev\caas_schema.sql
+		Docker\db_dev\Dockerfile = Docker\db_dev\Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{045B6764-BAED-4A85-B243-2913489DBEF9} = {23226C40-B51F-4AAE-BC9E-EE8A21309631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {938ED132-689A-4A78-8D61-86BCDE9F9B5E}
