@@ -11,13 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api", "CaaS.Api\CaaS.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Api.Test", "CaaS.Api.Test\CaaS.Api.Test.csproj", "{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{A7B0F548-96A9-4A61-ABAC-67A4794699AB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db_dev", "db_dev", "{90583840-94C8-4F9D-96F0-B836864CF8C7}"
-	ProjectSection(SolutionItems) = preProject
-		Docker\db_dev\caas_schema.sql = Docker\db_dev\caas_schema.sql
-		Docker\db_dev\Dockerfile = Docker\db_dev\Dockerfile
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caas.Core.Common", "Caas.Core.Common\Caas.Core.Common.csproj", "{7B126CCC-01F4-4646-A088-5D7BB89E55E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,12 +35,13 @@ Global
 		{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{847BB9A7-22A6-4B9E-B39A-0B8D324315BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B126CCC-01F4-4646-A088-5D7BB89E55E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B126CCC-01F4-4646-A088-5D7BB89E55E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B126CCC-01F4-4646-A088-5D7BB89E55E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B126CCC-01F4-4646-A088-5D7BB89E55E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{90583840-94C8-4F9D-96F0-B836864CF8C7} = {A7B0F548-96A9-4A61-ABAC-67A4794699AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {938ED132-689A-4A78-8D61-86BCDE9F9B5E}
