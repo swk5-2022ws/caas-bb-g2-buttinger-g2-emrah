@@ -29,7 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `Cart` (
   `Id` int NOT NULL,
-  `CustomerId` int NOT NULL
+  `CustomerId` int DEFAULT NULL,
+  `SessionId` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -54,6 +55,7 @@ CREATE TABLE `Coupon` (
 
 CREATE TABLE `Customer` (
   `Id` int NOT NULL,
+  `ShopId` int NOT NULL,
   `Email` varchar(500) NOT NULL,
   `Name` varchar(100) NOT NULL,
   `Deleted` datetime DEFAULT NULL
@@ -106,7 +108,7 @@ CREATE TABLE `DiscountRule` (
   `Id` int NOT NULL,
   `ShopId` int NOT NULL,
   `Name` varchar(100) NOT NULL,
-  `Ruleset` json NOT NULL
+  `Ruleset` varchar(50000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -134,6 +136,7 @@ CREATE TABLE `Product` (
   `Label` varchar(100) NOT NULL,
   `Description` varchar(5000) DEFAULT NULL,
   `Price` double NOT NULL,
+  `ImageUrl` varchar(200) NOT NULL,
   `Deleted` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -172,7 +175,7 @@ CREATE TABLE `Shop` (
 CREATE TABLE `Tenant` (
   `Id` int NOT NULL,
   `Email` varchar(500) NOT NULL,
-  `Name` int NOT NULL
+  `Name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -331,6 +334,9 @@ ALTER TABLE `Tenant`
 -- Constraints der exportierten Tabellen
 --
 
+ALTER TABLE `Customer`
+  ADD CONSTRAINT `FK_Customer_Shop` FOREIGN KEY (`ShopId`) REFERENCES `Shop` (`Id`);
+
 --
 -- Constraints der Tabelle `Cart`
 --
@@ -400,4 +406,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
-CREATE USER 'service' IDENTIFIED WITH mysql_native_password BY 'mypass123';GRANT USAGE ON *.* TO 'service';ALTER USER 'service' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;GRANT ALL PRIVILEGES ON `caas`.* TO 'service';
+/* CREATE USER 'service' IDENTIFIED WITH mysql_native_password BY 'mypass123';GRANT USAGE ON *.* TO 'service';ALTER USER 'service' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;GRANT ALL PRIVILEGES ON `caas`.* TO 'service'; */

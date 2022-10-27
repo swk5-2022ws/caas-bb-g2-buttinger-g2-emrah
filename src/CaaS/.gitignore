@@ -66,6 +66,7 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
@@ -313,6 +314,11 @@ node_modules/
 **/*.DesktopClient/ModelManifest.xml
 **/*.Server/GeneratedArtifacts
 **/*.Server/ModelManifest.xml
+**/*/net6.0/
+/**/net6.0/
+net6.0/
+CaaS.Core.Test\bin\Debug\net6.0\
+
 _Pvt_Extensions
 
 # Paket dependency manager
