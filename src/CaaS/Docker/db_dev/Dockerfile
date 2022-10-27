@@ -20,4 +20,8 @@ RUN sed -i 's/MYSQL_DATABASE/'$MYSQL_DATABASE'/g' /etc/mysql/data.sql
 RUN cp /etc/mysql/data.sql /docker-entrypoint-initdb.d
 
 # expose the db port
-EXPOSE 3306W
+EXPOSE 3306
+EXPOSE 80/tcp
+EXPOSE 80/udp
+EXPOSE 443/tcp
+EXPOSE 8081/udp

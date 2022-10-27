@@ -16,6 +16,10 @@ Ausgangsbasis ist das Image mysql:latest. Dieses wird mit dem SQL-Skript `caas_s
 * User: service
 * Passwort: mypass123
 
+==== SQL-Testdaten erstellen
+
+Testdaten werden mit https://filldb.info/ erstellt und anschließend manuell angepasst.
+
 
 ==== caas-dev-db Image erstellen
 
@@ -35,7 +39,7 @@ Neben dem eigentlichen Image für die Datenbank wird hier auch ein Image für ph
 * Iamge `caas-dev-db` wurde erfolgreich erstellt
 
 .Schritte
-* `docker run -d --name caas-dev-db caas-dev-db`
+* `docker run -d --name caas-dev-db -p 3306:3306 caas-dev-db`
 
 ==== myphpadmin Image laden
 
@@ -53,7 +57,7 @@ Neben dem eigentlichen Image für die Datenbank wird hier auch ein Image für ph
 * Container `caas-dev-db` wird ausgeführt
 
 .Schritte
-* `docker run --name caas-dev-myphpadmin -d --link caas-dev-db:db -p 8081:80 phpmyadmin/phpmyadm`
+* `docker run --name caas-dev-myphpadmin -d --link caas-dev-db:db -p 8081:80 phpmyadmin/phpmyadmin`
 
 Nun kann die Weboberfläche von myphpadmin via http://localhost:8081 aufgerufen werden.
 Login mit User `root` und Passwort `mypass123`.
