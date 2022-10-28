@@ -1,14 +1,14 @@
 namespace CaaS.Core.Domainmodels;
 public record Discount
 {
-    public Discount(int id, int actionId, int ruleId)
+    public Discount(int id, DiscountRule discountRule, DiscountAction discountAction)
     {
         Id = id;
-        ActionId = actionId;
-        RuleId = ruleId;
+        DiscountAction = discountAction;
+        DiscountRule = discountRule;
     }
 
     public int Id { get; set; }
-    public int ActionId { get; set; }
-    public int RuleId { get; set; }
+    public DiscountAction DiscountAction { get; set; }
+    public DiscountRule DiscountRule { get; set; }
 }

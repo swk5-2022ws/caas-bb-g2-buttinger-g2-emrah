@@ -1,16 +1,16 @@
 namespace CaaS.Core.Domainmodels;
 public record Order
 {
-    public Order(int id, int cartId, double discount, DateTime orderDate)
+    public Order(int id, Cart cart, double discount, DateTime orderDate)
     {
         Id = id;
-        CartId = cartId;
+        Cart = cart;
         Discount = discount;
         OrderDate = orderDate;
     }
 
     public int Id { get; set; }
-    public int CartId { get; set; }
     public double Discount { get; set; }
     public DateTime OrderDate { get; set; }
+    public Cart Cart {get; set;}
 }
