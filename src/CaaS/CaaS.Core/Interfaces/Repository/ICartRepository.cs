@@ -14,11 +14,11 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">Cart id</param>
         /// <returns>A product card</returns>
-        Cart Get(Guid id);
+        Task<Cart?> Get(int id);
         /// <summary>
         /// Deletes a cart. Only carts without orders can be deleted.
         /// </summary>
         /// <param name="id">cart id</param>
-        void Delete(Guid id);
+        Task Delete(int id);
     }
 }

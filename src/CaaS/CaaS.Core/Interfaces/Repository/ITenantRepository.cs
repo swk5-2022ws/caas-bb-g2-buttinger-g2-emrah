@@ -9,6 +9,6 @@ namespace CaaS.Core.Interfaces.Repository
 {
     public interface ITenantRepository
     {
-        Tenant Get(Guid id);
+        Task<Tenant?> Get(int id);
     }
 }

@@ -15,14 +15,14 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="cartId">cart id</param>
         /// <param name="ruleId">rule id</param>
         /// <param name="actionId">action id</param>
-        void ApplyDiscount(Guid cartId, Guid ruleId, Guid actionId);
+        Task ApplyDiscount(int cartId, int ruleId, int actionId);
 
         /// <summary>
         /// Gets all discounts which are valid for a cart.
         /// </summary>
         /// <param name="cartId">cart id</param>
         /// <returns>All discounts applied to a cart.</returns>
-        IList<Discount> GetByCartId(Guid cartId);
+        Task<IList<Discount>> GetByCartId(int cartId);
 
     }
 }

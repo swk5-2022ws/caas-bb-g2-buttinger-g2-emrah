@@ -14,21 +14,21 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">shop id</param>
         /// <returns>A list of all products for a specific shop</returns>
-        IList<Product> Get(Guid id);
+        Task<IList<Product>> Get(int id);
         /// <summary>
         /// Updates a product.
         /// </summary>
         /// <param name="product">A existing product</param>
-        void Update(Product product);
+        Task Update(Product product);
         /// <summary>
         /// Creates a product.
         /// </summary>
         /// <param name="product">The product to be created. The UUID must be empty.</param>
-        void Create(Product product);
+        Task Create(Product product);
         /// <summary>
         /// Soft deletes a product.
         /// </summary>
         /// <param name="id">The product id to be deleted.</param>
-        void Delete(Guid id);
+        Task Delete(int id);
     }
 }

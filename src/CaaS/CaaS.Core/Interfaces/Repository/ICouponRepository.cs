@@ -13,17 +13,17 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a coupon.
         /// </summary>
         /// <param name="coupon">The coupon to be created.</param>
-        void Create(Coupon coupon);
+        Task Create(Coupon coupon);
         /// <summary>
         /// Apply a coupon to a cart.
         /// </summary>
         /// <param name="couponId">coupon id to be applied.</param>
         /// <param name="cardId">card id</param>
-        void Apply(Guid couponId, Guid cardId);
+        Task Apply(int couponId, int cardId);
         /// <summary>
         /// Soft deletes a coupon. Only coupons which are not applied to a cart can be deleted.
         /// </summary>
         /// <param name="id">The coupon id to be deleted.</param>
-        void Delete(Guid id);
+        Task Delete(int id);
     }
 }
