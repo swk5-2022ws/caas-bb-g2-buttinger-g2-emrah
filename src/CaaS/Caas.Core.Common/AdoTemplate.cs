@@ -12,7 +12,7 @@ namespace Caas.Core.Common
         private readonly IConnectionFactory connectionFactory;
 
         /// <summary>
-        /// Ctor for AdoTemplate 
+        /// Constructor for AdoTemplate 
         /// </summary>
         /// <param name="connectionFactory">Dependency Injected connection factory</param>
         public AdoTemplate(IConnectionFactory connectionFactory)
@@ -24,7 +24,7 @@ namespace Caas.Core.Common
         /// Selects Elements from the database into a list of the passed object
         /// </summary>
         /// <typeparam name="T">Generic object used to select the elements</typeparam>
-        /// <param name="read">The conversion function for the reader to the deticated generic element</param>
+        /// <param name="read">The conversion function for the reader to the dedicated generic element</param>
         /// <param name="joins">Additional joins as string text</param>
         /// <param name="whereExpression">object used to create the where expressions</param>
         /// <returns></returns>
@@ -66,7 +66,7 @@ namespace Caas.Core.Common
                     return read(reader);
                 }
             }
-            return default(T);
+            return default;
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace Caas.Core.Common
         }
 
         /// <summary>
-        /// Adds a param to a DbCommand
+        /// Adds a parameter to a DbCommand
         /// </summary>
         /// <param name="command">the DbCommand where the parameter is set</param>
         /// <param name="param">KeyValuePair for the parameter with the parameter name and its value</param>
