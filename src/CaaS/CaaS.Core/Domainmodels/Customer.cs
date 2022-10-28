@@ -9,6 +9,7 @@ public record Customer : ISoftDeleteable
         ShopId = shopId;
         Name = name;
         Email = email;
+        Orders = new HashSet<Order>();
     }
 
     public int Id { get; set; }
@@ -16,4 +17,6 @@ public record Customer : ISoftDeleteable
     public string Name { get; set; }
     public string Email { get; set; }
     public DateTime? Deleted { get; set; }
+    public Cart? Cart { get; set; }
+    public HashSet<Order> Orders { get; set; }
 }
