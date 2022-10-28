@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,23 +14,23 @@ namespace CaaS.Core.Interfaces.Repository
         /// Gets a order by id.
         /// </summary>
         /// <param name="id">Order id</param>
-        TOrder Get(Guid id);
+        Task<Order> Get(int id);
         /// <summary>
         /// Gets all orders for a specific shop.
         /// </summary>
         /// <param name="id">Shop id</param>
         /// <returns>All orders for a shop.</returns>
-        IList<TOrder> GetOrdersByShopId(Guid id);
+        Task<IList<Order>> GetOrdersByShopId(int id);
         /// <summary>
         /// Gets all orders for a specific customer.
         /// </summary>
         /// <param name="id">Customer id</param>
         /// <returns>All orders for a customer.</returns>
-        IList<TOrder> GetOrdersByCustomerId(Guid id);
+        Task<IList<Order>> GetOrdersByCustomerId(int id);
         /// <summary>
         /// Creates a new order from a cart.
         /// </summary>
         /// <param name="cart">The cart which is ordered.</param>
-        void Create(TCart cart);
+        Task Create(Cart cart);
     }
 }

@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace CaaS.Core.Interfaces.Repository
 {
     public interface ITenantRepository
     {
-        TTenant Get(Guid id);
+        Task<Tenant?> Get(int id);
     }
 }

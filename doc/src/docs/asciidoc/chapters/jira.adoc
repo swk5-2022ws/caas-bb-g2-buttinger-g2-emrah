@@ -1,23 +1,24 @@
-== Issue Tracking
+== Zusammenarbeit
 
-Aufgrund unser gemeinsamen Erfahrungen haben wir uns für das System Jira entschieden. Mit den gratis Azure Studentguthaben hosten wir dieses in einer Azure WebApp.
+Jira wird zum Erfassen und Verteilen von Aufgaben verwendet.
+Aufgrund der geringen Team-Größe von zwei Personen wird in diesem Projekt auf eine ordentliche Vorgehensmethode verzichtet. Die Projektmitarbeiter stehen in engen Kontakt via Microsoft-Teams.
+
+Tasks werden in jeder Ausbaustufe in dem Ticketsystem Jira eingeplant. Die Projektmitarbeiter können sich selbst Tasks zuweisen und diese abarbeiten. Ein Task darf jedoch nur auf den Status `Done` gesetzt werden, sobald die Kriterien für `Definition of Done` erfüllt sind.
+
+Als Quellcodeverwaltungssystem wird Github verwendet. Jeder Task wird in einem eigenen Branch umgesetzt. Sobald der Task den Status `Done` erreicht, wird der Branch nach main gemergt.
+
+Sobald ein Pull-Request in den Branch `main` eröffnet wird, führt die CI/CD-Pipeline alle automatisierten Tests aus. Der Pull-Request wird automatisch abgebrochen, falls ein Test fehlschlägt.
 
 === Jira
 
-Direkt von Atlassian gehostet. Für 10 Leute gratis und für unsere Zwecke ausreichend.
+Aufgrund unser gemeinsamen Erfahrungen haben wir uns für das System Jira entschieden. Jira ist gratis für Projektgruppen mit weniger als 10 Personen.
 
-Wurde mit dem Taskmanagementpreset konfiguriert.
+Unser Jira wird direkt bei Atlassian gehostet. Als Ausgangskonfiguration wurde das Template für `Taskmanagement` gewählt.
 
-https://caas-swk5.atlassian.net/jira/core/projects/FIRST/board
-
-
+Url: https://caas-swk5.atlassian.net/
 
 
-
-
-
-
-Definition of Done:
+=== Definition of Done:
 * Implementiert
 * Unit-Tests erstellt
 * Alle Testsuites in Ordnung

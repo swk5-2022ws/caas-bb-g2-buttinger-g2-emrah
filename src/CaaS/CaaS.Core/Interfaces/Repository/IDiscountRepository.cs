@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +14,18 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        IList<TDiscount> GetAllByShopId(Guid id);
+        Task<IList<Discount>> GetAllByShopId(int id);
 
         /// <summary>
         /// Updates a discount.
         /// </summary>
         /// <param name="item">The discount to update.</param>
-        void Update(TDiscount item);
+        Task Update(Discount item);
 
         /// <summary>
         /// Deletes a discount.
         /// </summary>
         /// <param name="id">The discount id to deleted.</param>
-        void Delete(Guid id);
+        Task Delete(int id);
     }
 }

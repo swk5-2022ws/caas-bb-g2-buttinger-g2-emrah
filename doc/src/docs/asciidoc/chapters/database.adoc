@@ -1,23 +1,63 @@
+== Datenbank
 
-https://migueldoctor.medium.com/run-mysql-phpmyadmin-locally-in-3-steps-using-docker-74eb735fa1fc
+Als Datenbank wird in diesem Projekt mysql eingesetzt. Die beliebte OpenSource - Datenkbank kennen wir bereits aus anderen Übungen und der Funktionsumfang ist für dieses Projekt ausreichend.
 
-docker pull mysql
+=== Entwicklungsdatenbank mit Docker
+==== Allgemein
+Für eine gute Entwicklererfahrung setzen wir auf Docker. Im Projektverzeichnis existieren unter `caas-bb-g2-buttinger-g2-emrah\src\CaaS\Docker\db_dev` alle notwendigen Dateien zum Erstellen eines Docker-Images. 
 
-docker run --name my-own-mysql -e MYSQL_ROOT_PASSWORD=mypass123 -d mysql
+Ausgangsbasis ist das Image mysql:latest. Dieses wird mit dem SQL-Skript `caas_schema.sql` initialisiert.
 
-docker pull phpmyadmin/phpmyadmin:latest
+.Root Benutzer
+* User: root
+* Passwort: mypass123
 
-docker run --name my-own-phpmyadmin -d --link my-own-mysql:db -p 8081:80 phpmyadmin/phpmyadmin
+.Service Benutzer (Nur Zugriff auf Datenbank caas)
+* User: service
+* Passwort: mypass123
 
-docker ps -a
+==== SQL-Testdaten erstellen
 
-
-
-user: root
-password: mypass123
-phpmyadmin: http://localhost:8081
+Testdaten werden mit https://filldb.info/ erstellt und anschließend manuell angepasst.
 
 
+==== caas-dev-db Image erstellen
 
-Schema via phpmyadmin erstellt und exportiert.
-In Solutionfolder unter Skripts, caas_schema.sql abgelegt.
+Neben dem eigentlichen Image für die Datenbank wird hier auch ein Image für phpmyadmin erstellt. Somit haben wir eine bequeme Möglichkeit die Datenbank zu konfigurieren.
+
+.Voraussetzungen
+* Docker Desktop installiert und konfiguriert
+* Quellcode lokal verfügbar
+
+.Schritte
+* Terminal öffnen und nach `caas-bb-g2-buttinger-g2-emrah\src\CaaS\Docker\db_dev` navigieren.
+* `docker build . --tag caas-dev-db` ausführen
+
+==== caas-dev-db starten
+
+.Voraussetzungen
+* Iamge `caas-dev-db` wurde erfolgreich erstellt
+
+.Schritte
+* `docker run -d --name caas-dev-db -p 3306:3306 caas-dev-db`
+
+==== myphpadmin Image laden
+
+.Voraussetzungen
+* Docker Desktop installiert und konfiguriert
+
+.Schritte
+* `docker pull phpmyadmin/phpmyadmin:latest`
+
+==== myphpadmin Container starten und mit caas-dev-db verbinden
+
+.Voraussetzungen
+* Image `caas-dev-db` wurde erfolgreich erstellt
+* Image myphpadmin wurde geladen
+* Container `caas-dev-db` wird ausgeführt
+
+.Schritte
+* `docker run --name caas-dev-myphpadmin -d --link caas-dev-db:db -p 8081:80 phpmyadmin/phpmyadmin`
+
+Nun kann die Weboberfläche von myphpadmin via http://localhost:8081 aufgerufen werden.
+Login mit User `root` und Passwort `mypass123`.
