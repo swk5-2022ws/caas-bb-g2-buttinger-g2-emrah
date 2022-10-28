@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +14,17 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">shop id</param>
         /// <returns>A list of all products for a specific shop</returns>
-        IList<TProduct> Get(Guid id);
+        IList<Product> Get(Guid id);
         /// <summary>
         /// Updates a product.
         /// </summary>
         /// <param name="product">A existing product</param>
-        void Update(TProduct product);
+        void Update(Product product);
         /// <summary>
         /// Creates a product.
         /// </summary>
-        /// <param name="product">The product to be created. The uuid must be empty.</param>
-        void Create(TProduct product);
+        /// <param name="product">The product to be created. The UUID must be empty.</param>
+        void Create(Product product);
         /// <summary>
         /// Soft deletes a product.
         /// </summary>

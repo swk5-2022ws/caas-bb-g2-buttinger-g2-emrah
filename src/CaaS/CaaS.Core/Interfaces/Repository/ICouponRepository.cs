@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a coupon.
         /// </summary>
         /// <param name="coupon">The coupon to be created.</param>
-        void Create(TCoupon coupon);
+        void Create(Coupon coupon);
         /// <summary>
-        /// Applys a coupon to a cart.
+        /// Apply a coupon to a cart.
         /// </summary>
         /// <param name="couponId">coupon id to be applied.</param>
         /// <param name="cardId">card id</param>
