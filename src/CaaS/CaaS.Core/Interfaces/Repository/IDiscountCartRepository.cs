@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace CaaS.Core.Interfaces.Repository
     public interface IDiscountCartRepository
     {
         /// <summary>
-        /// Applys a discount action with a specific discount rule on a specific cart.
+        /// Apply a discount action with a specific discount rule on a specific cart.
         /// </summary>
         /// <param name="cartId">cart id</param>
         /// <param name="ruleId">rule id</param>
@@ -22,7 +22,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="cartId">cart id</param>
         /// <returns>All discounts applied to a cart.</returns>
-        IList<TDiscount> GetByCartId(Guid cartId);
+        IList<Discount> GetByCartId(Guid cartId);
 
     }
 }

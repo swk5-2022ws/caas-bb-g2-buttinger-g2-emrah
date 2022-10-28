@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +25,13 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a customer.
         /// </summary>
         /// <param name="customer">The customer to create.</param>
-        void Create(TCustomer customer);
+        void Create(Customer customer);
 
         /// <summary>
         /// Updates a customer.
         /// </summary>
         /// <param name="customer">The customer to update.</param>
-        void Update(TCustomer customer);
+        void Update(Customer customer);
 
         /// <summary>
         /// Soft deletes a customer.

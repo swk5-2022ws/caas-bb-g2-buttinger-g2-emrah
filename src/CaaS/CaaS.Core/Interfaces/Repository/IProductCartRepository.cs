@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a new product cart relationship.
         /// </summary>
         /// <param name="productCart">The new product in a cart</param>
-        void Create(TProductCart productCart);
+        void Create(ProductCart productCart);
         /// <summary>
         /// Updates the amount of a product cart.
         /// </summary>

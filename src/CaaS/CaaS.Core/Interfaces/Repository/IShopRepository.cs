@@ -1,4 +1,4 @@
-﻿using CaaS.Core.Transferclasses;
+﻿using CaaS.Core.Domainmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +14,16 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">Tenant id</param>
         /// <returns>Shop associated with the passed tenant id</returns>
-        TShop Get(Guid id);
+        Shop Get(Guid id);
         /// <summary>
         /// Creates a shop.
         /// </summary>
         /// <param name="shop">A shop to be created. The id must be empty.</param>
-        void Create(TShop shop);
+        void Create(Shop shop);
         /// <summary>
         /// Updates a shop.
         /// </summary>
         /// <param name="shop">A shop to be updated.</param>
-        void Update(TShop shop);
+        void Update(Shop shop);
     }
 }
