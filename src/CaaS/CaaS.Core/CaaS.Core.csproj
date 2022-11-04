@@ -10,4 +10,8 @@
     <Folder Include="Domainmodels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Caas.Core.Common\Caas.Core.Common.csproj" />
+  </ItemGroup>
+
 </Project>

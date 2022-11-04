@@ -1,0 +1,1 @@
+docker run --rm -v %cd%\src\docs\asciidoc\:/documents/ asciidoctor/docker-asciidoctor asciidoctor-pdf ./index.adoc
