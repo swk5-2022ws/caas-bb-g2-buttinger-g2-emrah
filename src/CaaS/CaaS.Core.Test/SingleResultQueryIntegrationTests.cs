@@ -1,10 +1,5 @@
-﻿using Caas.Core.Common;
-using CaaS.Core.Domainmodels;
-using CaaS.Core.Transferrecordes;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
-using MySqlX.XDevAPI;
-using NUnit.Framework;
-using System.Xml.Linq;
+﻿using CaaS.Core.Domainmodels;
+using System.Data;
 
 namespace CaaS.Core.Test
 {
@@ -33,15 +28,7 @@ namespace CaaS.Core.Test
         [TestCase(3, "5c662d68-ead5-35fe-af4c-cf4470a8ff3d", 3, 3, "Colby Wiza", "jgreenfelder@example.net")]
         public async Task SelectSingleCartByIdWithCustomerReturnsCart(int cartId, string sessionId, int customerId, int shopId, string name, string email)
         {
-            var cart = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(reader =>
-            {
-                var c = new Cart((int)reader[0], (string)reader["SessionId"])
-                {
-                    CustomerId = (int)reader["CustomerId"],
-                    Customer = new Customer((int)reader[3], (int)reader["ShopId"], (string)reader["Name"], (string)reader["Email"])
-                };
-                return c;
-            },
+            var cart = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToCartWithCustomer,
             joins: "JOIN Customer c ON c.Id = t.Id",
             whereExpression: new
             {
@@ -57,15 +44,7 @@ namespace CaaS.Core.Test
         [TestCase(3, "5c662d68-ead5-35fe-af4c-cf4470a8ff3d", 3, 3, "Colby Wiza", "jgreenfelder@example.net")]
         public async Task SelectSingleCartByCustomerNameWithCustomerReturnsCart(int cartId, string sessionId, int customerId, int shopId, string name, string email)
         {
-            var cart = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(reader =>
-            {
-                var c = new Cart((int)reader[0], (string)reader["SessionId"])
-                {
-                    CustomerId = (int)reader["CustomerId"],
-                    Customer = new Customer((int)reader[3], (int)reader["ShopId"], (string)reader["Name"], (string)reader["Email"])
-                };
-                return c;
-            },
+            var cart = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToCartWithCustomer,
             joins: "JOIN Customer c ON c.Id = t.Id",
             whereExpression: new
             {
@@ -77,6 +56,13 @@ namespace CaaS.Core.Test
 
             SingleCartWithCustomerAssertion(cart, cartId, sessionId, customerId, shopId, name, email);
         }
+
+        private Cart ReadToCartWithCustomer(IDataRecord reader) =>
+            new Cart((int)reader[0], (string)reader["SessionId"])
+            {
+                CustomerId = (int)reader["CustomerId"],
+                Customer = new Customer((int)reader[3], (int)reader["ShopId"], (string)reader["Name"], (string)reader["Email"])
+            };
 
         private void BasicSingleCartAssertions(Cart? cart, int cartId, string sessionId, int customerId)
         {

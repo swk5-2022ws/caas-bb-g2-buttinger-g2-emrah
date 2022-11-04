@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Caas.Core.Common
 {
@@ -112,13 +113,13 @@ namespace Caas.Core.Common
             }
         }
 
-        public async Task<bool> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null)
+        public async Task<int> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using (var cmd = connection.CreateCommand())
             {
                 BuildUpdateCommand(cmd, typeof(T).Name, valuesToUpdate, whereExpression);
-                return await cmd.ExecuteNonQueryAsync() > 0;
+                return await cmd.ExecuteNonQueryAsync();
             }
         }
 
@@ -128,9 +129,10 @@ namespace Caas.Core.Common
             var parameters = ParametersToDictinary(valuesToUpdate, false);
             foreach (var param in parameters)
             {
-                commandText += $"{param.Key} = @{param.Key}";
+                commandText += $"{param.Key} = @{param.Key},";
                 AddParam(command, param.Value, param.Key);
             }
+            commandText = commandText.Remove(commandText.Length - 1);
 
             AddWhereExpression(command, commandText, whereExpression, parameters.Select(param => param.Key).ToList(), false);
 
@@ -196,10 +198,12 @@ namespace Caas.Core.Common
             const string AND = "AND";
             var parameterDictionary = ParametersToDictinary(whereExpression, addTableNameSpace);
 
+            bool useWhere = true;
             foreach (var param in parameterDictionary)
             {
                 var sqlParameterName = GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
-                commandText += $" {(command.Parameters.Count == 0 ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
+                commandText += $" {(useWhere ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
+                useWhere = false;
                 AddParam(command, param.Value, sqlParameterName);
             }
             command.CommandText = commandText;
@@ -207,7 +211,7 @@ namespace Caas.Core.Common
 
         private string GetAvailableParameterName(string parameterName, IList<string>? alreadyIncludedNames = null)
         {
-            if(alreadyIncludedNames == null || alreadyIncludedNames.Count == 0 || !alreadyIncludedNames.Any(name => name == parameterName))
+            if (alreadyIncludedNames == null || alreadyIncludedNames.Count == 0 || !alreadyIncludedNames.Any(name => name == parameterName))
             {
                 return parameterName;
             }
@@ -227,7 +231,7 @@ namespace Caas.Core.Common
             var parameterDictionary = new Dictionary<string, object?>();
             foreach (var property in properties.GetType().GetProperties())
             {
-                if (property.PropertyType.IsPrimitive)
+                if (IsSystemType(property))
                 {
                     SetPropertyToDictionary(parameterDictionary, property, properties, addTableNameSpace ? "t." : "");
                     continue;
@@ -237,7 +241,7 @@ namespace Caas.Core.Common
                 object? joinedProperties = property.GetValue(properties, null);
                 var joinedTableName = GetPropertyName(property);
 
-                if(joinedProperties == null)
+                if (joinedProperties == null)
                 {
                     continue;
                 }
@@ -251,13 +255,68 @@ namespace Caas.Core.Common
         }
 
         /// <summary>
+        /// Checks if a property has an anonymous type 
+        /// <see href="https://stackoverflow.com/questions/2483023/how-to-test-if-a-type-is-anonymous"></see>
+        /// </summary>
+        /// <param name="property">The property to check</param>
+        /// <returns></returns>
+        public bool IsAnonymousType(PropertyInfo? property)
+        {
+            if(property is null)
+            {
+                return false;
+            }
+            var type = property.PropertyType;
+            return Attribute.IsDefined(type, typeof(CompilerGeneratedAttribute), false)
+                && type.IsGenericType && type.Name.Contains("AnonymousType")
+                && (type.Name.StartsWith("<>") || type.Name.StartsWith("VB$"))
+                && type.Attributes.HasFlag(TypeAttributes.NotPublic);
+        }
+
+        /// <summary>
+        /// Checks if a property is a system type
+        /// <see href="https://stackoverflow.com/questions/3174921/how-do-i-determine-if-system-type-is-a-custom-type-or-a-framework-type"></see>
+        /// </summary>
+        /// <param name="property">The property to check</param>
+        /// <returns></returns>
+        public bool IsSystemType(PropertyInfo? property)
+        {
+            if(property is null)
+            {
+                return false;
+            }
+
+            var systemNames = new List<AssemblyName>()
+            {
+            new AssemblyName ("mscorlib, Version=4.0.0.0, Culture=neutral, " +
+                              "PublicKeyToken=b77a5c561934e089"),
+            new AssemblyName ("System.Core, Version=4.0.0.0, Culture=neutral, "+
+                              "PublicKeyToken=b77a5c561934e089"),
+            new AssemblyName ("System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e")
+            };
+
+            var assemblyFullName = property.GetType().Assembly.FullName;
+
+            if(assemblyFullName is null)
+            {
+                return false;
+            }
+
+            var assemblyName = new AssemblyName(assemblyFullName);
+
+            return !IsAnonymousType(property) && systemNames.Any(
+                    n => n.GetPublicKeyToken() != null && assemblyName != null && n.Name == assemblyName.Name
+                       && n.GetPublicKeyToken().SequenceEqual(assemblyName.GetPublicKeyToken()));
+        }
+
+        /// <summary>
         /// Creates a new KeyValuePair in the given dictionary
         /// </summary>
         /// <param name="dictionary">the dictionary</param>
         /// <param name="property">the property used to create</param>
         /// <param name="instance">the instance where the value of the property is stored</param>
         /// <param name="baseName">additional Name added to the property</param>
-        private void SetPropertyToDictionary(Dictionary<string, object?> dictionary, PropertyInfo property, object instance, string? baseName = null) => 
+        private void SetPropertyToDictionary(Dictionary<string, object?> dictionary, PropertyInfo property, object instance, string? baseName = null) =>
             dictionary[baseName + GetPropertyName(property)] = property.GetValue(instance, null);
 
         /// <summary>
