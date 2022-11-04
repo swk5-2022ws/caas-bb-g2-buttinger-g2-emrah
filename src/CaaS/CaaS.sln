@@ -17,8 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{23226C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db_dev", "db_dev", "{045B6764-BAED-4A85-B243-2913489DBEF9}"
 	ProjectSection(SolutionItems) = preProject
+		Docker\db_dev\build_dev_db.bat = Docker\db_dev\build_dev_db.bat
 		Docker\db_dev\caas_schema.sql = Docker\db_dev\caas_schema.sql
 		Docker\db_dev\Dockerfile = Docker\db_dev\Dockerfile
+		Docker\db_dev\init.sql = Docker\db_dev\init.sql
+		Docker\db_dev\remove_dev_db_container.bat = Docker\db_dev\remove_dev_db_container.bat
+		Docker\db_dev\run_dev_db.bat = Docker\db_dev\run_dev_db.bat
+		Docker\db_dev\run_mysqladmin_container.bat = Docker\db_dev\run_mysqladmin_container.bat
 	EndProjectSection
 EndProject
 Global
