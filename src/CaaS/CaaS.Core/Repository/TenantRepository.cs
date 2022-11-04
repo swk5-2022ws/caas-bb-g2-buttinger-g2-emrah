@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CaaS.Core.Repository
 {
@@ -19,18 +20,15 @@ namespace CaaS.Core.Repository
             this.template = adoTemplate;
         }
 
-        private Tenant MapRowToTenant(IDataRecord row) =>
-            new(
-                (int)row["Id"],
-                (string)row["email"],
-                (string)row["name"]
-            );
-
         public async Task<Tenant?> Get(int id)
         {
-            return await template.QueryFirstOrDefaultAsync(
-                MapRowToTenant,
-                whereExpression: new { Id = id });
+            return await template.QueryFirstOrDefaultAsync(reader =>
+            {
+                return new Tenant((int)reader[0], (string)reader["Email"], (string)reader["Name"]);
+            },
+            whereExpression:
+                new { Id = id }
+            );
         }
     }
 }
