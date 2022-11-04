@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Caas.Core.Common\Caas.Core.Common.csproj" />
     <ProjectReference Include="..\CaaS.Core\CaaS.Core.csproj" />
   </ItemGroup>
 
