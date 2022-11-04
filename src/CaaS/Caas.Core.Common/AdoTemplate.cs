@@ -305,8 +305,8 @@ namespace Caas.Core.Common
             var assemblyName = new AssemblyName(assemblyFullName);
 
             return !IsAnonymousType(property) && systemNames.Any(
-                    n => n.GetPublicKeyToken() != null && assemblyName != null && n.Name == assemblyName.Name
-                       && n.GetPublicKeyToken().SequenceEqual(assemblyName.GetPublicKeyToken()));
+                    systemName => systemName.GetPublicKeyToken() != null && assemblyName != null && assemblyName.GetPublicKeyToken() != null &&
+                    systemName.Name == assemblyName.Name && systemName.GetPublicKeyToken()!.SequenceEqual(assemblyName.GetPublicKeyToken()!));
         }
 
         /// <summary>

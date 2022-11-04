@@ -24,9 +24,7 @@ namespace CaaS.Core.Test
                 }, whereExpression), Is.EqualTo(1));
 
                 var shop = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToShop, whereExpression: whereExpression);
-
-                Assert.IsNotNull(shop);
-                Assert.That(shop.Label, Is.EqualTo(label));
+                BaseShopAssertion(shop, label);
             }
         }
 
@@ -51,10 +49,15 @@ namespace CaaS.Core.Test
 
                 var shop = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToShop, whereExpression: whereExpression);
 
-                Assert.IsNotNull(shop);
-                Assert.That(shop.Label, Is.EqualTo(label));
-                Assert.That(shop.AppKey, Is.EqualTo(appKey));
+                BaseShopAssertion(shop, label);
+                Assert.That(shop?.AppKey, Is.EqualTo(appKey));
             }
+        }
+
+        private void BaseShopAssertion(Shop? shop, string label)
+        {
+            Assert.IsNotNull(shop);
+            Assert.That(shop.Label, Is.EqualTo(label));
         }
 
         private Shop ReadToShop(IDataRecord reader) =>
