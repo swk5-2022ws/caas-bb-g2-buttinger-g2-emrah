@@ -19,7 +19,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a shop.
         /// </summary>
         /// <param name="shop">A shop to be created. The id must be empty.</param>
-        Task Create(Shop shop);
+        Task<int> Create(Shop shop);
         /// <summary>
         /// Updates a shop.
         /// </summary>

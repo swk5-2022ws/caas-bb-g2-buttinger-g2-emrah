@@ -35,7 +35,15 @@ namespace CaaS.Core.Test.Integration.Repository
             int id = int.MaxValue;
             Domainmodels.Shop? shop = await sut.Get(id);
             Assert.That(shop, Is.Null);
+        }
 
+        [Test]
+        public async Task TestCreateWithValidShopInsertsShop()
+        {
+            Domainmodels.Shop shop = new Domainmodels.Shop(0, 1, Guid.NewGuid(), "new shop");
+            int id = await sut.Create(shop);
+            Assert.That(id, Is.AtLeast(1));
+            
         }
     }
 }

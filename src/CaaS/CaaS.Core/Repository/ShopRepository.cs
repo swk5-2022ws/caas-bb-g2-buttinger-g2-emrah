@@ -18,9 +18,9 @@ namespace CaaS.Core.Repository
             this.template = adoTemplate;
         }
 
-        public Task Create(Shop shop)
+        public async Task<int> Create(Shop shop)
         {
-            throw new NotImplementedException();
+            return await template.InsertAsync<Shop>(shop);
         }
 
         public async Task<Shop?> Get(int id)
