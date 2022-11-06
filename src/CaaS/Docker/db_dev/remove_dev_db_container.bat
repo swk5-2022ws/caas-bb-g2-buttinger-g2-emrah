@@ -1,1 +1,1 @@
-docker rm caas-dev-db
+docker rm -f caas-dev-db
