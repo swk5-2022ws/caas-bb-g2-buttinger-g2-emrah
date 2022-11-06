@@ -28,19 +28,19 @@ namespace CaaS.Core.Repository
             return await template.QueryFirstOrDefaultAsync(reader =>
             {
                 return new Shop(
-                    (int)reader["Id"], 
-                    (int)reader["TenantId"], 
-                    (Guid)reader["AppKey"], 
+                    (int)reader["Id"],
+                    (int)reader["TenantId"],
+                    (Guid)reader["AppKey"],
                     (string)reader["Label"]);
-                },
+            },
                 whereExpression:
                     new { Id = id }
                 );
         }
 
-        public Task Update(Shop shop)
+        public async Task Update(Shop shop)
         {
-            throw new NotImplementedException();
+            await template.UpdateAsync<Shop>(shop, new { Id = shop.Id } );
         }
     }
 }
