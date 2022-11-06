@@ -13,7 +13,7 @@ namespace CaaS.Core.Test.Integration.Template
 {
     public class InsertTemplateTests
     {
-        [Test]
+        [Test, Rollback]
         [TestCase(1, 1, 0.3)]
         [TestCase(2, null, 0.01)]
         [TestCase(3, 5, 0.534)]
