@@ -18,7 +18,7 @@ namespace Caas.Core.Common.Ado
                 return parameterName;
             }
 
-            return $"{parameterName} {alreadyIncludedNames.Count(name => name.StartsWith(parameterName))}";
+            return $"{parameterName}{alreadyIncludedNames.Count(name => name.StartsWith(parameterName))}";
 
         }
 
@@ -105,7 +105,7 @@ namespace Caas.Core.Common.Ado
         /// <param name="command">The command that is executed</param>
         /// <param name="tableName">The table name the insert is called on.</param>
         /// <param name="valuesToPass">The values object passed. This must map to a single line of an insert statement.</param>
-        internal static void BuildInsertCommand(DbCommand command, string tableName, object valuesToPass)
+        internal static IList<string> BuildInsertCommand(DbCommand command, string tableName, object valuesToPass, IList<string>? alreadyIncludedNames = null)
         {
             var commandText = $"INSERT INTO {tableName} (";
             var parameters = AdoBuilder.ParametersToDictinary(valuesToPass, false);
@@ -119,10 +119,12 @@ namespace Caas.Core.Common.Ado
                 commandText += key;
                 if (i + 1 != parameterCount)
                     commandText += ",";
-                valuesText += $"@{key}";
+
+                var sqlParameterName = GetAvailableParameterName(key, alreadyIncludedNames);
+                valuesText += $"@{sqlParameterName}";
                 if (i + 1 != parameterCount)
                     valuesText += ",";
-                AdoBuilder.AddParam(command, parameters[key], key);
+                AdoBuilder.AddParam(command, parameters[key], sqlParameterName);
 
             }
             commandText += $") {valuesText});";
@@ -130,6 +132,7 @@ namespace Caas.Core.Common.Ado
             if (keys.Contains("Id"))
                 commandText += $"SELECT MAX(Id) FROM {tableName};";
             command.CommandText += commandText;
+            return parameters.Keys.ToList();
         }
 
         /// <summary>
