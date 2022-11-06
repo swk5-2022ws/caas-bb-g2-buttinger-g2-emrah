@@ -10,11 +10,17 @@ namespace CaaS.Core.Interfaces.Repository
     public interface IProductRepository
     {
         /// <summary>
+        /// Return a product by id
+        /// </summary>
+        /// <param name="id">The product id to fetch</param>
+        /// <returns>The product or null if not found</returns>
+        Task<Product?> Get(int id);
+        /// <summary>
         /// Returns all products for a given shop id.
         /// </summary>
         /// <param name="id">shop id</param>
         /// <returns>A list of all products for a specific shop</returns>
-        Task<IList<Product>> Get(int id);
+        Task<IList<Product>> GetByShopId(int id);
         /// <summary>
         /// Updates a product.
         /// </summary>
