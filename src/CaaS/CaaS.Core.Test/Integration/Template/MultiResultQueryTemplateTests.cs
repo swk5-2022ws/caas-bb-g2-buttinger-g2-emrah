@@ -1,9 +1,9 @@
 ﻿using CaaS.Core.Domainmodels;
 using System.Data;
 
-namespace CaaS.Core.Test
+namespace CaaS.Core.Test.Integration.Template
 {
-    public class MultiResultQueryIntegrationTests
+    public class MultiResultQueryTemplateTests
     {
         [Test]
         [TestCase(1, 25, new int[] { 1, 21, 41, 61, 81, 101, 121, 141, 161, 181, 201, 221, 241, 261, 281, 301, 321, 341, 361, 381, 401, 421, 441, 461, 481 })]
@@ -11,7 +11,8 @@ namespace CaaS.Core.Test
         [TestCase(3, 25, new int[] { 3, 23, 43, 63, 83, 103, 123, 143, 163, 183, 203, 223, 243, 263, 283, 303, 323, 343, 363, 383, 403, 423, 443, 463, 483 })]
         public async Task SelectMultipleCustomersByShopIdReturnCustomers(int shopId, int customerCount, int[] customerIds)
         {
-            var customers = await Setup.GetTemplateEngine().QueryAsync(ReadToCustomer, whereExpression: new {
+            var customers = await Setup.GetTemplateEngine().QueryAsync(ReadToCustomer, whereExpression: new
+            {
                 ShopId = shopId
             });
 

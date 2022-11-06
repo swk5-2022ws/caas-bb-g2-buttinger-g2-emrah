@@ -1,34 +1,32 @@
 ﻿using CaaS.Core.Domainmodels;
+using CaaS.Core.Test.Util;
 using System.Data;
 using System.Transactions;
 
-namespace CaaS.Core.Test
+namespace CaaS.Core.Test.Integration.Template
 {
-    public class UpdateIntegrationTests
+    public class UpdateTemplateTests
     {
-        [Test]
+        [Test, Rollback]
         [TestCase(1, "Test")]
         [TestCase(2, "Test 1")]
         [TestCase(3, "Test 3")]
         public async Task UpdateShopNameByShopId(int shopId, string label)
         {
-            using(var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            var whereExpression = new
             {
-                var whereExpression = new
-                {
-                    Id = shopId
-                };
-                Assert.That(await Setup.GetTemplateEngine().UpdateAsync<Shop>(new
-                {
-                    Label = label
-                }, whereExpression), Is.EqualTo(1));
+                Id = shopId
+            };
+            Assert.That(await Setup.GetTemplateEngine().UpdateAsync<Shop>(new
+            {
+                Label = label
+            }, whereExpression), Is.EqualTo(1));
 
-                var shop = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToShop, whereExpression: whereExpression);
-                BaseShopAssertion(shop, label);
-            }
+            var shop = await Setup.GetTemplateEngine().QueryFirstOrDefaultAsync(ReadToShop, whereExpression: whereExpression);
+            BaseShopAssertion(shop, label);
         }
 
-        [Test]
+        [Test, Rollback]
         [TestCase(1, "Test")]
         [TestCase(2, "Test 1")]
         [TestCase(3, "Test 3")]

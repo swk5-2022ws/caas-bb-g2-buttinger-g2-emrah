@@ -1,11 +1,7 @@
 ﻿using CaaS.Util;
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Data.Common;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Caas.Core.Common.Ado
 {
@@ -172,10 +168,33 @@ namespace Caas.Core.Common.Ado
             bool useWhere = true;
             foreach (var param in parameterDictionary)
             {
-                var sqlParameterName = AdoBuilder.GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
-                commandText += $" {(useWhere ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
-                useWhere = false;
-                AdoBuilder.AddParam(command, param.Value, sqlParameterName);
+
+                if (param.Value is IEnumerable && param.Value is not string)
+                {
+                    var parameterList = new List<string>();
+                    foreach (var item in (IEnumerable)param.Value)
+                    {
+                        var sqlInParameterName = AdoBuilder.GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
+
+                        if (alreadyIncludedSqlParameterNames == null)
+                        {
+                            alreadyIncludedSqlParameterNames = new List<string>();
+                        }
+
+                        alreadyIncludedSqlParameterNames.Add(sqlInParameterName);
+                        AdoBuilder.AddParam(command, item, sqlInParameterName);
+                        parameterList.Add($"@{sqlInParameterName}");
+                    }
+                    commandText += $" {(useWhere ? WHERE : AND)} {param.Key} IN ({string.Join(",", parameterList)})";
+                    useWhere = false;
+                }
+                else
+                {
+                    var sqlParameterName = AdoBuilder.GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
+                    commandText += $" {(useWhere ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
+                    useWhere = false;
+                    AdoBuilder.AddParam(command, param.Value, sqlParameterName);
+                }
             }
             command.CommandText = commandText;
         }

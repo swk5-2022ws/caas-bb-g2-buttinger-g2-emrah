@@ -18,10 +18,7 @@ namespace CaaS.Core.Repository
             this.template = adoTemplate;
         }
 
-        public async Task<int> Create(Shop shop)
-        {
-            return await template.InsertAsync<Shop>(shop);
-        }
+        public async Task<int> Create(Shop shop) => (await template.InsertAsync<Shop>(shop))?.ElementAt(0) ?? 0;
 
         public async Task<Shop?> Get(int id)
         {
@@ -38,9 +35,6 @@ namespace CaaS.Core.Repository
                 );
         }
 
-        public async Task<bool> Update(Shop shop)
-        {
-            return (await template.UpdateAsync<Shop>(shop, new { Id = shop.Id } )) > 0;
-        }
+        public async Task<bool> Update(Shop shop) => (await template.UpdateAsync<Shop>(shop, new { Id = shop.Id } )) > 0;
     }
 }

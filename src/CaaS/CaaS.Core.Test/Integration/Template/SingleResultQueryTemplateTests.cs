@@ -1,9 +1,9 @@
 ﻿using CaaS.Core.Domainmodels;
 using System.Data;
 
-namespace CaaS.Core.Test
+namespace CaaS.Core.Test.Integration.Template
 {
-    public class SingleResultQueryIntegrationTests
+    public class SingleResultQueryTemplateTests
     {
         [Test]
         [TestCase(1, "7ee2dcbd-8e42-366d-9919-b96d65afd844", 1)]

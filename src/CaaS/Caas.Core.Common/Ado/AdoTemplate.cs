@@ -91,25 +91,31 @@ namespace Caas.Core.Common.Ado
         /// <typeparam name="T">The table type</typeparam>
         /// <param name="valuesToPass">The values that should be inserted. Pass a list to insert multiple elements</param>
         /// <returns>The new id or 0 if the insert failed</returns>
-        public async Task<int> InsertAsync<T>(object valuesToPass)
+        public async Task<List<int>?> InsertAsync<T>(object valuesToPass)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using var cmd = connection.CreateCommand();
             var tableName = typeof(T).Name;
+
             if (valuesToPass is IEnumerable enumerable)
             {
+                var results = new List<int>();
+                var alreadyIncludedParameterNames = new List<string>();
                 foreach (var value in enumerable)
                 {
-                    AdoBuilder.BuildInsertCommand(cmd, tableName, value);
+                    alreadyIncludedParameterNames.AddRange(AdoBuilder.BuildInsertCommand(cmd, tableName, value, alreadyIncludedParameterNames));
+                    var res = await cmd.ExecuteScalarAsync();
+                    results.Add(res == null ? 0 : (int)res);
                 }
+
+                return results;
             }
             else
             {
                 AdoBuilder.BuildInsertCommand(cmd, tableName, valuesToPass);
+                var result = await cmd.ExecuteScalarAsync();
+                return result == null ? null : new List<int>() { (int)result };
             }
-
-            var result = await cmd.ExecuteScalarAsync();
-            return result == null ? 0 : (int)result;
         }
 
         public async Task<int> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null)
