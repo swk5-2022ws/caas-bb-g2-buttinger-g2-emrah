@@ -16,8 +16,6 @@ namespace CaaS.Core.Test.Integration.Repository
 
 
         [Test]
-        //[TestCase(1, 1, "Re-contextualized well-modulated paradigm", "Eum pariatur molestiae molestias et natus nobis. Nostrum repudiandae in quaerat et officiis. Ut in iste tempore. Aut perferendis nesciunt totam iusto nisi quibusdam. Autem ratione ut asperiores et quae.", 641.59, "https://loremflickr.com/640/480/", "1988-09-09 23:10:48")]
-        //[TestCase(3, 3, "Optimized methodical knowledgeuser", "Atque fugiat quia sit. Ullam voluptatem odit sed est ea eligendi. Alias laudantium dicta ut iusto cumque pariatur ut. Enim et explicabo consequatur et et ut quod.", 385.37, "https://loremflickr.com/640/480/", "1976-07-03 05:00:44")]
         [TestCase(2, 2, "Reverse-engineered bi-directional function", "Facilis ut assumenda nihil enim a dolor repellat. Distinctio vel quia voluptas et aperiam omnis. Repellendus quibusdam fuga et sit quod sed.", 660.75, "https://loremflickr.com/640/480/")]
         [TestCase(4, 4, "Cross-platform fresh-thinking algorithm", "Culpa reprehenderit excepturi quia voluptas eos dolor quisquam quibusdam. Explicabo et quo sed perspiciatis sit alias cupiditate. Qui occaecati quisquam aut. Ea eligendi maiores adipisci.", 492.23, "https://loremflickr.com/640/480/")]
         [TestCase(5, 5, "Adaptive value-added frame", "Rerum velit qui omnis perferendis officiis neque. Assumenda laborum maiores rem vel similique eveniet facere. Maxime qui perspiciatis voluptate fuga. Occaecati laudantium quia doloremque nostrum animi consequuntur.", 489.67, "https://loremflickr.com/640/480/")]
@@ -40,11 +38,13 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test]
-        public async Task TestGetWithInvalidIdReturnsNull()
+        [TestCase(1)]
+        [TestCase(3)]
+        public async Task TestGetByIdWithValidIdForDeletedProductsReturnsNull(int id)
         {
-            //int id = int.MaxValue;
-            //Shop? shop = await sut.Get(id);
-            //Assert.That(shop, Is.Null);
+            Product? product = await sut.Get(id);
+            Assert.That(product, Is.Null);
+
         }
     }
 }
