@@ -1,6 +1,7 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
+using CaaS.Core.Test.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(shop, Is.Null);
         }
 
-        [Test]
+        [Test, Rollback]
         [TestCase(1, "shop 1", "a82724ba-ced5-32e8-9ada-17b06d427907")]
         [TestCase(2, "shop 2", "a82724ba-ced5-32e8-9ada-17b06d427908")]
         [TestCase(3, "shop 3", "a82724ba-ced5-32e8-9ada-17b06d427909")]
@@ -44,6 +45,42 @@ namespace CaaS.Core.Test.Integration.Repository
 
             Assert.That(actualId, Is.AtLeast(1));
             AssertShop(actualId, tenantId, label, appKey, actualShop);
+        }
+
+        [Test, Rollback]
+        public async Task TestCreateWithExistingIdThrowsException()
+        {
+            Shop shop = await sut.Get(1) ?? throw new NullReferenceException("No Shop for id 1 found.");
+            shop.Label = "different label";
+
+            Assert.CatchAsync(async () => await sut.Create(shop));
+        }
+
+        [TestCase(1, 2, "shop 1", "a82724ba-ced5-32e8-9ada-17b06d427907")]
+        [TestCase(2, 3, "shop 2", "a82724ba-ced5-32e8-9ada-17b06d427908")]
+        [TestCase(3, 4, "shop 3", "a82724ba-ced5-32e8-9ada-17b06d427909")]
+        [Test, Rollback]
+        public async Task TestUpdateWithExistingShopUpdatesShop(int id, int tenantId, string label, Guid appKey)
+        {
+            Shop shop = await sut.Get(id) ?? throw new NullReferenceException($"No Shop for id {id} found.");
+
+            shop.Label = label;
+            shop.AppKey = appKey;
+            shop.TenantId = tenantId;
+
+            bool isSuccess = await sut.Update(shop);
+
+            shop = await sut.Get(id) ?? throw new NullReferenceException($"No Shop for id {id} found after update.");
+            Assert.That(isSuccess, Is.True);
+            AssertShop(id, tenantId, label, appKey, shop);
+        }
+
+        [Test, Rollback]
+        public async Task TestUpdateWithNonExistendShopThrowsExceptionAsync()
+        {
+            Shop shop = new(int.MaxValue, int.MaxValue, Guid.NewGuid(), "new");
+            bool isSuccess = await sut.Update(shop);
+            Assert.That(isSuccess, Is.False);
         }
 
         #region Asserts

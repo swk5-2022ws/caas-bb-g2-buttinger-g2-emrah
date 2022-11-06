@@ -19,7 +19,6 @@ namespace Caas.Core.Common.Ado
             }
 
             return $"{parameterName}{alreadyIncludedNames.Count(name => name.StartsWith(parameterName))}";
-
         }
 
         /// <summary>
@@ -56,8 +55,6 @@ namespace Caas.Core.Common.Ado
             return parameterDictionary;
         }
 
-
-
         /// <summary>
         /// Creates a new KeyValuePair in the given dictionary
         /// </summary>
@@ -67,8 +64,6 @@ namespace Caas.Core.Common.Ado
         /// <param name="baseName">additional Name added to the property</param>
         internal static void SetPropertyToDictionary(Dictionary<string, object?> dictionary, PropertyInfo property, object instance, string? baseName = null) =>
             dictionary[baseName + ReflectionUtil.GetPropertyName(property)] = property.GetValue(instance, null);
-
-
 
         /// <summary>
         /// Adds a parameter to a DbCommand

@@ -24,6 +24,6 @@ namespace CaaS.Core.Interfaces.Repository
         /// Updates a shop.
         /// </summary>
         /// <param name="shop">A shop to be updated.</param>
-        Task Update(Shop shop);
+        Task<bool> Update(Shop shop);
     }
 }
