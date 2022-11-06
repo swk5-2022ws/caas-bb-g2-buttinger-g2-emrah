@@ -9,13 +9,11 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Repository
 {
-    public class ShopRepository : IShopRepository
+    public class ShopRepository : AdoRepository, IShopRepository
     {
-        private readonly AdoTemplate template;
-
-        public ShopRepository(AdoTemplate adoTemplate)
+        public ShopRepository(AdoTemplate adoTemplate) : base(adoTemplate)
         {
-            this.template = adoTemplate;
+
         }
 
         public async Task<int> Create(Shop shop) => (await template.InsertAsync<Shop>(shop))?.ElementAt(0) ?? 0;

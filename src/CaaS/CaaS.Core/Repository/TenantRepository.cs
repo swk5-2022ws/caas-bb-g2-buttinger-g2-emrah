@@ -11,13 +11,11 @@ using System.Xml.Linq;
 
 namespace CaaS.Core.Repository
 {
-    public class TenantRepository : ITenantRepository
+    public class TenantRepository : AdoRepository, ITenantRepository
     {
-        private readonly AdoTemplate template;
-
-        public TenantRepository(AdoTemplate adoTemplate)
+        public TenantRepository(AdoTemplate adoTemplate) : base(adoTemplate)
         {
-            this.template = adoTemplate;
+
         }
 
         public async Task<Tenant?> Get(int id)
