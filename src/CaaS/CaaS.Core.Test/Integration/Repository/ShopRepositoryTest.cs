@@ -68,10 +68,19 @@ namespace CaaS.Core.Test.Integration.Repository
             shop.AppKey = appKey;
             shop.TenantId = tenantId;
 
-            await sut.Update(shop);
+            bool isSuccess = await sut.Update(shop);
 
             shop = await sut.Get(id) ?? throw new NullReferenceException($"No Shop for id {id} found after update.");
+            Assert.That(isSuccess, Is.True);
             AssertShop(id, tenantId, label, appKey, shop);
+        }
+
+        [Test, Rollback]
+        public async Task TestUpdateWithNonExistendShopThrowsExceptionAsync()
+        {
+            Shop shop = new(int.MaxValue, int.MaxValue, Guid.NewGuid(), "new");
+            bool isSuccess = await sut.Update(shop);
+            Assert.That(isSuccess, Is.False);
         }
 
         #region Asserts
