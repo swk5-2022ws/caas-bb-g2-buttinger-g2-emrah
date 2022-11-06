@@ -46,6 +46,15 @@ namespace CaaS.Core.Test.Integration.Repository
             AssertShop(actualId, tenantId, label, appKey, actualShop);
         }
 
+        [Test]
+        public async Task TestCreateWithExistingIdThrowsException()
+        {
+            Shop shop = await sut.Get(1) ?? throw new NullReferenceException("No Shop for id 1 found.");
+            shop.Label = "different label";
+
+            Assert.CatchAsync(async () => await sut.Create(shop));
+        }
+
         #region Asserts
         private static void AssertShop(int id, int tenantId, string label, Guid appKey, Shop? shop)
         {
