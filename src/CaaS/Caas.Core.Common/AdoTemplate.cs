@@ -91,8 +91,8 @@ namespace Caas.Core.Common
         /// </summary>
         /// <typeparam name="T">The table type</typeparam>
         /// <param name="valuesToPass">The values that should be inserted. Pass a list to insert multiple elements</param>
-        /// <returns></returns>
-        public async Task<bool> InsertAsync<T>(object valuesToPass)
+        /// <returns>The new id or 0 if the insert failed</returns>
+        public async Task<int> InsertAsync<T>(object valuesToPass)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using (var cmd = connection.CreateCommand())
@@ -109,7 +109,8 @@ namespace Caas.Core.Common
                 {
                     BuildInsertCommand(cmd, tableName, valuesToPass);
                 }
-                return await cmd.ExecuteNonQueryAsync() > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                return result == null ? 0 : (int) result;
             }
         }
 
@@ -149,13 +150,23 @@ namespace Caas.Core.Common
             var commandText = $"INSERT INTO {tableName} (";
             var parameters = ParametersToDictinary(valuesToPass, false);
             var valuesText = $"VALUES(";
-            foreach (var param in parameters)
+
+            var keys = parameters.Keys;
+            var parameterCount = parameters.Count;
+            for (int i = 0; i < parameterCount; i++)
             {
-                commandText += param.Key;
-                valuesText += $"@{param.Key}";
-                AddParam(command, param.Value, param.Key);
+                var key = keys.ElementAt(i);
+                commandText += key;
+                if (i + 1 != parameterCount)
+                    commandText += ",";
+                valuesText +=$"@{key}";
+                if (i + 1 != parameterCount)
+                    valuesText += ",";
+                AddParam(command, parameters[key], key);
+
             }
-            commandText += $") {valuesText});";
+
+            commandText += $") {valuesText});;";
             command.CommandText += commandText;
         }
 
