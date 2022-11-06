@@ -14,7 +14,7 @@ namespace CaaS.Core.Test.Integration.Template
             var customers = await Setup.GetTemplateEngine().QueryAsync(ReadToCustomer, whereExpression: new
             {
                 ShopId = shopId
-            });
+            }, isSoftDeletionExcluded: false);
 
             Assert.IsNotNull(customers);
             Assert.That(customers.Count, Is.EqualTo(customerCount));

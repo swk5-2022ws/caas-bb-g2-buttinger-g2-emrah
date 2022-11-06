@@ -75,9 +75,9 @@ namespace Caas.Core.Common.Ado
             command.Parameters.Add(dbParameter);
         }
 
-        internal static void BuildUpdateCommand(DbCommand command, string tableName, object valuesToUpdate, object? whereExpression = null)
+        internal static void BuildUpdateCommand<T>(DbCommand command, object valuesToUpdate, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
-            var commandText = $"UPDATE {tableName} SET ";
+            var commandText = $"UPDATE {typeof(T).Name} SET ";
             var parameters = AdoBuilder.ParametersToDictinary(valuesToUpdate, false);
             foreach (var param in parameters)
             {
@@ -86,8 +86,7 @@ namespace Caas.Core.Common.Ado
             }
             commandText = commandText.Remove(commandText.Length - 1);
 
-            AddWhereExpression(command, commandText, whereExpression, parameters.Select(param => param.Key).ToList(), false);
-
+            AddWhereExpression(command, commandText, whereExpression, parameters.Select(param => param.Key).ToList(), false, HasSoftDelete(typeof(T)), isSoftDeletionExcluded);
         }
 
         /// <summary>
@@ -133,7 +132,7 @@ namespace Caas.Core.Common.Ado
         /// <param name="command">The DbCommand</param>
         /// <param name="joins">joins for other tables as string</param>
         /// <param name="whereExpression">the where expressions used to create filters as SQL</param>
-        internal static void BuildQueryCommand<T>(DbCommand command, string? joins = null, object? whereExpression = null)
+        internal static void BuildQueryCommand<T>(DbCommand command, string? joins = null, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
             string commandText = $"SELECT * FROM {typeof(T).Name} t ";
 
@@ -142,7 +141,7 @@ namespace Caas.Core.Common.Ado
                 commandText += joins;
             }
 
-            AddWhereExpression(command, commandText, whereExpression);
+            AddWhereExpression(command, commandText, whereExpression, isSoftDeletePossible: HasSoftDelete(typeof(T)), isSoftDeleteExcluded: isSoftDeletionExcluded);
         }
 
         /// <summary>
@@ -155,10 +154,12 @@ namespace Caas.Core.Common.Ado
         /// <param name="alreadyIncludedSqlParameterNames">The sql parameter names that were already included during a process that happened before the where expression was added</param>
         /// <param name="addTableNameSpace">Determines whether or not a namespace for the initial table should be set. Defaults to true</param>
         /// <returns></returns>
-        internal static void AddWhereExpression(DbCommand command, string commandText, object? whereExpression = null, IList<string>? alreadyIncludedSqlParameterNames = null, bool addTableNameSpace = true)
+        internal static void AddWhereExpression(DbCommand command, string commandText, object? whereExpression = null, 
+            IList<string>? alreadyIncludedSqlParameterNames = null, bool addTableNameSpace = true, bool isSoftDeletePossible = false, bool isSoftDeleteExcluded = true)
         {
             if (whereExpression is null)
             {
+                commandText += TryGetSoftDeletionForCurrentWhereExpression(isSoftDeletePossible, isSoftDeleteExcluded, true);
                 command.CommandText = commandText;
                 return;
             }
@@ -197,7 +198,27 @@ namespace Caas.Core.Common.Ado
                     AdoBuilder.AddParam(command, param.Value, sqlParameterName);
                 }
             }
+            commandText += TryGetSoftDeletionForCurrentWhereExpression(isSoftDeletePossible, isSoftDeleteExcluded, useWhere);
             command.CommandText = commandText;
         }
+
+        /// <summary>
+        /// Returns a soft deletion flag where expression extension if necessary
+        /// </summary>
+        /// <param name="isSoftDeletePossible">checks wether or not a soft delete is possible</param>
+        /// <param name="isSoftDeleteExcluded">checks wether or not the soft delete should be excluded</param>
+        /// <param name="andOrWhere">either the and or the where Parameter</param>
+        /// <returns></returns>
+        internal static string TryGetSoftDeletionForCurrentWhereExpression(bool isSoftDeletePossible, bool isSoftDeleteExcluded, bool isWhere) => 
+            isSoftDeletePossible && isSoftDeleteExcluded ?
+                    $" {(isWhere ? "WHERE" : "AND")} deleted is null" : "";
+
+    /// <summary>
+    /// Checks wether or not a type has a property which is used for soft deletion
+    /// </summary>
+    /// <param name="type">the type</param>
+    /// <param name="propertyName">The propertyName. Defaults to Deleted if not set</param>
+    /// <returns>True if there is a soft deletion for the type or false if not</returns>
+    internal static bool HasSoftDelete(Type type, string propertyName = "Deleted") => type.GetProperties().Any(x => x.Name == propertyName);
     }
 }

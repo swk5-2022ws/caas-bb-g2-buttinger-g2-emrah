@@ -29,13 +29,13 @@ namespace Caas.Core.Common.Ado
         /// <param name="joins">Additional joins as string text</param>
         /// <param name="whereExpression">object used to create the where expressions</param>
         /// <returns></returns>
-        public async Task<IEnumerable<T>> QueryAsync<T>(Func<IDataRecord, T> read, string? joins = null, object? whereExpression = null)
+        public async Task<IEnumerable<T>> QueryAsync<T>(Func<IDataRecord, T> read, string? joins = null, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
             var list = new List<T>();
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using (var cmd = connection.CreateCommand())
             {
-                AdoBuilder.BuildQueryCommand<T>(cmd, joins, whereExpression);
+                AdoBuilder.BuildQueryCommand<T>(cmd, joins, whereExpression, isSoftDeletionExcluded);
                 await using var reader = await cmd.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
@@ -54,12 +54,12 @@ namespace Caas.Core.Common.Ado
         /// <param name="joins">The Joins needed for that object</param>
         /// <param name="whereExpression">An object that creates where expressions</param>
         /// <returns></returns>
-        public async Task<T?> QueryFirstOrDefaultAsync<T>(Func<IDataReader, T> read, string? joins = null, object? whereExpression = null)
+        public async Task<T?> QueryFirstOrDefaultAsync<T>(Func<IDataReader, T> read, string? joins = null, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using (var cmd = connection.CreateCommand())
             {
-                AdoBuilder.BuildQueryCommand<T>(cmd, joins, whereExpression);
+                AdoBuilder.BuildQueryCommand<T>(cmd, joins, whereExpression, isSoftDeletionExcluded);
                 await using var reader = await cmd.ExecuteReaderAsync();
 
                 while (await reader.ReadAsync())
@@ -118,11 +118,19 @@ namespace Caas.Core.Common.Ado
             }
         }
 
-        public async Task<int> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null)
+        /// <summary>
+        /// Allows the update of objects to the table specified by the generic object T
+        /// </summary>
+        /// <typeparam name="T">Table to update</typeparam>
+        /// <param name="valuesToUpdate">values that should be set</param>
+        /// <param name="whereExpression">where expression that should be used on the table update</param>
+        /// <param name="isSoftDeletionExcluded">excludes the soft deleted rows if soft deletion is possible and this flag is set.</param>
+        /// <returns>The amount of rows updated by the command.</returns>
+        public async Task<int> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using var cmd = connection.CreateCommand();
-            AdoBuilder.BuildUpdateCommand(cmd, typeof(T).Name, valuesToUpdate, whereExpression);
+            AdoBuilder.BuildUpdateCommand<T>(cmd, valuesToUpdate, whereExpression, isSoftDeletionExcluded);
             return await cmd.ExecuteNonQueryAsync();
         }
     }
