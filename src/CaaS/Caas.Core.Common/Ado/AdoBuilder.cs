@@ -159,6 +159,7 @@ namespace Caas.Core.Common.Ado
         {
             if (whereExpression is null)
             {
+                command.CommandText = commandText;
                 return;
             }
             const string WHERE = "WHERE";

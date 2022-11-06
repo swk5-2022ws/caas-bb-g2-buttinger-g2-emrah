@@ -81,7 +81,7 @@ namespace Caas.Core.Common.Ado
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using var cmd = connection.CreateCommand();
             var commandText = $"DELETE FROM {typeof(T).Name} ";
-            AdoBuilder.AddWhereExpression(cmd, commandText, whereExpression);
+            AdoBuilder.AddWhereExpression(cmd, commandText, whereExpression, addTableNameSpace: false);
             return await cmd.ExecuteNonQueryAsync() > 0;
         }
 
