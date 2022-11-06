@@ -14,7 +14,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">Tenant id</param>
         /// <returns>Shop associated with the passed tenant id</returns>
-        Task<Shop> Get(int id);
+        Task<Shop?> Get(int id);
         /// <summary>
         /// Creates a shop.
         /// </summary>
