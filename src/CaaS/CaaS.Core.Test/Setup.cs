@@ -1,4 +1,5 @@
 ﻿using Caas.Core.Common;
+using Caas.Core.Common.Ado;
 
 namespace CaaS.Core.Test
 {

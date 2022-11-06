@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Caas.Core.Common
+namespace Caas.Core.Common.Ado
 {
     public interface IConnectionFactory
     {

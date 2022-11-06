@@ -1,4 +1,4 @@
-﻿using Caas.Core.Common;
+﻿using Caas.Core.Common.Ado;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using System;

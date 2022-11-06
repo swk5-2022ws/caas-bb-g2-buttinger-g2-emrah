@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using Microsoft.Extensions.Configuration;
 
-namespace Caas.Core.Common
+namespace Caas.Core.Common.Ado
 {
     public class ConnectionFactory : IConnectionFactory
     {
@@ -18,13 +18,13 @@ namespace Caas.Core.Common
 
         public ConnectionFactory(string connectionString, string providerName)
         {
-            this.ConnectionString = connectionString;
+            ConnectionString = connectionString;
 
-            this.ProviderName = providerName;
+            ProviderName = providerName;
 
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySql.Data.MySqlClient.MySqlClientFactory.Instance);
 
-            this.dbProviderFactory = DbProviderFactories.GetFactory(providerName);
+            dbProviderFactory = DbProviderFactories.GetFactory(providerName);
         }
 
         public string ConnectionString { get; }
@@ -34,7 +34,7 @@ namespace Caas.Core.Common
         public async Task<DbConnection> CreateConnectionAsync()
         {
             var connection = dbProviderFactory.CreateConnection() ?? throw new InvalidOperationException("DbConnection could not be established!");
-            connection.ConnectionString = this.ConnectionString;
+            connection.ConnectionString = ConnectionString;
             await connection.OpenAsync();
             return connection;
         }
