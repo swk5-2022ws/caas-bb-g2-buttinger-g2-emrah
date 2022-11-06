@@ -1,13 +1,6 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Test.Util;
-using Org.BouncyCastle.Asn1.X509.Qualified;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace CaaS.Core.Test.Integration.Template
 {
