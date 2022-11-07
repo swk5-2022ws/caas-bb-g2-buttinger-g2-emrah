@@ -1,6 +1,8 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
+using CaaS.Core.Test.Util;
+using CaaS.Core.Transferrecordes;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -44,7 +46,124 @@ namespace CaaS.Core.Test.Integration.Repository
         {
             Product? product = await sut.Get(id);
             Assert.That(product, Is.Null);
+        }
 
+        [Test]
+        [TestCase(1, 236)]
+        [TestCase(2, 246)]
+        [TestCase(3, 231)]
+        public async Task TestGetByShopIdWithValidShopIdReturnProducts(int shopId, int count)
+        {
+            IList<Product> products = await sut.GetByShopId(shopId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(products.Count, Is.EqualTo(count));
+                foreach(var product in products)
+                {
+                    Assert.That(product, Is.Not.Null);
+                    Assert.That(product.ShopId, Is.EqualTo(shopId));
+                    Assert.That(product.Deleted, Is.Null);
+                }
+            });
+        }
+
+        [Test]
+        public async Task TestGetByShopIdWithInvalidShopIdReturnEmptyList()
+        {
+            IList<Product> products = await sut.GetByShopId(int.MaxValue);
+            Assert.Multiple(() =>
+            {
+                Assert.That(products, Is.Not.Null);
+                Assert.That(products.Count, Is.EqualTo(0));
+            });
+        }
+
+        [TestCase(1, "Description 1", "http://test.org", "Label 1", 100.0)]
+        [TestCase(1, "", "", "", 0.0)]
+        [TestCase(1, "", "", "", -1.0)]
+        [Test, Rollback]
+        public async Task TestCreateWithValidShopCreatesShop(
+            int shopId, string description, string imageUrl, string label, double price)
+        {
+            Product product = new(0, shopId, description, imageUrl, label, price);
+            int id = await sut.Create(product);
+            product = await sut.Get(id) ?? throw new Exception($"Could not fetch created shop");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(id, Is.AtLeast(1));
+                Assert.That(product, Is.Not.Null);
+                Assert.That(product.ShopId, Is.EqualTo(shopId));
+                Assert.That(product.Description, Is.EqualTo(description));
+                Assert.That(product.ImageUrl, Is.EqualTo(imageUrl));
+                Assert.That(product.Label, Is.EqualTo(label));
+                Assert.That(product.Price, Is.EqualTo(price));
+                Assert.That(product.Deleted, Is.Null);
+            });
+        }
+
+        [Test, Rollback]
+        public void TestCreateWithInvalidShopIdThrowsException()
+        {
+            Product product = new(0, int.MaxValue, "Description", "ImageUrl", "Label", 100.0);
+            Assert.CatchAsync(async () => await sut.Create(product));
+        }
+
+        [TestCase(2, 2, "new label", "new description", 1000.0, "http://test.new")]
+        [TestCase(4, 4, "new label", "new description", double.MinValue, "http://test.new")]
+        [TestCase(5, 5, "", "", 0.0, "")]
+        [TestCase(6, 6, "new label", "new description", double.MaxValue, "http://test.new")]
+        [Test, Rollback]
+        public async Task TestUpdateWithValidValuesUpdatesShop(int id, int shopId, string label, string description, double price, string url)
+        {
+            Product product = await sut.Get(id) ?? throw new Exception($"Shop with id {id} not found.");
+            product.Label = label;
+            product.Description = description;
+            product.Price = price;
+            product.ImageUrl = url;
+
+            bool isUpdateSuccess = await sut.Update(product);
+
+            product = await sut.Get(id) ?? throw new Exception($"Shop with id {id} not found after update.");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(isUpdateSuccess, Is.True);
+                Assert.That(product, Is.Not.Null);
+                Assert.That(product.ShopId, Is.EqualTo(shopId));
+                Assert.That(product.Description, Is.EqualTo(description));
+                Assert.That(product.ImageUrl, Is.EqualTo(url));
+                Assert.That(product.Label, Is.EqualTo(label));
+                Assert.That(product.Price, Is.EqualTo(price));
+                Assert.That(product.Deleted, Is.Null);
+            });
+        }
+
+        [Test, Rollback]
+        public async Task TestUpdateWithNewShopReturnFalse()
+        {
+            Product product = new(0, 0, "", "", "", 0);
+            bool isUpdateSuccess = await sut.Update(product);
+            Assert.That(isUpdateSuccess, Is.False);
+        }
+
+        [Test, Rollback]
+        public async Task TestDeleteWithValidShopDeletesShop()
+        {
+            int productId = 2;
+            Product? product = await sut.Get(productId);
+
+            await sut.Delete(productId);
+
+            Product? refetchedProduct = await sut.Get(productId);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(product, Is.Not.Null);
+                Assert.That(refetchedProduct, Is.Null);
+            });
         }
     }
+
 }
