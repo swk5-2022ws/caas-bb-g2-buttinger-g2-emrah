@@ -370,4 +370,4 @@ UNLOCK TABLES;
 -- Dump completed on 2022-10-27 20:05:03
 
 
-UPDATE Produc SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
+UPDATE Product SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';

@@ -48,9 +48,12 @@ namespace CaaS.Core.Repository
             );
         }
 
-        public async Task<bool> Update(Product product) => (await template.UpdateAsync<Shop>(product, new { Id = product.Id })) > 0;
+        public async Task<bool> Update(Product product) => 
+            (await template.UpdateAsync<Product>(product, new { Id = product.Id })) > 0;
 
-        private Product ReadProduct(IDataRecord reader) => new Product(
+        private Product ReadProduct(IDataRecord reader)
+        {
+            return new(
                 (int)reader["Id"],
                 (int)reader["ShopId"],
                 (string)reader["Description"],
@@ -58,5 +61,6 @@ namespace CaaS.Core.Repository
                 (string)reader["Label"],
                 (double)reader["Price"]
                   );
+        }
     }
 }
