@@ -19,6 +19,6 @@ namespace CaaS.Core.Interfaces.Repository
         /// Deletes a cart. Only carts without orders can be deleted.
         /// </summary>
         /// <param name="id">cart id</param>
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

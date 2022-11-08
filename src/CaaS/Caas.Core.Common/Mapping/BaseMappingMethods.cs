@@ -6,7 +6,9 @@ namespace CaaS.Common.Mappings
     public static class BaseMappingMethods
     {
         public static int GetIntByName(this IDataRecord record, string propertyName) =>
-          (int)record[propertyName];
+           (int)record[propertyName];
+        public static int? GetNullableIntByName(this IDataRecord record, string propertyName) =>
+           record[propertyName] == DBNull.Value ? null : Convert.ToInt32(record[propertyName]);
         public static string GetStringByName(this IDataRecord record, string propertyName) =>
             (string)record[propertyName];
         public static double GetDoubleByName(this IDataRecord record, string propertyName) =>
