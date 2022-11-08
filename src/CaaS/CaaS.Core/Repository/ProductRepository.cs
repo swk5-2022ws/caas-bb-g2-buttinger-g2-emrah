@@ -1,13 +1,7 @@
 ﻿using Caas.Core.Common.Ado;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
-using CaaS.Core.Transferrecordes;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CaaS.Core.Repository.Mappings;
 
 namespace CaaS.Core.Repository
 {
@@ -33,7 +27,7 @@ namespace CaaS.Core.Repository
         public async Task<Product?> Get(int id)
         {
             return await template.QueryFirstOrDefaultAsync(
-                ReadProduct,
+                ProductMapping.ReadProductOnly,
                 whereExpression:
                     new { Id = id }
                 );
@@ -42,7 +36,7 @@ namespace CaaS.Core.Repository
         public async Task<IList<Product>> GetByShopId(int shopId)
         {
             return (IList<Product>)await template.QueryAsync(
-                ReadProduct,
+                ProductMapping.ReadProductOnly,
             whereExpression:
                 new { ShopId = shopId }
             );
@@ -51,16 +45,6 @@ namespace CaaS.Core.Repository
         public async Task<bool> Update(Product product) => 
             (await template.UpdateAsync<Product>(product, new { Id = product.Id })) > 0;
 
-        private Product ReadProduct(IDataRecord reader)
-        {
-            return new(
-                (int)reader["Id"],
-                (int)reader["ShopId"],
-                (string)reader["Description"],
-                (string)reader["ImageUrl"],
-                (string)reader["Label"],
-                (double)reader["Price"]
-                  );
-        }
+        
     }
 }
