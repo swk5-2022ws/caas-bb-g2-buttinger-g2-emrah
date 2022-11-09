@@ -14,13 +14,13 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<IList<Discount>> GetAllByShopId(int id);
+        Task<IList<CaaS.Core.Domainmodels.Discount>> GetAllByShopId(int id);
 
         /// <summary>
         /// Updates a discount.
         /// </summary>
         /// <param name="item">The discount to update.</param>
-        Task Update(Discount item);
+        Task Update(CaaS.Core.Domainmodels.Discount item);
 
         /// <summary>
         /// Deletes a discount.

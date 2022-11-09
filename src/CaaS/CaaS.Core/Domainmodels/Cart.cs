@@ -21,5 +21,23 @@ public record Cart
     /// </summary>
     public HashSet<ProductCart> ProductCarts { get; set; }
     public Coupon? Coupon { get; set; }
-    public Discount? Discount { get; set; }
+    public IList<Discount>? Discount { get; set; }
+
+    /// <summary>
+    /// Get the total price for this cart.
+    /// </summary>
+    public double Price
+    {
+        get
+        {
+            double price = 0;
+            foreach (var productCart in ProductCarts)
+            {
+                price += productCart.Price * productCart.Amount;
+            }
+            if (price < 0.0) throw new ArgumentException($"Price can not be negative. Price: {price}.");
+
+            return price;
+        }
+    }
 }

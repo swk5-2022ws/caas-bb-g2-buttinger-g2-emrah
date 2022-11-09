@@ -11,4 +11,9 @@ public record ProductCart
     public double Price { get; set; }
     public int Amount { get; set; }
     public Product Product { get; set; }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Price, Amount, Product);
+    }
 }

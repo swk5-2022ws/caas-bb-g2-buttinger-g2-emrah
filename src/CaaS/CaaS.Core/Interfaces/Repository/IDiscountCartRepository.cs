@@ -22,7 +22,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="cartId">cart id</param>
         /// <returns>All discounts applied to a cart.</returns>
-        Task<IList<Discount>> GetByCartId(int cartId);
+        Task<IList<CaaS.Core.Domainmodels.Discount>> GetByCartId(int cartId);
 
     }
 }
