@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 
 namespace CaaS.Core.Domainmodels.DiscountActions
@@ -10,11 +12,12 @@ namespace CaaS.Core.Domainmodels.DiscountActions
     [Serializable]
     public class TotalPercentageDiscountAction : DiscountActionBase
     {
-        public float Percentage { get; init; }
+        public double Percentage { get; init; }
 
         public override int ApplyPriority => (int) DiscountActionApplyPriority.PERCENTAGE;
 
-        public TotalPercentageDiscountAction(float percentage)
+        [JsonConstructor]
+        public TotalPercentageDiscountAction(double percentage)
         {
             if (percentage < 0 || percentage > 1.0) throw new ArgumentException($"Parameter {nameof(percentage)} must be > 0.0 and <= 1.0");
             Percentage = percentage;
@@ -22,7 +25,7 @@ namespace CaaS.Core.Domainmodels.DiscountActions
 
         public TotalPercentageDiscountAction(SerializationInfo info, StreamingContext context)
         {
-            Percentage = (float) (info.GetValue(nameof(Percentage), typeof(float)) ?? 0.0);
+            Percentage = (double) (info.GetValue(nameof(Percentage), typeof(double)) ?? 0.0);
         }
 
         public override double GetDiscount(Cart cart)
@@ -32,7 +35,8 @@ namespace CaaS.Core.Domainmodels.DiscountActions
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue(nameof(Percentage), Percentage, typeof(float));
+            info.AddValue(nameof(Percentage), Percentage, typeof(double));
+            info.SetType(typeof(TotalPercentageDiscountAction));
         }
     }
 }

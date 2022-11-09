@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace CaaS.Core.Domainmodels.DiscountRules
@@ -18,6 +19,7 @@ namespace CaaS.Core.Domainmodels.DiscountRules
         public DateTime EndDate { get; init; }
         public DateTime OrderDate { get; init; }
 
+        [JsonConstructor]
         public DateDiscountRuleset(DateTime startDate, DateTime endDate, DateTime orderDate)
         {
             if (startDate >= endDate) throw new ArgumentException("End date must be after start date.");

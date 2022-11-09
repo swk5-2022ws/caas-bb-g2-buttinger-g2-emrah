@@ -1,3 +1,6 @@
+using CaaS.Core.Domainmodels.DiscountActions;
+using System.Text.Json;
+
 namespace CaaS.Core.Domainmodels;
 public record DiscountRule
 {
