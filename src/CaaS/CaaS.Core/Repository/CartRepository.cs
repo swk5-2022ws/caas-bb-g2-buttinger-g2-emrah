@@ -16,6 +16,9 @@ namespace CaaS.Core.Repository
         {
         }
 
+        public async Task<int> Create(Cart customer) =>
+            (await template.InsertAsync<Cart>(customer))?.ElementAt(0) ?? 0;
+
         public async Task<bool> Delete(int id) =>
             await template.DeleteAsync<Cart>(new
             {

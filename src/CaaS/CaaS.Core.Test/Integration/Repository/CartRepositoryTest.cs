@@ -37,19 +37,36 @@ namespace CaaS.Core.Test.Integration.Repository
         public async Task GetCartByIdWithInvalidValidIdReturnsNull(int id) =>
             Assert.That(await sut.Get(id), Is.Null);
 
+        [Test,Rollback]
+        public async Task CreateValidCartReturnsId()
+        {
+            var sessionId = Guid.NewGuid().ToString();
+            var insertedId = await sut.Create(new Domainmodels.Cart(0, sessionId));
+            Assert.That(insertedId, Is.GreaterThan(0));
+            var cart = await sut.Get(insertedId);
+            Assert.That(cart, Is.Not.Null);
+            Assert.That(cart.SessionId, Is.EqualTo(sessionId));
+        }
+
+        [Test, Rollback]
+        [TestCase(0)]
+        [TestCase(-1)]
+        [TestCase(int.MaxValue)]
+        public async Task CreateValidCartWithInvalidReferenceThrowsException(int customerId) =>
+            Assert.CatchAsync(async () => await sut.Create(new Domainmodels.Cart(0, Guid.NewGuid().ToString())
+            {
+                CustomerId = customerId
+            }));
+
         [Test, Rollback]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
-        public async Task DeleteCartByValidIdReturnsTrue(int id)
-        {
-            var deleted = await sut.Delete(id);
+        public async Task DeleteCartByValidIdWithReferencesToOrdersThrowsException(int id) =>
+            Assert.CatchAsync(async () => await sut.Delete(id));
 
-            Assert.That(deleted, Is.True);
 
-            var deletedCustomer = await sut.Get(id);
-            Assert.That(deletedCustomer, Is.Null);
-        }
+            
 
         [Test, Rollback]
         [TestCase(0)]
@@ -59,5 +76,16 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(int.MinValue)]
         public async Task DeleteCustomerByInvalidIdReturnsFalse(int id) =>
             Assert.That(await sut.Delete(id), Is.False);
+        
+        [Test, Rollback]       
+        public async Task DeleteCartByValidIdReturnsTrue()
+        {
+            var insertedId = await sut.Create(new Domainmodels.Cart(0, Guid.NewGuid().ToString()));
+
+            Assert.That(insertedId, Is.GreaterThan(0));
+            Assert.That(await sut.Delete(insertedId), Is.True);
+            var deletedCustomer = await sut.Get(insertedId);
+            Assert.That(deletedCustomer, Is.Null);
+        }
     }
 }

@@ -20,5 +20,12 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">cart id</param>
         Task<bool> Delete(int id);
+
+        /// <summary>
+        /// Creates a new cart
+        /// </summary>
+        /// <param name="cart">The cart that should be created</param>
+        /// <returns>the id of the newly created cart</returns>
+        Task<int> Create(Cart cart);
     }
 }
