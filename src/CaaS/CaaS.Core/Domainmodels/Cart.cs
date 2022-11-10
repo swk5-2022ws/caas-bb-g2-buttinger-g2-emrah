@@ -21,7 +21,10 @@ public record Cart
     /// </summary>
     public HashSet<ProductCart> ProductCarts { get; set; }
     public Coupon? Coupon { get; set; }
-    public IList<Discount>? Discount { get; set; }
+    /// <summary>
+    /// Discounts are added by a instance of IDiscountEngine. The discount engines ensures that the priority order is right.
+    /// </summary>
+    public IList<Discount>? Discounts { get; set; }
 
     /// <summary>
     /// Get the total price for this cart.
@@ -40,4 +43,6 @@ public record Cart
             return price;
         }
     }
+
+    
 }

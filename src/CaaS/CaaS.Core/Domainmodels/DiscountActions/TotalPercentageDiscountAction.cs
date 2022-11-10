@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,6 +16,7 @@ namespace CaaS.Core.Domainmodels.DiscountActions
         public double Percentage { get; init; }
 
         public override int ApplyPriority => (int) DiscountActionApplyPriority.PERCENTAGE;
+        public override int SubApplyPriority => (int)Percentage;
 
         [JsonConstructor]
         public TotalPercentageDiscountAction(double percentage)

@@ -21,6 +21,10 @@ namespace CaaS.Core.Domainmodels.DiscountActions
         /// Determines in which order multiple discounts must be applied. Highest priority discounts must be applied first.
         /// </summary>
         public abstract int ApplyPriority { get; }
+        /// <summary>
+        /// Determines in which order multiple discounts must be applied if two discounts got the same ApplyPriority.
+        /// </summary>
+        public abstract int SubApplyPriority { get; }
         public abstract double GetDiscount(Cart cart);
         public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
 

@@ -14,14 +14,13 @@ namespace CaaS.Core.Domainmodels.DiscountRules
     [Serializable]
     public class TotalAmountDiscountRuleset : DiscountRulesetBase
     {
-        public double MinimumTotalAmount { get; init; }
+        public double MinimumTotalAmount { get; set; }
 
         [JsonConstructor]
-        public TotalAmountDiscountRuleset(double minimumTotalAmout)
+        public TotalAmountDiscountRuleset(double minimumTotalAmount)
         {
-            if (minimumTotalAmout < 0) throw new ArgumentException($"Parameter {nameof(minimumTotalAmout)} can not be negative.");
-
-            MinimumTotalAmount = minimumTotalAmout;
+            if (minimumTotalAmount < 0) throw new ArgumentException($"Parameter {nameof(minimumTotalAmount)} can not be negative.");
+            MinimumTotalAmount = minimumTotalAmount;
         }
 
         public override bool IsQualifiedForDiscount(Cart cart)

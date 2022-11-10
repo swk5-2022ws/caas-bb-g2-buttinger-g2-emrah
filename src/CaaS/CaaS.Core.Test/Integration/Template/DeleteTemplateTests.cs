@@ -51,7 +51,7 @@ namespace CaaS.Core.Test.Integration.Template
 
         #region DataMapping
         private DiscountAction ReadToDiscountAction(IDataRecord reader) => 
-            new DiscountAction((int)reader["Id"], (int)reader["ShopId"], (int)reader["ActionType"], (string)reader["Name"], (double)reader["Value"]);
+            new DiscountAction((int)reader["Id"], (int)reader["ShopId"], (string)reader["ActionType"], (string)reader["Name"] /*(double)reader["Value"]*/);
         #endregion DataMapping
     }
 }
