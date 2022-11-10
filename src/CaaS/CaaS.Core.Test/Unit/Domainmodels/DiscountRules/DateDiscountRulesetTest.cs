@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Unit.Domainmodels.DiscountRules
 {
+    [Category("Unit")]
+    [TestFixture]
     public class DateDiscountRulesetTest
     {
         [TestCase(-1, 1)]

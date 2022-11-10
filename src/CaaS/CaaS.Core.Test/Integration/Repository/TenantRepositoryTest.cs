@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
-    internal class TenantRepositoryTest
+    [Category("Integration")]
+    [TestFixture]
+    public class TenantRepositoryTest
     {
         private readonly ITenantRepository sut = new TenantRepository(Test.Setup.GetTemplateEngine());
 

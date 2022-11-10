@@ -1,4 +1,5 @@
 ﻿using CaaS.Core.Domainmodels.DiscountActions;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Unit.Domainmodels.DiscountActions
 {
+    [Category("Unit")]
+    [TestFixture]
     public class DiscountActionBaseTest
     {
         [Test]

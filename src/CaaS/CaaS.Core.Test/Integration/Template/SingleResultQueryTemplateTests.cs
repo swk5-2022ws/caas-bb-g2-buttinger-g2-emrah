@@ -3,6 +3,8 @@ using System.Data;
 
 namespace CaaS.Core.Test.Integration.Template
 {
+    [Category("Integration")]
+    [TestFixture]
     public class SingleResultQueryTemplateTests
     {
         [Test]

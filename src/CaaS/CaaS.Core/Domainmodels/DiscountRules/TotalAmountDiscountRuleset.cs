@@ -31,7 +31,7 @@ namespace CaaS.Core.Domainmodels.DiscountRules
 
         public TotalAmountDiscountRuleset(SerializationInfo info, StreamingContext context)
         {
-            MinimumTotalAmount = (double)(info.GetValue(nameof(MinimumTotalAmount), typeof(float)) 
+            MinimumTotalAmount = (double)(info.GetValue(nameof(MinimumTotalAmount), typeof(double)) 
                 ?? throw new SerializationException($"Can not deserialize null value of parameter {nameof(MinimumTotalAmount)}"));
         }
 

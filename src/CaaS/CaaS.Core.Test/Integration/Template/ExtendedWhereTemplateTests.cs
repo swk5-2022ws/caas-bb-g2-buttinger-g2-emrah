@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Template
 {
+    [Category("Integration")]
+    [TestFixture]
     public class ExtendedWhereTemplateTests
     {
         [Test]

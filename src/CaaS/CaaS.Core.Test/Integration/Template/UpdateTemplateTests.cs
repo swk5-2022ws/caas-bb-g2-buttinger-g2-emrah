@@ -5,6 +5,8 @@ using System.Transactions;
 
 namespace CaaS.Core.Test.Integration.Template
 {
+    [Category("Integration")]
+    [TestFixture]
     public class UpdateTemplateTests
     {
         [Test, Rollback]

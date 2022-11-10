@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Unit.Domainmodels.DiscountActions
 {
+    [Category("Unit")]
+    [TestFixture]
     public class TotalPercentageDiscountActionTest
     {
         [TestCase(1.1)]

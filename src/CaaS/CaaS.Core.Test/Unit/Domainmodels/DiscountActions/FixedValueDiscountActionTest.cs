@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Unit.Domainmodels.DiscountAction
 {
+    [Category("Unit")]
+    [TestFixture]
     public class FixedValueDiscountActionTest
     {
         [TestCase(10.0, 10.0f, 10.0)]
