@@ -7,6 +7,8 @@ namespace CaaS.Common.Mappings
     {
         public static int GetIntByName(this IDataRecord record, string propertyName) =>
            (int)record[propertyName];
+        public static uint GetUIntByName(this IDataRecord record, string propertyName) =>
+           Convert.ToUInt32((int)record[propertyName]);
         public static int? GetNullableIntByName(this IDataRecord record, string propertyName) =>
            record[propertyName] == DBNull.Value ? null : Convert.ToInt32(record[propertyName]);
         public static string GetStringByName(this IDataRecord record, string propertyName) =>

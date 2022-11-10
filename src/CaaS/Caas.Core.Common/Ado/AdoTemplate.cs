@@ -91,7 +91,7 @@ namespace Caas.Core.Common.Ado
         /// <typeparam name="T">The table type</typeparam>
         /// <param name="valuesToPass">The values that should be inserted. Pass a list to insert multiple elements</param>
         /// <returns>The new id or 0 if the insert failed</returns>
-        public async Task<List<int>?> InsertAsync<T>(object valuesToPass)
+        public async Task<List<int>?> InsertAsync<T>(object valuesToPass, bool isNewIdNeeded = true)
         {
             await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
             await using var cmd = connection.CreateCommand();
@@ -104,8 +104,17 @@ namespace Caas.Core.Common.Ado
                 foreach (var value in enumerable)
                 {
                     alreadyIncludedParameterNames.AddRange(AdoBuilder.BuildInsertCommand(cmd, tableName, value, alreadyIncludedParameterNames));
-                    var res = await cmd.ExecuteScalarAsync();
-                    results.Add(res == null ? 0 : (int)res);
+
+                    if (isNewIdNeeded)
+                    {
+                        var res = await cmd.ExecuteScalarAsync();
+                        results.Add(res == null ? 0 : (int)res);
+                    }
+                    else
+                    {
+                        var res = await cmd.ExecuteNonQueryAsync();
+                        results.Add(res);
+                    }
                 }
 
                 return results;
@@ -113,8 +122,16 @@ namespace Caas.Core.Common.Ado
             else
             {
                 AdoBuilder.BuildInsertCommand(cmd, tableName, valuesToPass);
-                var result = await cmd.ExecuteScalarAsync();
-                return result == null ? null : new List<int>() { (int)result };
+                if (isNewIdNeeded)
+                {
+                    var result = await cmd.ExecuteScalarAsync();
+                    return result == null ? null : new List<int>() { (int)result };
+                }
+                else
+                {
+                    var result = await cmd.ExecuteNonQueryAsync();
+                    return result == 0 ? null : new List<int>() { result };
+                }
             }
         }
 
