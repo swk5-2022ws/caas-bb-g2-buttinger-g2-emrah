@@ -1,3 +1,4 @@
+using Caas.Core.Common.Attributes;
 using CaaS.Core.Domainmodels.DiscountActions;
 using CaaS.Core.Domainmodels.DiscountRules;
 
@@ -6,7 +7,7 @@ public record DiscountAction
 {
     public DiscountAction(int id, int shopId, string name, DiscountActionBase action)
     {
-        Action = action;
+        ActionObject = action;
         Id = id;
         ShopId = shopId;
         Name = name;
@@ -20,5 +21,7 @@ public record DiscountAction
     public int Id { get; set; }
     public int ShopId { get; set; }
     public string Name { get; set; }
-    public DiscountActionBase Action { get; set; }
+    [AdoIgnore]
+    public DiscountActionBase ActionObject { get; set; }
+    public string Action => DiscountActionBase.Serialize(ActionObject);
 }

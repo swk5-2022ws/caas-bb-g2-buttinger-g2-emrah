@@ -1,3 +1,4 @@
+using Caas.Core.Common.Attributes;
 using CaaS.Core.Domainmodels.DiscountActions;
 using CaaS.Core.Domainmodels.DiscountRules;
 using System.Text.Json;
@@ -7,7 +8,7 @@ public record DiscountRule
 {
     public DiscountRule(int id, int shopId, string name, DiscountRulesetBase ruleset)
     {
-        Ruleset = ruleset;
+        RuleObject = ruleset;
         Id = id;
         ShopId = shopId;
         Name = name;
@@ -21,5 +22,8 @@ public record DiscountRule
     public int Id { get; set; }
     public int ShopId { get; set; }
     public string Name { get; set; }
-    public DiscountRulesetBase Ruleset { get; set; }
+    [AdoIgnore]
+    public DiscountRulesetBase RuleObject { get; set; }
+    public string Ruleset => DiscountRulesetBase.Serialize(RuleObject);
+    
 }
