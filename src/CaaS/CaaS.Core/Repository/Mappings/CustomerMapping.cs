@@ -10,7 +10,8 @@ namespace CaaS.Core.Repository.Mappings
             new (record.GetIntByName(nameof(Customer.Id)), 
                  record.GetIntByName(nameof(Customer.ShopId)), 
                  record.GetStringByName(nameof(Customer.Name)), 
-                 record.GetStringByName(nameof(Customer.Email)))
+                 record.GetStringByName(nameof(Customer.Email)),
+                 record.GetNullableIntByName(nameof(Customer.CartId)))
             {
                 Deleted = record.GetNullableDateTimeByName(nameof(Customer.Deleted))
             };

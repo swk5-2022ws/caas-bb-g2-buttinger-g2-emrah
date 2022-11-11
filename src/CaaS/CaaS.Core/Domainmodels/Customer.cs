@@ -4,12 +4,13 @@ namespace CaaS.Core.Domainmodels;
 
 public record Customer : ISoftDeleteable
 {
-    public Customer(int id, int shopId, string name, string email)
+    public Customer(int id, int shopId, string name, string email, int? cartId = null)
     {
         Id = id;
         ShopId = shopId;
         Name = name;
         Email = email;
+        CartId = cartId;
         Orders = new HashSet<Order>();
     }
 

@@ -116,13 +116,13 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test, Rollback]
-        [TestCase(1, "testMail", "name")]
-        [TestCase(2, "testMail2", "name2")]
-        [TestCase(3, "testMail3", "name3")]
-        public async Task CreateCustomerWithValidValuesReturnsId(int shopId, string email, string name)
+        [TestCase(1, "testMail", "name", 1)]
+        [TestCase(2, "testMail2", "name2", 2)]
+        [TestCase(3, "testMail3", "name3", 3)]
+        public async Task CreateCustomerWithValidValuesReturnsId(int shopId, string email, string name, int cartId)
         {
             var previousCustomerCount = (await sut.GetAllByShopId(shopId)).Count;
-            var insertedId = await sut.Create(new Domainmodels.Customer(0, shopId, name, email));
+            var insertedId = await sut.Create(new Domainmodels.Customer(0, shopId, name, email, cartId));
             var afterwardsCustomerCount = (await sut.GetAllByShopId(shopId)).Count;
 
             Assert.That(insertedId, Is.GreaterThan(0));
@@ -137,28 +137,28 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test, Rollback]
-        [TestCase(-1, "testMail", "name")]
-        [TestCase(0, "testMail2", "name2")]
-        [TestCase(int.MaxValue, "testMail3", "name3")]
-        [TestCase(int.MinValue, "testMail3", "name3")]
-        public void CreateCustomerWithInValidValuesReturnsException(int shopId, string email, string name) =>
-            Assert.CatchAsync(async () => await sut.Create(new Domainmodels.Customer(0, shopId, name, email)));
+        [TestCase(-1, "testMail", "name", 1)]
+        [TestCase(0, "testMail2", "name2", 2)]
+        [TestCase(int.MaxValue, "testMail3", "name3", 3)]
+        [TestCase(int.MinValue, "testMail3", "name3", 4)]
+        public void CreateCustomerWithInValidValuesReturnsException(int shopId, string email, string name, int cartId) =>
+            Assert.CatchAsync(async () => await sut.Create(new Customer(0, shopId, name, email, cartId)));
 
         [Test, Rollback]
-        [TestCase(1, -1, "testMail", "name")]
-        [TestCase(2, 0, "testMail2", "name2")]
-        [TestCase(3, int.MaxValue, "testMail3", "name3")]
-        [TestCase(4, int.MinValue, "testMail3", "name3")]
-        public void UpdateCustomerWithInValidValuesReturnsException(int id, int shopId, string email, string name) =>
-            Assert.CatchAsync(async () => await sut.Update(new Customer(id, shopId, name, email)));
+        [TestCase(1, -1, "testMail", "name", 1)]
+        [TestCase(2, 0, "testMail2", "name2", 2)]
+        [TestCase(3, int.MaxValue, "testMail3", "name3", 3)]
+        [TestCase(4, int.MinValue, "testMail3", "name3", 4)]
+        public void UpdateCustomerWithInValidValuesReturnsException(int id, int shopId, string email, string name, int cartId) =>
+            Assert.CatchAsync(async () => await sut.Update(new Customer(id, shopId, name, email, cartId)));
 
         [Test, Rollback]
-        [TestCase(1, 1, "testMail", "name")]
-        [TestCase(2, 2, "testMail2", "name2")]
-        [TestCase(3, 3, "testMail3", "name3")]
-        public async Task UpdateCustomerWithValidValuesReturnsTrue(int id, int shopId, string email, string name)
+        [TestCase(1, 1, "testMail", "name", 1)]
+        [TestCase(2, 2, "testMail2", "name2", 2)]
+        [TestCase(3, 3, "testMail3", "name3", 3)]
+        public async Task UpdateCustomerWithValidValuesReturnsTrue(int id, int shopId, string email, string name, int cartId)
         {
-            var updated = await sut.Update(new Domainmodels.Customer(id, shopId, name, email));
+            var updated = await sut.Update(new Domainmodels.Customer(id, shopId, name, email, cartId));
 
             Assert.That(updated, Is.True);
 
