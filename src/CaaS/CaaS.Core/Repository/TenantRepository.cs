@@ -1,13 +1,7 @@
 ﻿using Caas.Core.Common.Ado;
+using CaaS.Common.Mappings;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace CaaS.Core.Repository
 {
@@ -18,15 +12,11 @@ namespace CaaS.Core.Repository
 
         }
 
-        public async Task<Tenant?> Get(int id)
-        {
-            return await template.QueryFirstOrDefaultAsync(reader =>
-            {
-                return new Tenant((int)reader[0], (string)reader["Email"], (string)reader["Name"]);
-            },
-            whereExpression:
-                new { Id = id }
-            );
-        }
+        public async Task<Tenant?> Get(int id) =>
+            await template.QueryFirstOrDefaultAsync(reader => 
+                new Tenant(reader.GetIntByName(nameof(Tenant.Id)), reader.GetStringByName(nameof(Tenant.Email)), reader.GetStringByName(nameof(Tenant.Name))),
+                whereExpression:
+                    new { Id = id }
+             );
     }
 }

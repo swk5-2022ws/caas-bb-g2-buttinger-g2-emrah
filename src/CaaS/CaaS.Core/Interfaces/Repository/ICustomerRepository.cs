@@ -13,30 +13,30 @@ namespace CaaS.Core.Interfaces.Repository
         /// Get a customer.
         /// </summary>
         /// <param name="id">The customer id to get</param>
-        Task Get(int id);
+        Task<Customer?> Get(int id);
 
         /// <summary>
         /// Get all customers by shop id
         /// </summary>
         /// <param name="shopId">The shop id which customer to get</param>
-        Task GetAllByShopId(int shopId);
+        Task<IList<Customer>> GetAllByShopId(int shopId);
 
         /// <summary>
         /// Creates a customer.
         /// </summary>
         /// <param name="customer">The customer to create.</param>
-        Task Create(Customer customer);
+        Task<int> Create(Customer customer);
 
         /// <summary>
         /// Updates a customer.
         /// </summary>
         /// <param name="customer">The customer to update.</param>
-        Task Update(Customer customer);
+        Task<bool> Update(Customer customer);
 
         /// <summary>
         /// Soft deletes a customer.
         /// </summary>
         /// <param name="customer">The customer to delete.</param>
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

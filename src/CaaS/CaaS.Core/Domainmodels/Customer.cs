@@ -1,3 +1,4 @@
+using Caas.Core.Common.Attributes;
 using CaaS.Core.Interfaces.Transferclasses;
 namespace CaaS.Core.Domainmodels;
 
@@ -17,6 +18,9 @@ public record Customer : ISoftDeleteable
     public string Name { get; set; }
     public string Email { get; set; }
     public DateTime? Deleted { get; set; }
+
+    [AdoIgnore]
     public Cart? Cart { get; set; }
+    [AdoIgnore]
     public HashSet<Order> Orders { get; set; }
 }

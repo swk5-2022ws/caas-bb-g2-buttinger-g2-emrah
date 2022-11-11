@@ -1,4 +1,5 @@
-﻿using CaaS.Util;
+﻿using Caas.Core.Common.Attributes;
+using CaaS.Util;
 using System.Collections;
 using System.Data.Common;
 using System.Reflection;
@@ -26,7 +27,7 @@ namespace Caas.Core.Common.Ado
         internal static Dictionary<string, object?> ParametersToDictinary(object properties, bool addTableNameSpace = true)
         {
             var parameterDictionary = new Dictionary<string, object?>();
-            foreach (var property in properties.GetType().GetProperties())
+            foreach (var property in GetAdoTemplateProperties(properties.GetType().GetProperties()))
             {
                 if (ReflectionUtil.IsSystemType(property))
                 {
@@ -43,7 +44,7 @@ namespace Caas.Core.Common.Ado
                     continue;
                 }
 
-                foreach (var namedProperty in joinedProperties.GetType().GetProperties())
+                foreach (var namedProperty in GetAdoTemplateProperties(joinedProperties.GetType().GetProperties()))
                 {
                     SetPropertyToDictionary(parameterDictionary, namedProperty, joinedProperties, $"{joinedTableName}.");
                 }
@@ -154,7 +155,7 @@ namespace Caas.Core.Common.Ado
         /// <param name="alreadyIncludedSqlParameterNames">The sql parameter names that were already included during a process that happened before the where expression was added</param>
         /// <param name="addTableNameSpace">Determines whether or not a namespace for the initial table should be set. Defaults to true</param>
         /// <returns></returns>
-        internal static void AddWhereExpression(DbCommand command, string commandText, object? whereExpression = null, 
+        internal static void AddWhereExpression(DbCommand command, string commandText, object? whereExpression = null,
             IList<string>? alreadyIncludedSqlParameterNames = null, bool addTableNameSpace = true, bool isSoftDeletePossible = false, bool isSoftDeleteExcluded = true)
         {
             if (whereExpression is null)
@@ -209,16 +210,27 @@ namespace Caas.Core.Common.Ado
         /// <param name="isSoftDeleteExcluded">checks wether or not the soft delete should be excluded</param>
         /// <param name="andOrWhere">either the and or the where Parameter</param>
         /// <returns></returns>
-        internal static string TryGetSoftDeletionForCurrentWhereExpression(bool isSoftDeletePossible, bool isSoftDeleteExcluded, bool isWhere) => 
+        internal static string TryGetSoftDeletionForCurrentWhereExpression(bool isSoftDeletePossible, bool isSoftDeleteExcluded, bool isWhere) =>
             isSoftDeletePossible && isSoftDeleteExcluded ?
                     $" {(isWhere ? "WHERE" : "AND")} deleted is null" : "";
 
-    /// <summary>
-    /// Checks wether or not a type has a property which is used for soft deletion
-    /// </summary>
-    /// <param name="type">the type</param>
-    /// <param name="propertyName">The propertyName. Defaults to Deleted if not set</param>
-    /// <returns>True if there is a soft deletion for the type or false if not</returns>
-    internal static bool HasSoftDelete(Type type, string propertyName = "Deleted") => type.GetProperties().Any(x => x.Name == propertyName);
+        /// <summary>
+        /// Checks wether or not a type has a property which is used for soft deletion
+        /// </summary>
+        /// <param name="type">the type</param>
+        /// <param name="propertyName">The propertyName. Defaults to Deleted if not set</param>
+        /// <returns>True if there is a soft deletion for the type or false if not</returns>
+        internal static bool HasSoftDelete(Type type, string propertyName = "Deleted") => type.GetProperties().Any(x => x.Name == propertyName);
+
+        /// <summary>
+        /// Retrieves only properties that are not annotated by the attribute AdoIgnore
+        /// </summary>
+        /// <param name="properties">The list of properties</param>
+        /// <returns></returns>
+        internal static PropertyInfo[] GetAdoTemplateProperties(PropertyInfo[] properties)
+        {
+            return properties.Where(property => property.GetCustomAttribute(typeof(AdoIgnoreAttribute)) == null).ToArray();
+        }
+
     }
 }

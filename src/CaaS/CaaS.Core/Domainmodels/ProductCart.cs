@@ -1,9 +1,12 @@
+using Caas.Core.Common.Attributes;
+
 namespace CaaS.Core.Domainmodels;
 public record ProductCart
 {
-    public ProductCart(Product product, double price, int amount)
+    public ProductCart(int productId, int cartId, double price, uint amount)
     {
-        Product = product;
+        ProductId = productId;
+        CartId = cartId;
         Price = price;
         Amount = amount;
     }
