@@ -1,10 +1,4 @@
 ﻿using CaaS.Core.Domainmodels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaaS.Core.Interfaces.Repository
 {
@@ -14,7 +8,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// Gets a order by id.
         /// </summary>
         /// <param name="id">Order id</param>
-        Task<Order> Get(int id);
+        Task<Order?> Get(int id);
         /// <summary>
         /// Gets all orders for a specific shop.
         /// </summary>
@@ -27,10 +21,18 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="id">Customer id</param>
         /// <returns>All orders for a customer.</returns>
         Task<IList<Order>> GetOrdersByCustomerId(int id);
+
+        /// <summary>
+        /// Retrieves all orders for a specific cart.
+        /// </summary>
+        /// <param name="id">Cart id</param>
+        /// <returns>All orders for a specific cart</returns>
+        Task<IList<Order>> GetOrdersByCartId(int id);
+
         /// <summary>
         /// Creates a new order from a cart.
         /// </summary>
         /// <param name="cart">The cart which is ordered.</param>
-        Task Create(Cart cart);
+        Task<int> Create(Cart cart);
     }
 }

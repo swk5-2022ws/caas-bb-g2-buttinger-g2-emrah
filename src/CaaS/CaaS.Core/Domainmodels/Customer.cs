@@ -15,6 +15,9 @@ public record Customer : ISoftDeleteable
 
     public int Id { get; set; }
     public int ShopId { get; set; }
+
+    public int? CartId { get; set; }
+
     public string Name { get; set; }
     public string Email { get; set; }
     public DateTime? Deleted { get; set; }

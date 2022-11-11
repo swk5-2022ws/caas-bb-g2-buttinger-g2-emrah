@@ -15,6 +15,14 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="id">Cart id</param>
         /// <returns>A product card</returns>
         Task<Cart?> Get(int id);
+
+        /// <summary>
+        /// Returns a cart from a customer
+        /// </summary>
+        /// <param name="id">customer id</param>
+        /// <returns>A cart</returns>
+        Task<Cart?> GetByCustomer(int id);
+
         /// <summary>
         /// Deletes a cart. Only carts without orders can be deleted.
         /// </summary>
