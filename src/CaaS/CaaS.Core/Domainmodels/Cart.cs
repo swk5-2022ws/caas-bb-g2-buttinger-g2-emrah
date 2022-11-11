@@ -35,6 +35,7 @@ public record Cart
     /// <summary>
     /// Get the total price for this cart.
     /// </summary>
+    [AdoIgnore]
     public double Price
     {
         get

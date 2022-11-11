@@ -18,7 +18,7 @@ namespace CaaS.Core.Test.Unit.Domainmodels.DiscountRules
         public void TestIsQUalifiedForDiscountWhenMinimumAmountIsEqualOrGreaterReturnsTrue(double price)
         {
             Cart cart = new(0, "id");
-            cart.ProductCarts.Add(new ProductCart(new(0, 0, "", "", "", 2.0), price, 1));
+            cart.ProductCarts.Add(new ProductCart(new Product(0, 0, "", "", "", 2.0),0, price, 1));
 
             double minimumAmountToBeQualifiedForDiscount = 50.0;
 
@@ -34,7 +34,7 @@ namespace CaaS.Core.Test.Unit.Domainmodels.DiscountRules
         public void TestIsQUalifiedForDiscountWhenMinimumAmountIsSmallerReturnsFalse(double price)
         {
             Cart cart = new(0, "id");
-            cart.ProductCarts.Add(new ProductCart(new(0, 0, "", "", "", 2.0), price, 1));
+            cart.ProductCarts.Add(new ProductCart(new Product(0, 0, "", "", "", 2.0),0, price, 1));
 
             double minimumAmountToBeQualifiedForDiscount = 50.0;
 

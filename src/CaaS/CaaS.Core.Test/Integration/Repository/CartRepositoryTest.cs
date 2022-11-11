@@ -4,6 +4,8 @@ using CaaS.Core.Test.Util;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
+    [Category("Integration")]
+    [TestFixture]
     public class CartRepositoryTest
     {
         private ICartRepository sut;
@@ -52,7 +54,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(0)]
         [TestCase(-1)]
         [TestCase(int.MaxValue)]
-        public async Task CreateValidCartWithInvalidReferenceThrowsException(int customerId) =>
+        public void CreateValidCartWithInvalidReferenceThrowsException(int customerId) =>
             Assert.CatchAsync(async () => await sut.Create(new Domainmodels.Cart(0, Guid.NewGuid().ToString())
             {
                 CustomerId = customerId
@@ -62,7 +64,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
-        public async Task DeleteCartByValidIdWithReferencesToOrdersThrowsException(int id) =>
+        public void DeleteCartByValidIdWithReferencesToOrdersThrowsException(int id) =>
             Assert.CatchAsync(async () => await sut.Delete(id));
 
 

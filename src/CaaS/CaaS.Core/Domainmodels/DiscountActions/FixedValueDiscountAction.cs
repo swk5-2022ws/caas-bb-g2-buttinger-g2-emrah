@@ -32,7 +32,7 @@ namespace CaaS.Core.Domainmodels.DiscountActions
         public override double GetDiscount(Cart cart)
         {
             if (cart.Price <= Value) return cart.Price;
-            return cart.Price - Value;
+            return Value;
         }
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)

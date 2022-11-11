@@ -27,7 +27,7 @@ namespace CaaS.Core.Test.Unit.Domainmodels.DiscountActions
         public void TestGetDiscountWithValidValuesReturnsDiscount(double discountPercentage, double cartPrice, double expected)
         {
             Cart cart = new(0, "id");
-            cart.ProductCarts.Add(new ProductCart(new(0, 0, "", "", "", 2.0), cartPrice, 1));
+            cart.ProductCarts.Add(new ProductCart(new Product(0, 0, "", "", "", 2.0),0, cartPrice, 1));
             TotalPercentageDiscountAction sut = new(discountPercentage);
             double actual = sut.GetDiscount(cart);
 

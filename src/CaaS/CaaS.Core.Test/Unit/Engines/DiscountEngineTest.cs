@@ -47,8 +47,8 @@ namespace CaaS.Core.Test.Unit.Engines
             };
 
             Cart cart = new(1, "id");
-            cart.ProductCarts.Add(new ProductCart(new(1, 1, "", "", "", 2.0), 100.0, 2));
-            cart.ProductCarts.Add(new ProductCart(new(2, 1, "", "", "", 2.0), 100.0, 1));
+            cart.ProductCarts.Add(new ProductCart(new Product(1, 1, "", "", "", 2.0), 1, 100.0, 2));
+            cart.ProductCarts.Add(new ProductCart(new Product(2, 1, "", "", "", 2.0), 1, 100.0, 1));
 
             IDiscountEngine sut = new DiscountEngine(discounts);
             sut.ApplyValidDiscounts(cart);
@@ -86,8 +86,8 @@ namespace CaaS.Core.Test.Unit.Engines
             };
 
             Cart cart = new(1, "id");
-            cart.ProductCarts.Add(new ProductCart(new(1, 1, "", "", "", 2.0), 100.0, 2));
-            cart.ProductCarts.Add(new ProductCart(new(2, 1, "", "", "", 2.0), 100.0, 1));
+            cart.ProductCarts.Add(new ProductCart(new Product(1, 1, "", "", "", 2.0),1, 100.0, 2));
+            cart.ProductCarts.Add(new ProductCart(new Product(2, 1, "", "", "", 2.0),1, 100.0, 1));
 
             IDiscountEngine sut = new DiscountEngine(discounts);
             sut.ApplyValidDiscounts(cart);
@@ -119,7 +119,7 @@ namespace CaaS.Core.Test.Unit.Engines
             IDiscountEngine sut = new DiscountEngine(discounts);
 
             Cart cart = new(1, "id");
-            cart.ProductCarts.Add(new ProductCart(new(1, 1, "", "", "", 2.0), 100.0, 10));
+            cart.ProductCarts.Add(new ProductCart(new Product(1, 1, "", "", "", 2.0),1, 100.0, 10));
             sut.ApplyValidDiscounts(cart);
 
             var actual = sut.CalculateDiscountPrice(cart);

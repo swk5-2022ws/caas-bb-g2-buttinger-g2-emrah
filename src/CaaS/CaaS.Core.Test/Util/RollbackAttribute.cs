@@ -20,7 +20,7 @@ namespace CaaS.Core.Test.Util
 
         public void AfterTest(ITest test)
         {
-            transaction.Dispose();  
+            transaction?.Dispose();  
         }
 
         public ActionTargets Targets

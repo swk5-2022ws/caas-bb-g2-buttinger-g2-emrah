@@ -5,6 +5,8 @@ using CaaS.Core.Test.Util;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
+    [Category("Integration")]
+    [TestFixture]
     public class ProductCartRepositoryTest
     {
         private IProductCartRepository sut;
