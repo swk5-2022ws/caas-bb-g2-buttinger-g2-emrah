@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
-    internal class ShopRepositoryTest
+    [Category("Integration")]
+    [TestFixture]
+    public class ShopRepositoryTest
     {
         private readonly IShopRepository sut = new ShopRepository(Test.Setup.GetTemplateEngine());
 

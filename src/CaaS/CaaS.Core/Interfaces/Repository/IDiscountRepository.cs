@@ -9,23 +9,37 @@ namespace CaaS.Core.Interfaces.Repository
 {
     public interface IDiscountRepository
     {
+
+        /// <summary>
+        /// Returns a discount.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Domainmodels.Discount?> Get(int id);
         /// <summary>
         /// Get all discount
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<IList<Discount>> GetAllByShopId(int id);
+        Task<IList<Domainmodels.Discount>> GetByShopId(int id);
+
+        /// <summary>
+        /// Creates a discount.
+        /// </summary>
+        /// <param name="discount"></param>
+        /// <returns></returns>
+        Task<int> Create(Domainmodels.Discount discount);
 
         /// <summary>
         /// Updates a discount.
         /// </summary>
         /// <param name="item">The discount to update.</param>
-        Task Update(Discount item);
+        Task<bool> Update(Domainmodels.Discount item);
 
         /// <summary>
         /// Deletes a discount.
         /// </summary>
         /// <param name="id">The discount id to deleted.</param>
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

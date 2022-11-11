@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,7 +48,7 @@ namespace CaaS.Core.Test.Integration
         }
 
         [TearDown]
-        public async Task Teardown()
+        public void Teardown()
         {
 
         }

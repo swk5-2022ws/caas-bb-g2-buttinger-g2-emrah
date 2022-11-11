@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
+    [Category("Integration")]
+    [TestFixture]
     public class ProductRepositoryTest
     {
         private readonly IProductRepository sut = new ProductRepository(Test.Setup.GetTemplateEngine());

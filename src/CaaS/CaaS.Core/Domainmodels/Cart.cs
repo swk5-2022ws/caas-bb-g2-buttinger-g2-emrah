@@ -25,7 +25,31 @@ public record Cart
     [AdoIgnore]
     public HashSet<ProductCart> ProductCarts { get; set; }
     [AdoIgnore]
-    public Coupon? Coupon { get; set; }    
+    public Coupon? Coupon { get; set; }
+    /// <summary>
+    /// Discounts are added by a instance of IDiscountEngine. The discount engines ensures that the priority order is right.
+    /// </summary>
     [AdoIgnore]
-    public Discount? Discount { get; set; }
+    public IList<Discount>? Discounts { get; set; }
+
+    /// <summary>
+    /// Get the total price for this cart.
+    /// </summary>
+    [AdoIgnore]
+    public double Price
+    {
+        get
+        {
+            double price = 0;
+            foreach (var productCart in ProductCarts)
+            {
+                price += productCart.Price * productCart.Amount;
+            }
+            if (price < 0.0) throw new ArgumentException($"Price can not be negative. Price: {price}.");
+
+            return price;
+        }
+    }
+
+    
 }

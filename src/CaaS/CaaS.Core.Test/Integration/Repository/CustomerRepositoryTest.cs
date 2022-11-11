@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
+    [Category("Integration")]
+    [TestFixture]
     public class CustomerRepositoryTest
     {
         private ICustomerRepository sut;

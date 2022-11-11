@@ -13,30 +13,30 @@ namespace CaaS.Core.Interfaces.Repository
         /// Get a discount action.
         /// </summary>
         /// <param name="id">The discount action id to get.</param>
-        Task<DiscountAction> Get(int id);
+        Task<DiscountAction?> Get(int id);
         
         /// <summary>
         /// Get all discount actions for a specific shop.
         /// </summary>
         /// <param name="id">The shop id to get the discount actions for.</param>
-        Task<IList<DiscountAction>> GetAllByShopId(int id);
+        Task<IList<DiscountAction>> GetByShopId(int id);
 
         /// <summary>
         /// Creates a discount action.
         /// </summary>
         /// <param name="action">The discount action to create.</param>
-        Task Create(DiscountAction action);
+        Task<int> Create(DiscountAction action);
 
         /// <summary>
         /// Updates a discount action.
         /// </summary>
         /// <param name="action">The discount action to update.</param>
-        Task Update(DiscountAction action);
+        Task<bool> Update(DiscountAction action);
 
         /// <summary>
         /// Delete a discount action.
         /// </summary>
         /// <param name="id">The discount action id to delete.</param>
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }
