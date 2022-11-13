@@ -30,7 +30,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Util", "CaaS.Util\CaaS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{D5E8A104-81C4-45CB-B05D-9A7B96BD4CD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CaaS.Tools.Test.Data.Sql.InsertGenerator", "CaaS.Tools.Test.Data.Sql.InsertGenerator\CaaS.Tools.Test.Data.Sql.InsertGenerator.csproj", "{3F156F94-1558-47DC-A28F-500E841D1462}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CaaS.Tools.Test.Data.Sql.InsertGenerator", "CaaS.Tools.Test.Data.Sql.InsertGenerator\CaaS.Tools.Test.Data.Sql.InsertGenerator.csproj", "{3F156F94-1558-47DC-A28F-500E841D1462}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D03E3C38-7FC0-4450-9B68-B12D19BB0B8A}"
+	ProjectSection(SolutionItems) = preProject
+		Tests.Dockerfile = Tests.Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +78,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{045B6764-BAED-4A85-B243-2913489DBEF9} = {23226C40-B51F-4AAE-BC9E-EE8A21309631}
 		{3F156F94-1558-47DC-A28F-500E841D1462} = {D5E8A104-81C4-45CB-B05D-9A7B96BD4CD1}
+		{D03E3C38-7FC0-4450-9B68-B12D19BB0B8A} = {23226C40-B51F-4AAE-BC9E-EE8A21309631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {938ED132-689A-4A78-8D61-86BCDE9F9B5E}
