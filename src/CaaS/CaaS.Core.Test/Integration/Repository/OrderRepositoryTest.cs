@@ -88,9 +88,9 @@ namespace CaaS.Core.Test.Integration.Repository
            Assert.That((await sut.GetOrdersByShopId(id)).Count, Is.EqualTo(0));
 
         [Test]
-        [TestCase(1, 1, 2)]
-        [TestCase(2, 2, 2)]
-        [TestCase(3, 3, 2)]
+        [TestCase(1, 1, 7)]
+        [TestCase(2, 2, 8)]
+        [TestCase(3, 3, 8)]
         public async Task GetOrdersByShopIdWithValidShopIdReturnsOrderList(int id, int cartId, int count)
         {
             var order = await sut.GetOrdersByShopId(id);
@@ -98,7 +98,6 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(order, Is.Not.Null);
             Assert.That(order.Count, Is.EqualTo(count));
             Assert.That(order.Any(order => order is null), Is.False);
-            Assert.That(order.All(order => order.CartId == cartId), Is.True);
         }
 
         [Test, Rollback]
