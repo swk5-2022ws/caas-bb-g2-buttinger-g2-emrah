@@ -22,7 +22,7 @@ namespace CaaS.Core.Engines
             if (cart == null) throw new ArgumentException($"Can not apply discounts to a null. Check parameter {nameof(cart)}.");
 
             var validDiscounts = Discounts
-                .Where(x => x.DiscountRule.RuleObject.IsQualifiedForDiscount(cart));
+                .Where(x => x.DiscountRule!.RuleObject.IsQualifiedForDiscount(cart));
 
             var orderedDiscounts = OrderDiscounts(validDiscounts);
 
@@ -45,7 +45,7 @@ namespace CaaS.Core.Engines
             double discountAmount = 0.0;
             foreach (var discount in orderedDiscounts)
             {
-                discountAmount += discount.DiscountAction.ActionObject.GetDiscount(cart);
+                discountAmount += discount.DiscountAction!.ActionObject.GetDiscount(cart);
             }
 
             return Math.Max(cart.Price - discountAmount, 0);
@@ -54,8 +54,8 @@ namespace CaaS.Core.Engines
         private static IOrderedEnumerable<Discount> OrderDiscounts(IEnumerable<Discount> validDiscounts)
         {
             return validDiscounts
-                .OrderBy(x => x.DiscountAction.ActionObject.ApplyPriority)
-                .ThenBy(x => x.DiscountAction.ActionObject.SubApplyPriority);
+                .OrderBy(x => x.DiscountAction!.ActionObject.ApplyPriority)
+                .ThenBy(x => x.DiscountAction!.ActionObject.SubApplyPriority);
         }
     }
 }

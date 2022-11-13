@@ -69,7 +69,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [Test, Rollback]
         public async Task TestUpdateWithValidDiscountUpdatesDiscount(int id)
         {
-            Discount? discount = await sut.Get(id);
+            Discount? discount = await sut.Get(id) ?? throw new ArgumentNullException($"No discount with id {id} found");
             discount.ActionId = 42;
             discount.RuleId = 42;
             await sut.Update(discount);
@@ -77,7 +77,7 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.Multiple(() =>
             {
                 Assert.That(discount, Is.Not.Null);
-                Assert.That(discount.Id, Is.EqualTo(id));
+                Assert.That(discount?.Id, Is.EqualTo(id));
                 Assert.That(discount?.ActionId, Is.EqualTo(42));
                 Assert.That(discount?.RuleId, Is.EqualTo(42));
             });
