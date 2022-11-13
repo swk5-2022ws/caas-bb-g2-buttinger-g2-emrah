@@ -1,14 +1,7 @@
-﻿using Caas.Core.Common.Ado;
-using CaaS.Core.Domainmodels;
+﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Core.Test.Util;
-using Org.BouncyCastle.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Integration.Repository
 {

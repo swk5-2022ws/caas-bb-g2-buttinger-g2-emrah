@@ -10,7 +10,7 @@ namespace CaaS.Core.Repository
         public OrderRepository(AdoTemplate template) : base(template) { }
 
         public async Task<int> Create(Cart cart) =>
-               (await template.InsertAsync<Cart>(cart))?.ElementAt(0) ?? 0;
+               (await template.InsertAsync<Order>(new Order(0, cart.Id, 0, DateTime.Now)))?.ElementAt(0) ?? 0;
 
         public async Task<Order?> Get(int id) =>
             await template.QueryFirstOrDefaultAsync(OrderMapping.ReadOrderOnly, whereExpression: new
@@ -21,7 +21,7 @@ namespace CaaS.Core.Repository
         public async Task<IList<Order>> GetOrdersByCustomerId(int id)
         {
             ICartRepository cartRepository = new CartRepository(template);
-            var cart = cartRepository.GetByCustomer(id);
+            var cart = await cartRepository.GetByCustomer(id);
 
             if (cart is null) return new List<Order>();
 
@@ -33,9 +33,12 @@ namespace CaaS.Core.Repository
             ICustomerRepository customerRepository = new CustomerRepository(template);
             var customers = await customerRepository.GetAllByShopId(id);
 
-            return (IList<Order>)template.QueryAsync(OrderMapping.ReadOrderOnly, whereExpression: new
+            if (customers.Count == 0) return new List<Order>();
+
+            var cartIds = customers.Where(customer => customer.CartId.HasValue).Select(customer => customer.CartId!.Value).ToList();
+            return (IList<Order>)await template.QueryAsync(OrderMapping.ReadOrderOnly, whereExpression: new
             {
-                CartId = customers.Where(customer => customer.CartId.HasValue).Select(customer => customer.CartId!.Value).ToList()
+                CartId = cartIds
             });
         }
 
