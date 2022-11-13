@@ -1,0 +1,41 @@
+== ADO Engine
+
+=== Herstellung der Connection
+Die Connection wird über eine Factory zur Verfügung gestellt. Hierzu wird wie in der Übung empfohlen eine Factory erstellt, die über die appSettings.json Datei steuerbar ist. 
+
+=== AdoBuilder
+
+Wir haben einen AdoBuilder erstellt, um mittels Reflection die SQL Statements zu erstellen. Dadurch wird der Aufwand für das Erstellen von SQL Statements deutlich gesenkt.
+
+==== Where Expression
+An die Where-Expresion kann man ein object senden. Der entsprechende Eintrag in der Where-Expression liefert folglich den Aufbau der Bedingung sowie den Namen der zu verknüpfenden Variablen. Eine einfache Bedingung würde wie folgt aussehen:
+[source,c#]
+----
+new {
+    Id = id
+}
+----
+
+Wird der Bedingung statt einer einfachen id eine Liste an Ids übergeben, so wird automatisch eine IN-Bedingung auf der Datenbank abgesetzt. 
+Existiert ein JOIN auf der Query so kann man die Daten vom JOIN wie folgt in der Filterbedingung berücksichtigen:
+[source,c#]
+----
+new {
+    Id = id,
+    p = { //JOIN variablenName
+        Id = pId
+    }
+}
+----
+
+==== JOIN Expression
+Für die Join Expression wurde der Versuche diese als Reflection abzubilden aufgegeben, da man bei den Joins deutlich mehr zu berücksichtigen hat. Die Join Expression wird daher als Zeichenkette an das jeweilige Statement übergeben.
+
+==== Übergabe des Tabellennamens
+Die Statements im AdoBuilder sind mit einem generischen Typen hinterlegt. Der generische Typ wird als Tabellenname herangezogen.
+
+=== AdoTemplate
+Das AdoTemplate bildet die CRUD Operationen auf eine Datenbank ab. Diese Operationen werden mittels des AdoBuilders richtig erstellt und an die Datenbank über DBCommands geleitet. 
+
+=== Prepared statements
+Die übergebenen Variablen werden alle in einem Prepared Statement gehandhabt.
