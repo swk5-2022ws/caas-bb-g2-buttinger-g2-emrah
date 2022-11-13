@@ -20,6 +20,7 @@ endif::[]
 // . Ingenieure, die Hilfestellung bei der Problembehandlung benötigen.
 
 include::chapters/jira.adoc[leveloffset=+1]
+include::chapters/architecture.adoc[leveloffset=+1]
 include::chapters/datamodel.adoc[leveloffset=+1]
 include::chapters/database.adoc[leveloffset=+1]
 include::chapters/baseflow.adoc[leveloffset=+1]
