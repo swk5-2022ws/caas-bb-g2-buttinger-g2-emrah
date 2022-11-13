@@ -17,9 +17,13 @@ jobs:
       - name: Build database image
         run: docker build --tag caas-dev-db ./src/CaaS/Docker/db_dev && d
       - name: Run docker image
+<<<<<<< HEAD
         run: docker run -d --name caas-dev-db -p 3306:3306 caas-dev-db
       - name: Wait for db finish
         run: sleep 30s
+=======
+        run: docker run ---name caas-dev-db -d -p 3306:3306 caas-dev-db
+>>>>>>> 2ea1dce7dcd46ba48c4eddc3057f5b61b4bd047d
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:

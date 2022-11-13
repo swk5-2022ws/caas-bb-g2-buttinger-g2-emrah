@@ -1,9 +1,28 @@
 == Datenmodell
 
-
+Das Datenmodell wurde anhand der Angabe erstellt und sieht wie folgt aus:
 
 === Diagram
 
-[[class_diagram]]
+[[class_diagramm]]
 .class_diagram
-image::../images/classdiagram.svg[align="center"]
+image::../images/class_diagramm.svg[align="center"]
+
+=== Erläuterungen zu speziellen Umsetzungen
+
+==== Coupon
+In Übereinstimmung haben wir entschieden, dass ein Coupon nur ein mal verwendet werden kann. Der Coupon kann vom Shopbetreiber erstellt werden. Einen Coupon kann der Kunde des Shops dann schließlich erwerben. Hierfür wird dem Kunden ein Key übermittelt, wenn der Coupon erfolgreich erworben wurde. Existieren für den Shop nur Coupons die bereits verwendet werden, so wird dem Shop ein neuer Coupon beim Kaufabschluss erstellt.
+
+==== DiscountAction
+Die DiscountAction Tabelle bezieht sich auf mögliche Aktionen eines Discounts. Als Aktionen sehen wir beispielsweise Senkungen um einen Fixwert oder um einen prozentuellen Wert. Die Aktionen können unabhängig erstellt werden. 
+
+==== DiscountRule
+Die DiscountRule Tabelle bezieht sich auf mögliche Regeln eines Discounts.
+Als Regeln werden beispielsweise Zeiträume oder gewisse Produkte angesehen.
+Die Regeln können ebenfalls unabhängig erstellt werden
+
+==== Discount
+Der Discount an sich ist die freie Zusammenstellung zwischen einer Aktion und einer Regel. Der Discount kann vom Shopbetreiber frei verwaltet werden und mit unterschiedlichen Zusammensetzungen von einer Aktion und einer Regel zusammengestellt werden.
+
+==== Order
+Die Bestellung wird aus dem Einkaufswagen generiert. Um den abgezogenen Betrag einfach in der Bestellung anzeigen zu können, wird der Discount in der Bestellung gespeichert. Dies dient ebenfalls dazu, den korrekten Discount bei der Bestellung anzuzeigen, auch wenn der Eintrag in der Discount Tabelle verändert beziehungsweise gelöscht wurde.

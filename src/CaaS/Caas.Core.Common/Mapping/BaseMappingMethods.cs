@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Reflection;
 
 namespace CaaS.Common.Mappings
 {
@@ -17,6 +16,8 @@ namespace CaaS.Common.Mappings
             (double)record[propertyName];
         public static Guid GetGuidByName(this IDataRecord record, string propertyName) =>
             (Guid)record[propertyName];
+        public static DateTime GetDateTimeByName(this IDataRecord record, string propertyName) =>
+          Convert.ToDateTime(record[propertyName]);
         public static DateTime? GetNullableDateTimeByName(this IDataRecord record, string propertyName) =>
             record[propertyName] == DBNull.Value ? null : Convert.ToDateTime(record[propertyName]); 
     }

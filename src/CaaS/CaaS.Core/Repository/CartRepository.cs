@@ -2,11 +2,7 @@
 using CaaS.Common.Mappings;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CaaS.Core.Repository.Mappings;
 
 namespace CaaS.Core.Repository
 {
@@ -26,13 +22,15 @@ namespace CaaS.Core.Repository
             });
 
         public async Task<Cart?> Get(int id) =>
-            await template.QueryFirstOrDefaultAsync(record =>
-                new Cart(record.GetIntByName(nameof(Cart.Id)), record.GetStringByName(nameof(Cart.SessionId)))
-                {
-                    CustomerId = record.GetNullableIntByName(nameof(Cart.CustomerId)) 
-                }, whereExpression: new
+            await template.QueryFirstOrDefaultAsync(CartMapping.ReadCartOnly, whereExpression: new
                 {
                     Id = id
                 });
+
+        public async Task<Cart?> GetByCustomer(int id) =>
+            await template.QueryFirstOrDefaultAsync(CartMapping.ReadCartOnly, whereExpression: new
+            {
+                CustomerId = id
+            });
     }
 }

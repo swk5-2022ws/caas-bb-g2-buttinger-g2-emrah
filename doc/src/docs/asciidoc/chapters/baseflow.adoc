@@ -1,0 +1,5 @@
+=== Diagram
+Grunlegender Aufbau eines Pfades von der Datenbank bis zum Senden an den API Aufrufer:
+[[base_object_diagramm]]
+.base_object_diagramm
+image::../images/base_object_diagramm.svg[align="center"]
