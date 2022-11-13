@@ -1,0 +1,83 @@
+== Discounts
+
+=== Regeln und Aktionen
+
+Discounts bestehen aus `DiscountAction`s und `DiscountRule`. Aktionen besagen,
+wie viel Preisnachlass gewährt wird. Regeln definieren, wann ein Preisnachlass
+angewendet werden kann. Jede Regel kann mit jeder Aktion kombiniert werden.
+Damit zukünftig beliebige weitere Aktionen und Regeln implementiert werden
+können, existiert eine definierte Schnittstelle sowie abstrakte Basisklasse für
+das Implementieren von weiteren Regeln
+(CaaS.Core.Domainmodels.DiscountActions.DiscountActionBase und
+CaaS.Core.Domainmodels.DiscountRules). Die abstrakten Basisklassen bieten
+statische Methoden zum Serialisieren und Deserialisieren von Ableitungen Ihrer
+selbst.
+ 
+Die serialisierten Regeln und Aktionen werden in der Datenbank unter
+`DiscountAction.Action` und `DiscountRule.Ruleset` abgelegt.
+
+==== DiscountAction
+
+Aktuell existieren zwei unterschiedliche Aktionen:
+
+* FixedValueDiscountAction - reduziert den Preis eines Warenkorbs um einen fixen Betrag
+* TotalPercentageDiscountAction - reduziert den Preis eines Warenkorbs um einen prozentualen Wert
+
+Für eine korrekte Deserialisierung einr Unterklasse von der Basisklasse
+`DiscountActionBase` muss dazu die Basisklasse mit dem Attribut
+`JsonDerivedType` annotiert werden. Das ist ärgerlich und bietet noch
+Verbesserungspotenzial.
+
+==== DiscountRule
+
+Aktuell existieren zwei unterschiedliche Aktionen:
+
+* DateDiscountRuleset - Discount wird nur zwischen einem Start- und Enddatum gewährt
+* TotalAmountDiscountRuleset - Discount wird nur bei Warenkörben ab einem Mindesteinkaufswert gewährt.
+
+=== DiscountEngine
+
+[source,c#]
+----
+    public interface IDiscountEngine
+    {
+        /// <summary>
+        /// Apply discounts to a cart. Previous discounts will be removed.
+        /// </summary>
+        void ApplyValidDiscounts(Cart cart);
+
+
+        /// <summary>
+        /// Calculates the discount amount for a cart.
+        /// </summary>
+        /// <returns>Returns the new price of a cart. (Price - discounts)</returns>
+        double CalculateDiscountPrice(Cart cart);
+
+    }
+----
+
+Da beim Anwenden von Discounts auf einen Warenkorb die Reihenfolge der Anwendung
+und weitere Bedingungen zu prüfen sind, wurde eine eigene Klasse
+`DiscountEngine` implementiert. Für eine austauschbare Implementierung wird bei
+den Aufrufern nur die Schnittstelle
+`CaaS.Core.Interfaces.Engines.IDiscountEngine` verwendet. Damit die Reihenfolge
+verschiedener Aktionen richtig eruiert wird gibt die Basisklasse die
+Implementierung einer Priorität vor. Falls zwei Aktionen die selbe
+Prioritäten besitzen, wird eine zweite Priorität mit in Betracht gezogen. Die
+zweite Priorität ist für gewöhnlich der Wert des Betrages.
+
+Eine DiscountEngine wird mit allen für den Shop verfügbaren Discounts
+initialisiert. Anschließend können mit der Methode `void
+ApplyValidDiscounts(Cart cart)` alle _aktuell_ gültigen Discounts zu einem
+Warenkorb hinzugefügt werden. Mit der Methode `double
+CalculateDiscountPrice(Cart cart)` kann der Preis eines Warenkorbs _nach_ Abzug
+der Preisnachlässe berechnet werden.
+
+Ein reduzierter Preis eines Warenkorbs darf somit nur über die `DiscountEngine`
+gesetzt werden. Hier wird in der nächsten Ausbaustufe ein Mechanismus
+geschaffen, der das Setzen von Discounts bei einer Cart-Instanz restriktiver
+gestaltet. Somit können Fehlbedienungen der API verhindert werden.
+
+Für die DiscountEngine existieren ausführliche UNIT-Tests. Diese werden im
+nächsten Ausbauschritt ebenfalls erweitert.
+

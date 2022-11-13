@@ -1,0 +1,35 @@
+== Tests
+
+Für Tests wird das Framework NUnit verwendet. Im Projekt `CaaS.Core.Test` sind
+Tests für das Projekt `CaaS.Core` implementiert. Wichtig ist uns, dass wir eine
+hohe Testabdeckung mit sinnvollen Tests erzielen. Dabei wurde noch nicht
+quantifiziert, welche Testabdeckung wir erreichen wollen.
+
+=== Integration-Tests
+
+Integration-Tests erwarten einen laufenden Container der `caas-dev-db` mit
+initialen Daten eingespielt durch die Datei `init.sql`. Darum kümmert sich das
+Image des Containers selbstständig. Damit der Container nicht für jeden Test
+erneut erstellt werden muss, haben wir ein `Rollback`-Attribut implementiert.
+Damit kann man Tests annotieren um keine Transaktion auf die Datenbank
+auszuführen.
+
+Es wurden Versuche gemacht, das Framework `testcontainers` zu verwenden. Dieses
+startet automatisiert einen beliebigen Dockercontainer für Tests. Aufgrund von
+Performanceproblemen wurde dieses Vorgehen aktuell pausiert. Vermutlich benötigt
+das Framework weitere Konfiuration. Es ist angedacht, dieses Framework im
+nächsten Schritt weiter zu evaluieren.
+
+Integrationstests werden mit "Integration" getaggt.
+
+.Voraussetzungen für erfolgreiche Integrationstests 
+* Frischer Container aus dem
+Image ./src/CaaS/Docker/db_dev/Dockerfile
+
+
+=== UNIT-Tests
+
+Die UNIT-Test benötigen keine besonderen Vorbereitung für eine korrekte
+Ausführung.
+
+UNIT-Tests werden mit "Unit" getaggt.

@@ -1,0 +1,28 @@
+== Grundlegende Architektur
+
+Aktuell wurde die Datenzugriffsschicht implementiert. Hierbei wurde penibel
+darauf geachtet, dass immer nur gegen eine Schnittstelle programmiert wird. Das
+führt zu austauschbaren Komponenten.
+
+Die aktuelle Zugriffsschicht wurde mit Ado.Net implementiert und stützt sich auf
+ein flexibles und generisches Ado-Template.
+
+Zukünftig Wird diese Anwendung eine 3-Schichten Applikation bestehend aus:
+
+* API
+* Business Layer
+* Data Access Layer
+
+=== Projektübersicht
+CaaS.Core:: Definiert Schnittstellen, Domänenmodelle, Engines, Transferklassen
+und Repositories.
+
+CaaS.Core.Common:: Generelle Ado Klassen
+
+CaaS.Util:: Allgemeine Hilfsfunktionen
+
+CaaS.Api:: API
+
+CaaS.Core.Tests:: Tests für CaaS.Core
+
+CaaS.Api.Tests:: Tests für CaaS.APi

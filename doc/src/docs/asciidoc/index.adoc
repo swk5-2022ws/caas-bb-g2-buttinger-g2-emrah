@@ -19,6 +19,10 @@ endif::[]
 // . Entwickler, die den Aufbau und die wichtigsten Funktionen dieses Projekts kennen lernen möchten
 // . Ingenieure, die Hilfestellung bei der Problembehandlung benötigen.
 
+include::chapters/jira.adoc[leveloffset=+1]
 include::chapters/datamodel.adoc[leveloffset=+1]
 include::chapters/database.adoc[leveloffset=+1]
-include::chapters/jira.adoc[leveloffset=+1]
+include::chapters/baseflow.adoc[leveloffset=+1]
+include::chapters/adoengine.adoc[leveloffset=+1]
+include::chapters/tests.adoc[leveloffset=+1]
+include::chapters/discountengine.adoc[leveloffset=+1]

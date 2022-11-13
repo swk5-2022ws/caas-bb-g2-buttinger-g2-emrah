@@ -15,11 +15,13 @@ In Übereinstimmung haben wir entschieden, dass ein Coupon nur ein mal verwendet
 
 ==== DiscountAction
 Die DiscountAction Tabelle bezieht sich auf mögliche Aktionen eines Discounts. Als Aktionen sehen wir beispielsweise Senkungen um einen Fixwert oder um einen prozentuellen Wert. Die Aktionen können unabhängig erstellt werden. 
+In der Spalte Action befindet sich eine serialisierte Instanz einer Ableitung von BaseDiscountAction.
 
 ==== DiscountRule
 Die DiscountRule Tabelle bezieht sich auf mögliche Regeln eines Discounts.
 Als Regeln werden beispielsweise Zeiträume oder gewisse Produkte angesehen.
 Die Regeln können ebenfalls unabhängig erstellt werden
+In der Spalte Ruleset befindet sich eine serialisierte Instanz einer Ableitung von BaseDiscountRule.
 
 ==== Discount
 Der Discount an sich ist die freie Zusammenstellung zwischen einer Aktion und einer Regel. Der Discount kann vom Shopbetreiber frei verwaltet werden und mit unterschiedlichen Zusammensetzungen von einer Aktion und einer Regel zusammengestellt werden.
