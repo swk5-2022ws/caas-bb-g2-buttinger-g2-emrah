@@ -1,9 +1,4 @@
 ﻿using CaaS.Core.Domainmodels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CaaS.Core.Interfaces.Repository
 {
@@ -23,7 +18,7 @@ namespace CaaS.Core.Interfaces.Repository
         Task<ProductCart?> Get(int productId, int cartId);
 
         /// <summary>
-        /// Retrieves a product from cart by the cartId
+        /// Retrieves a product list from cart by the cartId
         /// </summary>
         /// <param name="id">The cart id</param>
         Task<IList<ProductCart>> GetByCartId(int id);

@@ -78,7 +78,7 @@ namespace Caas.Core.Common.Ado
 
         internal static void BuildUpdateCommand<T>(DbCommand command, object valuesToUpdate, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
-            var commandText = $"UPDATE {typeof(T).Name} SET ";
+            var commandText = $"UPDATE `{typeof(T).Name}` SET ";
             var parameters = AdoBuilder.ParametersToDictinary(valuesToUpdate, false);
             foreach (var param in parameters)
             {
@@ -98,7 +98,7 @@ namespace Caas.Core.Common.Ado
         /// <param name="valuesToPass">The values object passed. This must map to a single line of an insert statement.</param>
         internal static IList<string> BuildInsertCommand(DbCommand command, string tableName, object valuesToPass, IList<string>? alreadyIncludedNames = null)
         {
-            var commandText = $"INSERT INTO {tableName} (";
+            var commandText = $"INSERT INTO `{tableName}` (";
             var parameters = AdoBuilder.ParametersToDictinary(valuesToPass, false);
             var valuesText = $"VALUES(";
 
@@ -121,7 +121,7 @@ namespace Caas.Core.Common.Ado
             commandText += $") {valuesText});";
             // fetch the max id if available, so we can return the newly inserted id
             if (keys.Contains("Id"))
-                commandText += $"SELECT MAX(Id) FROM {tableName};";
+                commandText += $"SELECT MAX(Id) FROM `{tableName}`;";
             command.CommandText += commandText;
             return parameters.Keys.ToList();
         }
@@ -135,7 +135,7 @@ namespace Caas.Core.Common.Ado
         /// <param name="whereExpression">the where expressions used to create filters as SQL</param>
         internal static void BuildQueryCommand<T>(DbCommand command, string? joins = null, object? whereExpression = null, bool isSoftDeletionExcluded = true)
         {
-            string commandText = $"SELECT * FROM {typeof(T).Name} t ";
+            string commandText = $"SELECT * FROM `{typeof(T).Name}` t ";
 
             if (!string.IsNullOrEmpty(joins))
             {
