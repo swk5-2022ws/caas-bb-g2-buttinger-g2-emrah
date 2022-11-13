@@ -13,6 +13,8 @@ public record Coupon : ISoftDeleteable
     public int Id { get; set; }
     public int? CartId { get; set; }
     public int ShopId { get; set; }
+
+    public string CouponKey { get; set; }
     public double Value { get; set; }
     public DateTime? Deleted { get; set; }
 }

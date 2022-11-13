@@ -7,5 +7,8 @@
 //var update = new DiscountRuleUpdateSqlGenerator().GenerateRulesForExistingDiscountRules();
 //Console.WriteLine(string.Join(" ", update));
 
-var update = new CustomerUpdateSqlGenerator().GenerateCartIdForExistingCustomers();
+//var update = new CustomerUpdateSqlGenerator().GenerateCartIdForExistingCustomers();
+//Console.WriteLine(string.Join(" ", update));
+
+var update = new CouponUpdateSqlGenerator().GenerateCouponKeyForExistingCoupons();
 Console.WriteLine(string.Join(" ", update));
