@@ -681,5 +681,7 @@ UPDATE Product SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 
 -- ALTER TABLE `DiscountAction` DROP `ActionType`;"
 -- ALTER TABLE `DiscountAction` ADD `Action` MEDIUMTEXT NOT NULL AFTER `Name`;
 
-GRANT ALL ON *.* TO 'root'@'%';
-GRANT ALL ON *.* TO 'service'@'%';
+CREATE USER 'service'@'db' IDENTIFIED BY 'mypass123';
+
+ GRANT ALL ON *.* TO 'root'@'db';
+ GRANT ALL ON *.* TO 'service'@'db';

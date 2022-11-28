@@ -2,7 +2,7 @@ FROM mysql
 
 # copy the schema init script so mysql will use it to initialize the schema
 ADD ./init.sql /docker-entrypoint-initdb.d
-#COPY ./my.cnf /etc/mysql/conf.d
+COPY ./my.cnf /etc/mysql/conf.d
 
 RUN chown -R mysql:root /var/lib/mysql/
 
