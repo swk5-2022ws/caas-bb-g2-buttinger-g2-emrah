@@ -1,0 +1,22 @@
+FROM mysql
+
+# copy the schema init script so mysql will use it to initialize the schema
+ADD ./init.sql /docker-entrypoint-initdb.d
+#COPY ./my.cnf /etc/mysql/conf.d
+
+RUN chown -R mysql:root /var/lib/mysql/
+
+# set necessary environment properties for mysql
+ENV MYSQL_DATABASE=caas
+ENV MYSQL_USER=service
+ENV MYSQL_PASSWORD=mypass123
+ENV MYSQL_ROOT_PASSWORD=mypass123
+
+ADD init.sql /etc/mysql/data.sql
+
+# initialize mysql db
+RUN sed -i 's/MYSQL_DATABASE/'$MYSQL_DATABASE'/g' /etc/mysql/data.sql
+RUN cp /etc/mysql/data.sql /docker-entrypoint-initdb.d
+
+# expose the db port
+EXPOSE 3306

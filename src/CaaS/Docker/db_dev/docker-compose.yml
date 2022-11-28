@@ -1,20 +1,22 @@
-version: '3.4'
+version: '3'
 
 services:
-  caas.api:
-    image: ${DOCKER_REGISTRY-}caasapi
+  tests:
     build:
       context: .
-      dockerfile: CaaS.Api\Dockerfile
-    depends_on:
-      - db
+      dockerfile: Test-Dockerfile
+    container_name: caas-int-tests
+    environment:
+      - environment=integration
     networks:
       - caasnet
-
+    depends_on:
+      db:
+        condition: service_healthy
   db:
     build:
       context: .
-      dockerfile: Docker\dev_db\Dev-Db-Dockerfile
+      dockerfile: Dev-Db-Dockerfile
     restart: always
     container_name: db
     environment:
