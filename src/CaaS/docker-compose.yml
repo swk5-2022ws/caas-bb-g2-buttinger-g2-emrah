@@ -7,16 +7,17 @@ services:
       context: .
       dockerfile: CaaS.Api\Dockerfile
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
-      - caasnet
+      - caasnetdebug
 
   db:
     build:
-      context: .
-      dockerfile: Docker\dev_db\Dev-Db-Dockerfile
+      context: '..\'
+      dockerfile: Dev-Db-Dockerfile
     restart: always
-    container_name: db
+    container_name: db-debug
     environment:
       - MYSQL_DATABASE=caas
       - MYSQL_USER=service
@@ -25,16 +26,13 @@ services:
       - DB_HOST=db
       - MYSQL_HOST=db
       - MYSQL_ROOT_HOST=db
-      #- MYSQL_TCP_PORT=3306
     ports:
       - 3306:3306
     networks:
-      - caasnet
-        # aliases:
-        #   - db
+      - caasnetdebug
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 5s
-      retries: 10
+      timeout: 2s
+      retries: 20
 networks:
-  caasnet:
+  caasnetdebug:
