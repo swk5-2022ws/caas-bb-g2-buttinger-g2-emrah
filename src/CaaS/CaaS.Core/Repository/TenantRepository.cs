@@ -7,7 +7,7 @@ namespace CaaS.Core.Repository
 {
     public class TenantRepository : AdoRepository, ITenantRepository
     {
-        public TenantRepository(AdoTemplate adoTemplate) : base(adoTemplate)
+        public TenantRepository(IAdoTemplate adoTemplate) : base(adoTemplate)
         {
 
         }

@@ -12,7 +12,7 @@ namespace CaaS.Core.Repository
 {
     public class DiscountRuleRepository : AdoRepository, IDiscountRuleRepository
     {
-        public DiscountRuleRepository(AdoTemplate template) : base(template) { }
+        public DiscountRuleRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<int> Create(DiscountRule action) =>
                     (await template.InsertAsync<DiscountRule>(action, true))?.ElementAt(0) ?? 0;

@@ -7,7 +7,7 @@ namespace CaaS.Core.Repository
 {
     public class OrderRepository : AdoRepository, IOrderRepository
     {
-        public OrderRepository(AdoTemplate template) : base(template) { }
+        public OrderRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<int> Create(Cart cart) =>
                (await template.InsertAsync<Order>(new Order(0, cart.Id, 0, DateTime.Now)))?.ElementAt(0) ?? 0;

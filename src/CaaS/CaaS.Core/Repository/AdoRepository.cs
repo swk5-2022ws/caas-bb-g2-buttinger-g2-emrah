@@ -9,9 +9,9 @@ namespace CaaS.Core.Repository
 {
     public abstract class AdoRepository
     {
-        protected readonly AdoTemplate template;
+        protected readonly IAdoTemplate template;
 
-        public AdoRepository(AdoTemplate adoTemplate)
+        public AdoRepository(IAdoTemplate adoTemplate)
         {
             this.template = adoTemplate;
         }

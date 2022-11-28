@@ -13,7 +13,7 @@ namespace CaaS.Core.Repository
 
     public class DiscountRepository : AdoRepository, IDiscountRepository
     {
-        public DiscountRepository(AdoTemplate template) : base(template) { }
+        public DiscountRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<Discount?> Get(int id) =>
         await template.QueryFirstOrDefaultAsync(DiscountMapping.ReadDiscountOnly, whereExpression: new

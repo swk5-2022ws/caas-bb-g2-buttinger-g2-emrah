@@ -2,13 +2,12 @@
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository.Mappings;
-using CaaS.Core.Transferrecordes;
 
 namespace CaaS.Core.Repository
 {
     public class CouponRepository : AdoRepository, ICouponRepository
     {
-        public CouponRepository(AdoTemplate adoTemplate) : base(adoTemplate)
+        public CouponRepository(IAdoTemplate adoTemplate) : base(adoTemplate)
         {
         }
 

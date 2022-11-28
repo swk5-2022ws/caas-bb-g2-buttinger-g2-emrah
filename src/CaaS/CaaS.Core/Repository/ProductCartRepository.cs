@@ -7,7 +7,7 @@ namespace CaaS.Core.Repository
 {
     public class ProductCartRepository : AdoRepository, IProductCartRepository
     {
-        public ProductCartRepository(AdoTemplate template) : base(template) { }
+        public ProductCartRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<int> Create(ProductCart productCart) =>
             (await template.InsertAsync<ProductCart>(productCart, false))?.ElementAt(0) ?? 0;

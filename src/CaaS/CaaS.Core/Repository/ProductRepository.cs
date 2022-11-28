@@ -7,7 +7,7 @@ namespace CaaS.Core.Repository
 {
     public class ProductRepository : AdoRepository, IProductRepository
     {
-        public ProductRepository(AdoTemplate adoTemplate) : base(adoTemplate)
+        public ProductRepository(IAdoTemplate adoTemplate) : base(adoTemplate)
         {
 
         }

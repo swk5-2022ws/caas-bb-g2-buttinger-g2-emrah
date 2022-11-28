@@ -7,7 +7,7 @@ namespace CaaS.Core.Repository
 {
     public class CustomerRepository : AdoRepository, ICustomerRepository
     {
-        public CustomerRepository(AdoTemplate template): base(template) { }
+        public CustomerRepository(IAdoTemplate template): base(template) { }
         public async Task<int> Create(Customer customer) =>
             (await template.InsertAsync<Customer>(customer))?.ElementAt(0) ?? 0;
 

@@ -3,7 +3,6 @@ using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository.Mappings;
 using CaaS.Core.Repository;
-using CaaS.Core.Transferrecordes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace CaaS.Core.Repository
 {
     public class DiscountActionRepository : AdoRepository, IDiscountActionRepository
     {
-        public DiscountActionRepository(AdoTemplate template) : base(template) { }
+        public DiscountActionRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<int> Create(DiscountAction action) =>
              (await template.InsertAsync<DiscountAction>(action, true))?.ElementAt(0) ?? 0;

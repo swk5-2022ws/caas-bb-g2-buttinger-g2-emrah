@@ -8,7 +8,7 @@ namespace CaaS.Core.Repository
 {
     public class CartRepository : AdoRepository, ICartRepository
     {
-        public CartRepository(AdoTemplate adoTemplate) : base(adoTemplate)
+        public CartRepository(IAdoTemplate adoTemplate) : base(adoTemplate)
         {
         }
 

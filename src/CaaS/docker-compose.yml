@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Docker\db_dev\Dockerfile
+
+
+  caas.api:
+    image: ${DOCKER_REGISTRY-}caasapi
+    build:
+      context: .
+      dockerfile: CaaS.Api\Dockerfile
+    depends_on:
+      - db

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Caas.Core.Common.Ado
 {
-    public class AdoTemplate
+    public class AdoTemplate : IAdoTemplate
     {
         private readonly IConnectionFactory connectionFactory;
 
