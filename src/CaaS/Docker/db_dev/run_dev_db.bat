@@ -1,1 +1,0 @@
-docker run -d --name caas-dev-db -p 3306:3306 caas-dev-db

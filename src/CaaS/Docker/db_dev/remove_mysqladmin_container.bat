@@ -1,1 +1,0 @@
-docker container rm -f caas-dev-myphpadmin

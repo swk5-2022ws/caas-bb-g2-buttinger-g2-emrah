@@ -5,19 +5,19 @@ services:
     image: ${DOCKER_REGISTRY-}caasapi
     build:
       context: .
-      dockerfile: CaaS.Api\Dockerfile
+      dockerfile: CaaS.Api/Dockerfile
     depends_on:
       db:
         condition: service_healthy
     networks:
-      - caasnetdebug
+      - caasnetdevelopement
 
   db:
     build:
-      context: '..\'
+      context: .
       dockerfile: Dev-Db-Dockerfile
     restart: always
-    container_name: db-debug
+    container_name: db-development
     environment:
       - MYSQL_DATABASE=caas
       - MYSQL_USER=service
@@ -29,10 +29,10 @@ services:
     ports:
       - 3306:3306
     networks:
-      - caasnetdebug
+      - caasnetdevelopement
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
-      timeout: 2s
+      timeout: 5s
       retries: 20
 networks:
-  caasnetdebug:
+  caasnetdevelopement:

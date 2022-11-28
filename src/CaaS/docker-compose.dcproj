@@ -3,9 +3,9 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>7caeb4d4-2632-4286-9b37-9a92b4157229</ProjectGuid>
+    <ProjectGuid>a0226f9c-c4f8-4f4d-a2e8-b58d3cbec6b1</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://{ServiceIPAddress}{ServicePort}/swagger</DockerServiceUrl>
+    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>caas.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
