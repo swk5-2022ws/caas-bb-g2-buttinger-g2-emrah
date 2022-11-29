@@ -1,4 +1,6 @@
-﻿namespace CaaS.Api.Transfers
+﻿using System.Text.Json.Serialization;
+
+namespace CaaS.Api.Transfers
 {
-    public record TCreateShop(int Id, string Label, int TenantId);
+    public record TCreateShop([property:JsonRequired] int Id, [property: JsonRequired] string Label, [property: JsonRequired] int TenantId);
 }

@@ -3,7 +3,9 @@ using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic;
 using CaaS.Core.Repository;
+using Microsoft.AspNetCore.Diagnostics;
 using System.Configuration;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,6 @@ builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IShopLogic, ShopLogic>();
 builder.Services.AddScoped<IAdoTemplate, AdoTemplate>();
 builder.Services.AddAutoMapper(typeof(Program));
-
 
 var app = builder.Build();
 
