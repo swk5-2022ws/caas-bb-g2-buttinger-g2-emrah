@@ -2,6 +2,7 @@
 using CaaS.Api.Transfers;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
+using CaaS.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Tls;
@@ -19,10 +20,10 @@ namespace CaaS.Api.Controllers
 
         public ShopController(IShopLogic shopLogic, IMapper mapper)
         {
-            this.shopLogic = shopLogic
-                ?? throw new ArgumentNullException($"Parameter {nameof(shopLogic)} is null.");
+            this.shopLogic = shopLogic 
+               ?? throw ExceptionUtil.ParameterNullException(nameof(shopLogic));
             this.mapper = mapper
-                ?? throw new ArgumentNullException($"Parameter {nameof(mapper)} is null");
+               ?? throw ExceptionUtil.ParameterNullException(nameof(mapper));
         }
 
         [HttpGet]

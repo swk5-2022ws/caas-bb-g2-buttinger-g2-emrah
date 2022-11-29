@@ -18,7 +18,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IShopLogic, ShopLogic>();
+builder.Services.AddScoped<IProductLogic, ProductLogic>();
 builder.Services.AddScoped<IAdoTemplate, AdoTemplate>();
 builder.Services.AddAutoMapper(typeof(Program));
 
