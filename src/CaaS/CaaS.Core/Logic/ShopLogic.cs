@@ -29,6 +29,11 @@ namespace CaaS.Core.Logic
             return await shopRepository.Create(shop);
         }
 
+        public Task<Shop?> Get(int id)
+        {
+            return shopRepository.Get(id);
+        }
+
         public Task<IList<Shop>> GetByTenantId(string tenantId)
         {
             throw new NotImplementedException();

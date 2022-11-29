@@ -85,6 +85,13 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(isSuccess, Is.False);
         }
 
+        [Test]
+        public async Task TestGetByTenantIdWithValidIdReturnsShops()
+        {
+            var shops = await sut.GetByTenantId(1);
+            Assert.That(shops.Count, Is.EqualTo(1));
+        }
+
         #region Asserts
         private static void AssertShop(int id, int tenantId, string label, Guid appKey, Shop? shop)
         {

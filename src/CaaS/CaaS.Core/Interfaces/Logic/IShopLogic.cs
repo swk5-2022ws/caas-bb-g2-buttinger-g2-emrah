@@ -16,6 +16,12 @@ namespace CaaS.Core.Interfaces.Logic
         /// </summary>
         /// <param name="shop">Shop to create.</param>
         /// <returns>The Id of the created shop.</returns>
-        Task<int> Create(Shop shop); 
+        Task<int> Create(Shop shop);
+        /// <summary>
+        /// Returns a shop by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<Shop?> Get(int id);
     }
 }
