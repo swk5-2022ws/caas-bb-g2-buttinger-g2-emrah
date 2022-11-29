@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CaaS.Api.Transfers;
+using CaaS.Api.Util;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Util;
@@ -11,19 +12,22 @@ using System.Net;
 
 namespace CaaS.Api.Controllers
 {
+    [ApiConventionType(typeof(WebApiConventions))]
     [Route("api/[controller]")]
     [ApiController]
     public class ShopController : ControllerBase
     {
         private readonly IShopLogic shopLogic;
         private readonly IMapper mapper;
+        private readonly ILogger logger;
 
-        public ShopController(IShopLogic shopLogic, IMapper mapper)
+        public ShopController(IShopLogic shopLogic, IMapper mapper, ILogger<ShopController> logger)
         {
             this.shopLogic = shopLogic 
                ?? throw ExceptionUtil.ParameterNullException(nameof(shopLogic));
             this.mapper = mapper
                ?? throw ExceptionUtil.ParameterNullException(nameof(mapper));
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -37,7 +41,7 @@ namespace CaaS.Api.Controllers
         public async Task<ActionResult> CreateShop([FromBody] TCreateShop shop)
         {
             try
-            {
+            {   
                 var shopId = await shopLogic.Create(mapper.Map<Shop>(shop));
                 var newShop = shop with { Id = shopId };
                 var createdShop = shop;
@@ -52,12 +56,6 @@ namespace CaaS.Api.Controllers
                 // do not deliver stack trace to end user
                 return BadRequest(ex.Message);
             }
-            catch(Exception ex)
-            {
-                // logging?
-                return StatusCode(500);
-            }
-
         }
 
     }
