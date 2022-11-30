@@ -41,7 +41,11 @@ namespace CaaS.Core.Logic
 
         public Task<bool> Update(Shop shop)
         {
-            throw new NotImplementedException();
+            if (shop.Id == 0) throw new ArgumentException("Can not update a new shop");
+            if (shop.TenantId == 0) throw new ArgumentException("Can not update a shop without a tenant");
+            if (string.IsNullOrWhiteSpace(shop.Label)) throw new ArgumentException($"Can not update a shop without a label");
+            if (shop.AppKey == Guid.Empty) throw new ArgumentException("Can not update a shop without a AppKey");
+            return shopRepository.Update(shop);
         }
     }
 }

@@ -19,16 +19,20 @@ namespace CaaS.Core.Test.Logic
     public class ShopLogicTest
     {
         IShopLogic sut;
+        ITenantRepository tenantRepository;
+        IShopRepository shopRepository;
 
         [SetUp]
         public void InitializeSut()
         {
-            ITenantRepository tenantRepository = new TenantRepositoryStub(new Dictionary<int, Tenant>()
+            tenantRepository = new TenantRepositoryStub(new Dictionary<int, Tenant>()
             {
-                {1, new Tenant(1, "test@mail.com", "xaver") }
+                {1, new Tenant(1, "test@mail.com", "1") },
+                {2, new Tenant(2, "test@mail2.com", "2") }
+
             });
 
-            IShopRepository shopRepository = new ShopRepositoryStub(new Dictionary<int, Shop>()
+            shopRepository = new ShopRepositoryStub(new Dictionary<int, Shop>()
             {
                 {1, new Shop(1, 1, Guid.NewGuid(), "shop") }
             });
@@ -68,5 +72,25 @@ namespace CaaS.Core.Test.Logic
             var shop = await sut.Get(int.MaxValue);
             Assert.That(shop, Is.Null);
         }
+
+        [Test]
+        public async Task UpdateWithValidShopUpdatesShop()
+        {
+            Guid appkey = Guid.NewGuid();
+            var shop = await shopRepository.Get(1);
+            shop.Label = "neu";
+            shop.AppKey = appkey;
+            shop.TenantId = 2;
+            var result = await sut.Update(shop);
+            shop = await shopRepository.Get(1);
+            Assert.Multiple(() =>
+            {
+                Assert.That(appkey, Is.EqualTo(shop.AppKey));
+                Assert.That("neu", Is.EqualTo(shop.Label));
+                Assert.That(2, Is.EqualTo(shop.TenantId));
+            });
+        }
+
+        // TODO test update with invalid parameters
     }
 }

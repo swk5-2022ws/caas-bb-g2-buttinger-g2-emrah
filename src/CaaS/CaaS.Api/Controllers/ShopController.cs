@@ -68,19 +68,20 @@ namespace CaaS.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> UpdateShop([FromBody] TShop shop)
+        public async Task<ActionResult> UpdateShop([FromBody] TShop tShop)
         {
             try
             {
-                var isShopExist = shopLogic.Get(shop.Id) != null;
-                if (!isShopExist)
+                var isShopIdWrong = await shopLogic.Get(tShop.Id) == null;
+                if (isShopIdWrong)
                     return NotFound();
 
-                var isTenantExist = tenantRepository.Get(shop.TenantId) != null;
-                if (!isTenantExist)
+                var isTenantIdWrong = await tenantRepository.Get(tShop.TenantId) == null;
+                if (isTenantIdWrong)
                     return NotFound();
 
-                var isUpdateSuccess = await shopLogic.Update(mapper.Map<Shop>(shop));
+                var shop = mapper.Map<Shop>(tShop);
+                var isUpdateSuccess = await shopLogic.Update(shop);
                 return isUpdateSuccess ?  NoContent() : new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
             catch (ArgumentException ex)
