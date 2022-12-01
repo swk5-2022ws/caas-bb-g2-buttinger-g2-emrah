@@ -25,6 +25,17 @@ namespace CaaS.Core.Test.Util.MemoryRepositories
             return Task.FromResult(id);
         }
 
+        public Task<bool> Delete(int id)
+        {
+            if (shops.TryGetValue(id, out Shop? shop))
+            {
+                shops.Remove(id);
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        }
+
         public Task<Shop?> Get(int id)
         {
             shops.TryGetValue(id, out Shop? shop);

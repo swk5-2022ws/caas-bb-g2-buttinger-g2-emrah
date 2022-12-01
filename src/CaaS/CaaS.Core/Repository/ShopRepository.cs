@@ -40,5 +40,7 @@ namespace CaaS.Core.Repository
                 );
 
         public async Task<bool> Update(Shop shop) => (await template.UpdateAsync<Shop>(shop, new { Id = shop.Id })) > 0;
+
+        public async Task<bool> Delete(int id) => (await template.DeleteAsync<Shop>(new { Id = id }));
     }
 }

@@ -30,5 +30,10 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="shop">A shop to be updated.</param>
         Task<bool> Update(Shop shop);
+
+        /// <summary>
+        /// Deletes a shop.
+        /// </summary>
+        Task<bool> Delete(int id);
     }
 }

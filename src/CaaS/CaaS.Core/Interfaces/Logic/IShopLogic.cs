@@ -9,7 +9,13 @@ namespace CaaS.Core.Interfaces.Logic
 {
     public interface IShopLogic
     {
-        Task<IList<Shop>> GetByTenantId(string tenantId);
+        /// <summary>
+        /// Get all shops for a tenant
+        /// </summary>
+        Task<IList<Shop>> GetByTenantId(int tenantId);
+        /// <summary>
+        /// Updates a shop
+        /// </summary>
         Task<bool> Update(Shop shop);
         /// <summary>
         /// Creates a new shop. A default AppKey will be generated.
@@ -20,8 +26,11 @@ namespace CaaS.Core.Interfaces.Logic
         /// <summary>
         /// Returns a shop by id
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         Task<Shop?> Get(int id);
+
+        /// <summary>
+        /// Deletes a shop by id
+        /// </summary>
+        Task<bool> Delete(int id);
     }
 }

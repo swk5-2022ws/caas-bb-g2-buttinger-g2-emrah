@@ -87,7 +87,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
+        [Test, Rollback]
         public async Task TestUpdateWithValidShopReturnsNoContentResult()
         {
             TShop shop = new TShop(1, "updated", 1, Guid.NewGuid());
@@ -95,7 +95,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
+        [Test, Rollback]
         public async Task TestUpdateWithInvaliTenantIdReturnsNotFoundResult()
         {
             TShop shop = new TShop(1, "updated", int.MaxValue, Guid.NewGuid());
@@ -103,7 +103,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
+        [Test, Rollback]
         public async Task TestUpdateWithInvaliShopIdReturnsNotFoundResult()
         {
             TShop shop = new TShop(int.MaxValue, "updated", 1, Guid.NewGuid());
@@ -111,12 +111,42 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test]
+        [Test, Rollback]
         public async Task TestUpdateWithInvaliLabelReturnsBadRequestResult()
         {
             TShop shop = new TShop(1, "", 1, Guid.NewGuid());
             BadRequestObjectResult result = (BadRequestObjectResult)await sut.UpdateShop(shop);
             Assert.That(result, Is.Not.Null);
         }
+
+        [Test, Rollback]
+        public async Task TestDeleteWithValidIdReturnsNoContentResult()
+        {
+            NoContentResult response = (NoContentResult)await sut.DeleteShop(1);
+            Assert.That(response, Is.Not.Null);
+        }
+
+        [Test, Rollback]
+        public async Task TestDeleteWithInvalidIdReturnsNotFoundResult()
+        {
+            NotFoundResult response = (NotFoundResult)await sut.DeleteShop(int.MaxValue);
+            Assert.That(response, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task TestGetShopsByTenantIdWithValidIdReturnsOkObjectResult()
+        {
+            OkObjectResult response = (OkObjectResult)await sut.GetShopsByTenantId(1);
+            Assert.That(response, Is.Not.Null);
+        }
+
+        [Test]
+        public async Task TestGetShopsByTenantIdWithInvalidIdReturnsNotFoundResult()
+        {
+            NotFoundResult response = (NotFoundResult)await sut.GetShopsByTenantId(int.MaxValue);
+            Assert.That(response, Is.Not.Null);
+        }
+
+
     }
 }

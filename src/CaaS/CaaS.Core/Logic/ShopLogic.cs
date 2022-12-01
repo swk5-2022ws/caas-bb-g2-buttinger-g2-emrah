@@ -29,14 +29,19 @@ namespace CaaS.Core.Logic
             return await shopRepository.Create(shop);
         }
 
+        public async Task<bool> Delete(int id)
+        {
+            return await shopRepository.Delete(id);
+        }
+
         public Task<Shop?> Get(int id)
         {
             return shopRepository.Get(id);
         }
 
-        public Task<IList<Shop>> GetByTenantId(string tenantId)
+        public Task<IList<Shop>> GetByTenantId(int tenantId)
         {
-            throw new NotImplementedException();
+            return shopRepository.GetByTenantId(tenantId);
         }
 
         public Task<bool> Update(Shop shop)

@@ -91,6 +91,39 @@ namespace CaaS.Core.Test.Logic
             });
         }
 
-        // TODO test update with invalid parameters
+        [TestCase(1, "")]
+        [TestCase(1, null)]
+        [TestCase(int.MaxValue, null)]
+        [Test]
+        public async Task UpdateWithInvalidArgumentsThrowsException(int tenantId, string label)
+        {
+            Guid appkey = Guid.NewGuid();
+            var shop = await shopRepository.Get(1);
+            shop!.Label = label;
+            shop.AppKey = appkey;
+            shop.TenantId = tenantId;
+            Assert.ThrowsAsync<ArgumentException>(async () => await sut.Update(shop) );
+        }
+
+        [Test]
+        public async Task DeleteWithValidIdDeletesShop()
+        {
+            await shopRepository.Delete(1);
+            var shop = await shopRepository.Get(1);
+            Assert.That(shop, Is.Null);
+        }
+
+        [Test]
+        public async Task DeleteWithValidIdReturnsTrue()
+        {
+            Assert.That(await shopRepository.Delete(1), Is.True);
+        }
+
+        [Test]
+        public async Task DeleteWithInvalidIdReturnsFalse()
+        {
+            Assert.IsFalse(await shopRepository.Delete(int.MaxValue));
+        }
+
     }
 }
