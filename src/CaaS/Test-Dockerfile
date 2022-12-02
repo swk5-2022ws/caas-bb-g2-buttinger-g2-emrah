@@ -1,9 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0
 
 WORKDIR /opt/CaaS
-COPY ./CaaS .
-RUN dotnet tool restore \
-  && dotnet build CaaS.sln
+COPY . .
+RUN ls
+
+# current dotnet sdk is buggy with dcproj files -> remove it since we only need it for development
+RUN dotnet sln CaaS.sln remove docker-compose.dcproj && dotnet tool restore \
+  && dotnet build -c "Release" CaaS.sln
 
 ENV environment integration
 

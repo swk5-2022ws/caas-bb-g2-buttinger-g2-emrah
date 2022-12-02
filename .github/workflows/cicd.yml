@@ -14,19 +14,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build database image
-        run: docker build --tag caas-dev-db ./src/CaaS/Docker/db_dev && d
-      - name: Run docker image
-        run: docker run ---name caas-dev-db -d -p 3306:3306 caas-dev-db
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 6.0.x
-      - name: Restore dependencies
-        run: dotnet restore ./src/Caas/
-      - name: Build
-        run: dotnet build --no-restore ./src/Caas/
-      - name: Test
-        run: dotnet test --no-build --verbosity normal ./src/Caas/
+      - uses: isbang/compose-action@v1.4.1
+      with: "./src/CaaS/docker-compose-integration-tests.yml"
+      # - name: Build
+      #run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml build
+      #- name: Run
+      #  run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml run
 
   
