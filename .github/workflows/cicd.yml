@@ -10,7 +10,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker:
+  tests:
+    name: run all tests
     timeout-minutes: 10
     runs-on: ubuntu-latest
     
