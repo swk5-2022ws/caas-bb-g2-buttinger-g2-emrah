@@ -10,13 +10,15 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  docker:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v3
       - name: Build
         run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml build
-     - name: Run
-       run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml run
+      - name: Run
+        run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml run
 
   
