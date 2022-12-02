@@ -19,6 +19,6 @@ jobs:
       - name: Build
         run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml build
       - name: Run
-        run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml run
+        run: docker compose -f ./src/CaaS/docker-compose-integration-tests.yml up
 
   
