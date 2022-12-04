@@ -76,14 +76,14 @@ namespace CaaS.Api.Test.Controllers
         [Test]
         public async Task TestGetWithValidIdReturnsOkObjectResult()
         {
-            OkObjectResult result = (OkObjectResult)await sut.GetShopById(1);
+            OkObjectResult result = (OkObjectResult)await sut.GetShopById(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), 1);
             Assert.That(result, Is.Not.Null);
         }
 
         [Test]
         public async Task TestGetWithInvalidIdReturnsNotFoundResult()
         {
-            NotFoundResult result = (NotFoundResult)await sut.GetShopById(int.MaxValue);
+            NotFoundObjectResult result = (NotFoundObjectResult)await sut.GetShopById(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), int.MaxValue);
             Assert.That(result, Is.Not.Null);
         }
 
@@ -91,7 +91,7 @@ namespace CaaS.Api.Test.Controllers
         public async Task TestUpdateWithValidShopReturnsNoContentResult()
         {
             TShop shop = new TShop(1, "updated", 1, Guid.NewGuid());
-            NoContentResult result = (NoContentResult)await sut.UpdateShop(shop);
+            NoContentResult result = (NoContentResult)await sut.UpdateShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             Assert.That(result, Is.Not.Null);
         }
 
@@ -99,7 +99,7 @@ namespace CaaS.Api.Test.Controllers
         public async Task TestUpdateWithInvaliTenantIdReturnsNotFoundResult()
         {
             TShop shop = new TShop(1, "updated", int.MaxValue, Guid.NewGuid());
-            NotFoundResult result = (NotFoundResult)await sut.UpdateShop(shop);
+            NotFoundResult result = (NotFoundResult)await sut.UpdateShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             Assert.That(result, Is.Not.Null);
         }
 
@@ -107,7 +107,7 @@ namespace CaaS.Api.Test.Controllers
         public async Task TestUpdateWithInvaliShopIdReturnsNotFoundResult()
         {
             TShop shop = new TShop(int.MaxValue, "updated", 1, Guid.NewGuid());
-            NotFoundResult result = (NotFoundResult)await sut.UpdateShop(shop);
+            NotFoundObjectResult result = (NotFoundObjectResult)await sut.UpdateShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             Assert.That(result, Is.Not.Null);
         }
 
@@ -115,21 +115,21 @@ namespace CaaS.Api.Test.Controllers
         public async Task TestUpdateWithInvaliLabelReturnsBadRequestResult()
         {
             TShop shop = new TShop(1, "", 1, Guid.NewGuid());
-            BadRequestObjectResult result = (BadRequestObjectResult)await sut.UpdateShop(shop);
+            BadRequestObjectResult result = (BadRequestObjectResult)await sut.UpdateShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             Assert.That(result, Is.Not.Null);
         }
 
         [Test, Rollback]
         public async Task TestDeleteWithValidIdReturnsNoContentResult()
         {
-            NoContentResult response = (NoContentResult)await sut.DeleteShop(1);
+            NoContentResult response = (NoContentResult)await sut.DeleteShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), 1);
             Assert.That(response, Is.Not.Null);
         }
 
         [Test, Rollback]
         public async Task TestDeleteWithInvalidIdReturnsNotFoundResult()
         {
-            NotFoundResult response = (NotFoundResult)await sut.DeleteShop(int.MaxValue);
+            NotFoundObjectResult response = (NotFoundObjectResult)await sut.DeleteShop(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), int.MaxValue);
             Assert.That(response, Is.Not.Null);
         }
 
