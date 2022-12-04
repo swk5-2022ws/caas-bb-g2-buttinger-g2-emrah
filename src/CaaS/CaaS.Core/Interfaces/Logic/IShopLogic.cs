@@ -16,7 +16,7 @@ namespace CaaS.Core.Interfaces.Logic
         /// <summary>
         /// Updates a shop
         /// </summary>
-        Task<bool> Update(Shop shop);
+        Task<bool> Update(Guid appKey, Shop shop);
         /// <summary>
         /// Creates a new shop. A default AppKey will be generated.
         /// </summary>
@@ -26,11 +26,11 @@ namespace CaaS.Core.Interfaces.Logic
         /// <summary>
         /// Returns a shop by id
         /// </summary>
-        Task<Shop?> Get(int id);
+        Task<Shop?> Get(Guid appKey, int id);
 
         /// <summary>
         /// Deletes a shop by id
         /// </summary>
-        Task<bool> Delete(int id);
+        Task<bool> Delete(Guid appKey, int id);
     }
 }

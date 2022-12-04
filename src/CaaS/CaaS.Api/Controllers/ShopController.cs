@@ -36,13 +36,29 @@ namespace CaaS.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetShopById([FromRoute] int id)
+        public async Task<ActionResult> GetShopById([FromHeader] Guid appKey, [FromRoute] int id)
         {
-            var shop = await shopLogic.Get(id);
-            if (shop == null)
-                return NotFound();
+            try
+            {
+                var shop = await shopLogic.Get(appKey, id);
+                if (shop == null)
+                    return NotFound();
 
-            return Ok(shop);
+                return Ok(shop);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                // do not deliver stack trace to end user
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("api/shops/{id}")]
@@ -57,12 +73,14 @@ namespace CaaS.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateShop([FromBody] TCreateShop shop)
+        public async Task<ActionResult> CreateShop([FromBody] TCreateShop tShop)
         {
             try
-            {   
-                var shopId = await shopLogic.Create(mapper.Map<Shop>(shop));
-                var newShop = await shopLogic.Get(shopId);
+            {
+
+                var shop = mapper.Map<Shop>(tShop);
+                var shopId = await shopLogic.Create(shop);
+                var newShop = await shopLogic.Get(shop.AppKey, shopId);
                 if(newShop == null)
                     return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 
@@ -80,7 +98,7 @@ namespace CaaS.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> UpdateShop([FromBody] Transfers.TShop tShop)
+        public async Task<ActionResult> UpdateShop([FromHeader] Guid appKey, [FromBody] Transfers.TShop tShop)
         {
             try
             {
@@ -89,8 +107,16 @@ namespace CaaS.Api.Controllers
                     return NotFound();
 
                 var shop = mapper.Map<Shop>(tShop);
-                var isUpdateSuccess = await shopLogic.Update(shop);
+                var isUpdateSuccess = await shopLogic.Update(appKey, shop);
                 return isUpdateSuccess ? NoContent() : NotFound();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -100,11 +126,19 @@ namespace CaaS.Api.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteShop([FromRoute] int id)
+        public async Task<ActionResult> DeleteShop([FromHeader] Guid appKey, [FromRoute] int id)
         {
             try
             {
-                return await shopLogic.Delete(id) ? NoContent() : NotFound();
+                return await shopLogic.Delete(appKey, id) ? NoContent() : NotFound();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {

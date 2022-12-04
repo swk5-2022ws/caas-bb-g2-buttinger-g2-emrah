@@ -34,7 +34,7 @@ namespace CaaS.Core.Test.Logic
 
             shopRepository = new ShopRepositoryStub(new Dictionary<int, Shop>()
             {
-                {1, new Shop(1, 1, Guid.NewGuid(), "shop") }
+                {1, new Shop(1, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), "shop") }
             });
 
 
@@ -44,7 +44,7 @@ namespace CaaS.Core.Test.Logic
         [Test]
         public async Task CreateWithValidShopCreatesShop()
         {
-            var id = await sut.Create(new Shop(0, 1, Guid.NewGuid(), "neu"));
+            var id = await sut.Create(new Shop(0, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), "neu"));
             Assert.That(id, Is.EqualTo(2));
         }
 
@@ -61,31 +61,31 @@ namespace CaaS.Core.Test.Logic
         [Test]
         public async Task GetWithValidShopIdReturnsShopAsync()
         {
-            var shop = await sut.Get(1);
+            var shop = await sut.Get(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), 1);
             Assert.That(shop, Is.Not.Null);
             Assert.That(shop.Id, Is.EqualTo(1));
         }
 
         [Test]
-        public async Task GetWithInvalidShopIdReturnsNull()
+        public void GetWithInvalidShopIdReturnsNull()
         {
-            var shop = await sut.Get(int.MaxValue);
-            Assert.That(shop, Is.Null);
+            Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.Get(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), int.MaxValue));
         }
 
         [Test]
         public async Task UpdateWithValidShopUpdatesShop()
         {
-            Guid appkey = Guid.NewGuid();
+            var appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
+
             var shop = await shopRepository.Get(1);
             shop.Label = "neu";
-            shop.AppKey = appkey;
+            shop.AppKey = appKey;
             shop.TenantId = 2;
-            var result = await sut.Update(shop);
+            var result = await sut.Update(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             shop = await shopRepository.Get(1);
             Assert.Multiple(() =>
             {
-                Assert.That(appkey, Is.EqualTo(shop.AppKey));
+                Assert.That(appKey, Is.EqualTo(shop.AppKey));
                 Assert.That("neu", Is.EqualTo(shop.Label));
                 Assert.That(2, Is.EqualTo(shop.TenantId));
             });
@@ -102,7 +102,7 @@ namespace CaaS.Core.Test.Logic
             shop!.Label = label;
             shop.AppKey = appkey;
             shop.TenantId = tenantId;
-            Assert.ThrowsAsync<ArgumentException>(async () => await sut.Update(shop) );
+            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await sut.Update(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop) );
         }
 
         [Test]
