@@ -38,26 +38,7 @@ namespace CaaS.Core.Repository
             await template.QueryFirstOrDefaultAsync(CouponMapping.ReadCouponOnly, whereExpression: new
             {
                 CouponKey = couponKey
-            });
-
-        public async Task<string?> GetAvailableCouponKey(int id, double value)
-        {
-            var couponsForShop = await GetByShopId(id);
-            
-            if(couponsForShop.Any(coupon => !coupon.CartId.HasValue && coupon.Value == value))
-            {
-                return couponsForShop.First(coupon => !coupon.CartId.HasValue && coupon.Value == value).CouponKey;
-            }
-
-            var key = Guid.NewGuid().ToString();
-
-            int insertedCouponId = await Create(new Coupon(0, id, value)
-            {
-                CouponKey = key
-            });
-
-            return insertedCouponId > 0 ? key : null;
-        }
+            });       
 
         public async Task<IList<Coupon>> GetByShopId(int id) =>
              (IList<Coupon>)await template.QueryAsync(CouponMapping.ReadCouponOnly, whereExpression: new
