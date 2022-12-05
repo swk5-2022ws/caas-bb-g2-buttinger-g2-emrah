@@ -14,8 +14,4 @@
     <ProjectReference Include="..\Caas.Core.Common\Caas.Core.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\Logic\" />
-  </ItemGroup>
-
 </Project>

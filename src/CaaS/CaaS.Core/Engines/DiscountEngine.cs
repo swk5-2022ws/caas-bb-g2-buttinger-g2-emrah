@@ -10,9 +10,9 @@ namespace CaaS.Core.Engines
 {
     public class DiscountEngine : IDiscountEngine
     {
-        public List<Discount> Discounts { get; }
+        public IEnumerable<Discount> Discounts { get; }
 
-        public DiscountEngine(List<Discount> discounts)
+        public DiscountEngine(IEnumerable<Discount> discounts)
         {
             Discounts = discounts;
         }
