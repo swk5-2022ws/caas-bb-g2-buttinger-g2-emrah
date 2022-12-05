@@ -672,6 +672,11 @@ UNLOCK TABLES;
 
 -- Manual modification
 
+ALTER TABLE `Customer` DROP FOREIGN KEY `FK_Customer_Shop`; ALTER TABLE `Customer` ADD CONSTRAINT `FK_Customer_Shop` FOREIGN KEY (`ShopId`) REFERENCES `Shop`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `Customer` DROP FOREIGN KEY ` FK_Customer_Cart`; ALTER TABLE `Customer` ADD CONSTRAINT ` FK_Customer_Cart` FOREIGN KEY (`CartId`) REFERENCES `Cart`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `Cart` DROP FOREIGN KEY `FK_Cart_Customer`; ALTER TABLE `Cart` ADD CONSTRAINT `FK_Cart_Customer` FOREIGN KEY (`CustomerId`) REFERENCES `Customer`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `Order` DROP FOREIGN KEY `FK_Order_Cart`; ALTER TABLE `Order` ADD CONSTRAINT `FK_Order_Cart` FOREIGN KEY (`CartId`) REFERENCES `Cart`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
 UPDATE Product SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
 UPDATE Coupon SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
 UPDATE Customer SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
@@ -681,7 +686,7 @@ UPDATE Product SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 
 -- ALTER TABLE `DiscountAction` DROP `ActionType`;"
 -- ALTER TABLE `DiscountAction` ADD `Action` MEDIUMTEXT NOT NULL AFTER `Name`;
 
-CREATE USER 'service'@'db' IDENTIFIED BY 'mypass123';
+-- CREATE USER 'service'@'db' IDENTIFIED BY 'mypass123';
 
- GRANT ALL ON *.* TO 'root'@'db';
- GRANT ALL ON *.* TO 'service'@'db';
+ -- GRANT ALL ON *.* TO 'root'@'db';
+ -- GRANT ALL ON *.* TO 'service'@'db';

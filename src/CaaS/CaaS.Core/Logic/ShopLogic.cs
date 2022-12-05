@@ -29,14 +29,42 @@ namespace CaaS.Core.Logic
             return await shopRepository.Create(shop);
         }
 
-        public Task<IList<Shop>> GetByTenantId(string tenantId)
+        public async Task<bool> Delete(Guid appKey, int id)
         {
-            throw new NotImplementedException();
+            await AuthorizationCheck(id, appKey);
+
+            return await shopRepository.Delete(id);
         }
 
-        public Task<bool> Update(Shop shop)
+        public async Task<Shop?> Get(Guid appKey, int id)
         {
-            throw new NotImplementedException();
+            await AuthorizationCheck(id, appKey);
+
+            return await shopRepository.Get(id);
+        }
+
+        public async Task<IList<Shop>> GetByTenantId(int tenantId)
+        {
+            return await shopRepository.GetByTenantId(tenantId);
+        }
+
+        public async Task<bool> Update(Guid appKey, Shop shop)
+        {
+            await AuthorizationCheck(shop.Id, appKey);
+
+            if (shop.Id == 0) throw new ArgumentException("Can not update a new shop");
+            if (shop.TenantId == 0) throw new ArgumentException("Can not update a shop without a tenant");
+            if (string.IsNullOrWhiteSpace(shop.Label)) throw new ArgumentException($"Can not update a shop without a label");
+            if (shop.AppKey == Guid.Empty) throw new ArgumentException("Can not update a shop without a AppKey");
+            return await shopRepository.Update(shop);
+        }
+
+        private async Task AuthorizationCheck(int shopId, Guid appKey)
+        {
+            var availableShop = await shopRepository.Get(shopId);
+
+            if (availableShop is null) throw new KeyNotFoundException($"The shop with id={shopId} is currently not available.");
+            if (availableShop.AppKey != appKey) throw new UnauthorizedAccessException($"You have not the right privileges.");
         }
     }
 }

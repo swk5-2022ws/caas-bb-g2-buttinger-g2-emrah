@@ -8,10 +8,13 @@ namespace CaaS.Api.Transfers.Mappings
     {
         public ShopProfile()
         {
-            CreateMap<Shop, TCreateShop>();
+            CreateMap<Shop, TShop>();
 
             CreateMap<TCreateShop, Shop>()
-            .ConstructUsing(x => new Shop(0, x.TenantId, Guid.NewGuid(), x.Label));
+                .ConstructUsing(x => new Shop(0, x.TenantId, Guid.NewGuid(), x.Label));
+
+            CreateMap<TShop, Shop>().ReverseMap();
+                
 
         }
     }

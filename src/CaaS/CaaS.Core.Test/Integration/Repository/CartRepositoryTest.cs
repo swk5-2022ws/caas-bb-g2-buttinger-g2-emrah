@@ -68,16 +68,6 @@ namespace CaaS.Core.Test.Integration.Repository
             }));
 
         [Test, Rollback]
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(3)]
-        public void DeleteCartByValidIdWithReferencesToOrdersThrowsException(int id) =>
-            Assert.CatchAsync(async () => await sut.Delete(id));
-
-
-            
-
-        [Test, Rollback]
         [TestCase(0)]
         [TestCase(-1)]
         [TestCase(501)]

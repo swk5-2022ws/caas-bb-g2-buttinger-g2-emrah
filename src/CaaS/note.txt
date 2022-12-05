@@ -1,0 +1,1 @@
+Import to note that branch protections are not available in private repos unless you have github pro
