@@ -12,11 +12,11 @@ namespace CaaS.Api.Transfers.Mappings
             
             CreateMap<Product, TCreateProduct>();
             CreateMap<TCreateProduct, Product>()
-            .ForMember(x => x.Id, opt => opt.MapFrom(y => 0));
+            .ConstructUsing(x => new Product(0, x.ShopId, x.Description, x.ImageUrl, x.Label, x.Price));
 
             CreateMap<Product, TEditProduct>();
             CreateMap<TEditProduct, Product>()
-            .ForMember(x => x.ShopId, opt => opt.MapFrom(x => -1));
+            .ConstructUsing(x => new Product(x.Id, -1, x.Description, x.ImageUrl, x.Label, x.Price));
         }
     }
 }

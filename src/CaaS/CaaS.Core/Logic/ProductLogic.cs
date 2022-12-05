@@ -5,7 +5,7 @@ using CaaS.Util;
 
 namespace CaaS.Core.Logic
 {
-    public class ProductLogic: IProductLogic
+    public class ProductLogic : IProductLogic
     {
         private readonly IProductRepository productRepository;
         private readonly IShopRepository shopRepository;
@@ -24,29 +24,38 @@ namespace CaaS.Core.Logic
             return await productRepository.Create(product);
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, Guid appKey)
         {
             if (id <= 0) throw ExceptionUtil.NoSuchIdException();
+            var shopId = (await productRepository.Get(id))?.ShopId ?? -1;
+            await AuthorizationCheck(shopId, appKey);
             return await productRepository.Delete(id);
         }
 
-        public async Task<bool> Edit(Product product)
+        public async Task<bool> Edit(Product product, Guid appKey)
         {
             if (product.Id <= 0) throw ExceptionUtil.NoSuchIdException();
             product.ShopId = (await productRepository.Get(product.Id))?.ShopId ?? throw ExceptionUtil.NoSuchProductException();
+            await AuthorizationCheck(product.ShopId, appKey);
+
             return await productRepository.Update(product);
         }
 
-        public async Task<Product> GetProductById(int id)
+        public async Task<Product> GetProductById(int id, Guid appKey)
         {
-           if(id <= 0) throw new ArgumentOutOfRangeException("No such id");
-            return (await productRepository.Get(id)) ?? throw ExceptionUtil.NoSuchProductException();
+            if (id <= 0) throw new ArgumentOutOfRangeException("No such id");
+            var product = (await productRepository.Get(id)) ?? throw ExceptionUtil.NoSuchProductException();
+
+            await AuthorizationCheck(product.ShopId, appKey);
+            return product;
         }
 
-        public async Task<IList<Product>> GetProductsByShopId(int shopId, Guid appKey)
+        public async Task<IList<Product>> GetProductsByShopId(int shopId, Guid appKey, string? filter)
         {
             await AuthorizationCheck(shopId, appKey);
-            return await productRepository.GetByShopId(shopId);
+
+            if (string.IsNullOrEmpty(filter)) return await productRepository.GetByShopId(shopId);
+            return await productRepository.GetByShopIdWithFilter(shopId, filter);
         }
 
         private async Task AuthorizationCheck(int shopId, Guid appKey)

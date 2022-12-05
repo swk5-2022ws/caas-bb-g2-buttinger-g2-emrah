@@ -42,6 +42,18 @@ namespace CaaS.Core.Repository
             );
         }
 
+        public async Task<IList<Product>> GetByShopIdWithFilter(int shopId, string filter)
+        {
+            return (IList<Product>)await template.QueryAsync(
+                ProductMapping.ReadProductOnly,
+            whereExpression:
+                new { 
+                    ShopId = shopId,
+                    Label = new AdoSearch(filter)
+                }
+            );
+        }
+
         public async Task<bool> Update(Product product) => 
             (await template.UpdateAsync<Product>(product, new { Id = product.Id })) > 0;
 

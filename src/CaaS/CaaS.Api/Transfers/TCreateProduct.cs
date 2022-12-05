@@ -2,5 +2,5 @@
 
 namespace CaaS.Api.Transfers
 {
-    public record TCreateProduct([property:JsonRequired]int ShopId, string Description, string ImageUrl, [property: JsonRequired]string label, [property: JsonRequired]double Price);
+    public record TCreateProduct([property:JsonRequired]int ShopId, string Description, string ImageUrl, [property: JsonRequired]string Label, [property: JsonRequired]double Price);
 }

@@ -21,6 +21,15 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="id">shop id</param>
         /// <returns>A list of all products for a specific shop</returns>
         Task<IList<Product>> GetByShopId(int id);
+
+        /// <summary>
+        /// Returns all products for a given shop that contain a specific words as a filter
+        /// </summary>
+        /// <param name="shopId">the shop id</param>
+        /// <param name="filter">the filter used to check search for some names</param>
+        /// <returns></returns>
+        Task<IList<Product>> GetByShopIdWithFilter(int shopId, string filter);
+
         /// <summary>
         /// Updates a product.
         /// </summary>
