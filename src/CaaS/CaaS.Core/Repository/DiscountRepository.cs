@@ -22,9 +22,10 @@ namespace CaaS.Core.Repository
         });
 
         public async Task<IList<Discount>> GetByShopId(int id) =>
-            (IList<Discount>)await template.QueryAsync(DiscountMapping.ReadDiscountOnly,
-            joins: $"INNER JOIN DiscountAction a on a.Id = t.ActionId",
-            whereExpression: new { a = new {ShopId = id }});
+            (IList<Discount>)await template.QueryAsync(DiscountMapping.ReadDiscountWithActionAndRule,
+            joins: $"INNER JOIN DiscountRule r on r.Id = t.ActionId " +
+                   $"INNER JOIN DiscountAction a on a.Id = t.ActionId ",
+            whereExpression: new { a = new { ShopId = id } });
 
 
         public async Task<int> Create(Discount discount) =>

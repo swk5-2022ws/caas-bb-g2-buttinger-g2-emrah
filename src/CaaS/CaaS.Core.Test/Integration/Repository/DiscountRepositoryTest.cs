@@ -35,9 +35,9 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(discount.Id, Is.EqualTo(discountId));
         }
 
-        [TestCase(1, 10)]
-        [TestCase(2, 10)]
-        [TestCase(3, 10)]
+        [TestCase(1, 5)]
+        [TestCase(2, 5)]
+        [TestCase(3, 5)]
         [Test, Rollback]
         public async Task TestGetByShopIdWithValidIdReturnsDiscount(int shopId, int expectedCount)
         {
