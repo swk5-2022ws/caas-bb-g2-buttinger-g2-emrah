@@ -48,10 +48,11 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(1, 1)]
         [TestCase(21, 21)]
         [TestCase(41, 61)]
+        [TestCase(61, 41)]
         [Test, Rollback]
         public async Task TestCreateWIthValidDiscountCreatesDiscount(int actionId, int ruleId)
         {
-            Discount? discount = new(0, actionId, ruleId);
+            Discount? discount = new(0, ruleId, actionId);
             var id = await sut.Create(discount);
             discount = await sut.Get(id);
             Assert.Multiple(() =>
