@@ -16,7 +16,10 @@ namespace CaaS.Core.Repository
         public DiscountRepository(IAdoTemplate template) : base(template) { }
 
         public async Task<Discount?> Get(int id) =>
-        await template.QueryFirstOrDefaultAsync(DiscountMapping.ReadDiscountOnly, whereExpression: new
+        await template.QueryFirstOrDefaultAsync(DiscountMapping.ReadDiscountWithActionAndRule,
+            joins: $"INNER JOIN DiscountRule r on r.Id = t.RuleId " +
+                   $"INNER JOIN DiscountAction a on a.Id = t.ActionId ",
+            whereExpression: new
         {
             Id = id
         });
