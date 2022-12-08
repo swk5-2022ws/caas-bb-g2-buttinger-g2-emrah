@@ -96,7 +96,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [Test, Rollback]
         [TestCase(11)]
         [TestCase(12)]
-        [TestCase(100)]
+        [TestCase(90)]
         public async Task DeleteCouponWithDeletedIdReturnsFalse(int id) =>
             Assert.That(await sut.Delete(id), Is.False);
 

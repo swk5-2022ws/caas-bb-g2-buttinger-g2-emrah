@@ -10,5 +10,6 @@
 //var update = new CustomerUpdateSqlGenerator().GenerateCartIdForExistingCustomers();
 //Console.WriteLine(string.Join(" ", update));
 
-var update = new CouponUpdateSqlGenerator().GenerateCouponKeyForExistingCoupons();
+//var update = new CouponUpdateSqlGenerator().GenerateCouponKeyForExistingCoupons();
+var update = new CouponUpdateSqlGenerator().RemoveCartIdForLast10CouponsForExistingCoupons();
 Console.WriteLine(string.Join(" ", update));

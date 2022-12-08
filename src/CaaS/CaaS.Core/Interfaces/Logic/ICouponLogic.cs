@@ -25,7 +25,7 @@ namespace CaaS.Core.Interfaces.Logic
         /// <param name="appKey">the key of the specified shop</param>
         /// <param name="shopId">the shopid of the specified shop</param>
         /// <returns>the id of the newly created coupon</returns>
-        Task<int> Create(Coupon coupon, int shopId, Guid appKey);
+        Task<int> Create(Coupon coupon, Guid appKey);
 
         /// <summary>
         /// Deletes a coupon if the coupon is not referenced to a cart

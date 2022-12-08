@@ -46,6 +46,6 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
         }
 
         public Task<Coupon?> GetByKey(string key) =>Task.FromResult(coupons.Values.FirstOrDefault(x => x.CouponKey == key));
-        public Task<IList<Coupon>> GetByShopId(int id) => Task.FromResult((IList<Coupon>)coupons.Values.Where(x => x.ShopId == id));
+        public Task<IList<Coupon>> GetByShopId(int id) => Task.FromResult((IList<Coupon>)coupons.Values.Where(x => x.ShopId == id).ToList());
     }
 }

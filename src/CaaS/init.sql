@@ -682,6 +682,7 @@ UPDATE Coupon SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 0
 UPDATE Customer SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
 UPDATE Product SET Deleted = NULL WHERE CAST(Deleted AS CHAR(20)) = '0000-00-00 00:00:00';
 
+UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 91; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 92; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 93; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 94; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 95; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 96; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 97; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 98; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 99; UPDATE Coupon SET Deleted=NULL,CartId=NULL WHERE Id = 100;
 -- ALTER TABLE `DiscountAction` DROP `Value`;"
 -- ALTER TABLE `DiscountAction` DROP `ActionType`;"
 -- ALTER TABLE `DiscountAction` ADD `Action` MEDIUMTEXT NOT NULL AFTER `Name`;

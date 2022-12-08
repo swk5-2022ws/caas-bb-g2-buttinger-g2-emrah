@@ -48,16 +48,14 @@ namespace CaaS.Core.Logic
             var couponShop = await shopRepository.Get(coupon.ShopId) ?? throw ExceptionUtil.NoSuchIdException(nameof(Shop));
             var productShop = await shopRepository.Get(products.First().ShopId) ?? throw ExceptionUtil.NoSuchIdException(nameof(Shop));
 
-            if (couponShop.AppKey != appKey || couponShop.AppKey != appKey) throw new TypeAccessException("No such product or coupon in shop");
+            if (couponShop.AppKey != appKey || productShop.AppKey != appKey) throw new TypeAccessException("No such product or coupon in shop");
 
             return await couponRepository.Apply(couponKey, cartId);
         }
 
-        public async Task<int> Create(Coupon coupon, int shopId, Guid appKey)
+        public async Task<int> Create(Coupon coupon, Guid appKey)
         {
-            await Check.ShopAuthorization(shopRepository, shopId, appKey);
-
-            coupon.ShopId = shopId;
+            await Check.ShopAuthorization(shopRepository, coupon.ShopId, appKey);
             return await couponRepository.Create(coupon);
         }
 
@@ -74,7 +72,8 @@ namespace CaaS.Core.Logic
         public async Task<IList<Coupon>> GetCoupons(int shopId, Guid appKey)
         {
             await Check.ShopAuthorization(shopRepository, shopId, appKey);
-            return await couponRepository.GetByShopId(shopId);
+            var a = await couponRepository.GetByShopId(shopId);
+            return (await couponRepository.GetByShopId(shopId)).Where(x => !x.CartId.HasValue).ToList();
         }
 
     }
