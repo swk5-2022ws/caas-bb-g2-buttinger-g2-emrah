@@ -15,6 +15,14 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="id">The product id to fetch</param>
         /// <returns>The product or null if not found</returns>
         Task<Product?> Get(int id);
+
+        /// <summary>
+        /// Return products by ids
+        /// </summary>
+        /// <param name="id">The product ids to fetch</param>
+        /// <returns>The product or null if not found</returns>
+        Task<IList<Product>> Get(IList<int> ids);
+
         /// <summary>
         /// Returns all products for a given shop id.
         /// </summary>

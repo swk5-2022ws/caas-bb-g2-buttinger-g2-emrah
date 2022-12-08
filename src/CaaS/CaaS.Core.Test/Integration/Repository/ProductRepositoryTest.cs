@@ -51,6 +51,23 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test]
+        public async Task TestGetByIsdWithValidIdsReturnsProducts()
+        {
+            var products = await sut.Get(new List<int>() { 2, 4, 5, 6});
+
+            Assert.NotNull(products);
+            Assert.That(products.Count, Is.EqualTo(4));
+        }
+
+        [Test]
+        public async Task TestGetByIdsWithValidIdsForDeletedProductsReturnsEmptyProducts()
+        {
+            var products = await sut.Get(new List<int> { 1, 3});
+            Assert.That(products, Is.Not.Null);
+            Assert.That(products.Count, Is.EqualTo(0));
+        }
+
+        [Test]
         [TestCase(1, 236)]
         [TestCase(2, 246)]
         [TestCase(3, 231)]

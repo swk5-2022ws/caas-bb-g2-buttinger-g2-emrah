@@ -8,6 +8,6 @@ namespace CaaS.Util
 
         public static ArgumentNullException NoSuchProductException() => new ArgumentNullException("No such product");
 
-        public static ArgumentOutOfRangeException NoSuchIdException() => new ArgumentOutOfRangeException("No such id");
+        public static ArgumentOutOfRangeException NoSuchIdException(string? name = null) => new ArgumentOutOfRangeException($"No such id {(!string.IsNullOrEmpty(name) ? $"for {name}" : "")}");
     }
 }

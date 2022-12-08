@@ -1,6 +1,7 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
+using CaaS.Core.Logic.Util;
 using CaaS.Util;
 
 namespace CaaS.Core.Logic
@@ -18,7 +19,7 @@ namespace CaaS.Core.Logic
 
         public async Task<int> Create(Product product, Guid appKey)
         {
-            await AuthorizationCheck(product.ShopId, appKey);
+            await Check.ShopAuthorization(shopRepository, product.ShopId, appKey);
             if (product.Price < 0) throw new ArgumentOutOfRangeException("No prices below zero are allowed");
 
             return await productRepository.Create(product);
@@ -28,7 +29,8 @@ namespace CaaS.Core.Logic
         {
             if (id <= 0) throw ExceptionUtil.NoSuchIdException();
             var shopId = (await productRepository.Get(id))?.ShopId ?? -1;
-            await AuthorizationCheck(shopId, appKey);
+            await Check.ShopAuthorization(shopRepository, shopId, appKey);
+
             return await productRepository.Delete(id);
         }
 
@@ -36,7 +38,8 @@ namespace CaaS.Core.Logic
         {
             if (product.Id <= 0) throw ExceptionUtil.NoSuchIdException();
             product.ShopId = (await productRepository.Get(product.Id))?.ShopId ?? throw ExceptionUtil.NoSuchProductException();
-            await AuthorizationCheck(product.ShopId, appKey);
+            await Check.ShopAuthorization(shopRepository, product.ShopId, appKey);
+
 
             return await productRepository.Update(product);
         }
@@ -46,24 +49,18 @@ namespace CaaS.Core.Logic
             if (id <= 0) throw new ArgumentOutOfRangeException("No such id");
             var product = (await productRepository.Get(id)) ?? throw ExceptionUtil.NoSuchProductException();
 
-            await AuthorizationCheck(product.ShopId, appKey);
+            await Check.ShopAuthorization(shopRepository, product.ShopId, appKey);
+
             return product;
         }
 
         public async Task<IList<Product>> GetProductsByShopId(int shopId, Guid appKey, string? filter)
         {
-            await AuthorizationCheck(shopId, appKey);
+            await Check.ShopAuthorization(shopRepository, shopId, appKey);
 
             if (string.IsNullOrEmpty(filter)) return await productRepository.GetByShopId(shopId);
             return await productRepository.GetByShopIdWithFilter(shopId, filter);
         }
 
-        private async Task AuthorizationCheck(int shopId, Guid appKey)
-        {
-            var availableShop = await shopRepository.Get(shopId);
-
-            if (availableShop is null) throw new ArgumentException($"The shop with id={shopId} is currently not available.");
-            if (availableShop.AppKey != appKey) throw new ArgumentException($"You have not the right privileges.");
-        }
     }
 }
