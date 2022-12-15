@@ -124,6 +124,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(actionResult.Result, Is.Not.Null);
 
             var result = (BadRequestObjectResult)actionResult.Result;
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.StatusCode, Is.EqualTo(400));
         }
 

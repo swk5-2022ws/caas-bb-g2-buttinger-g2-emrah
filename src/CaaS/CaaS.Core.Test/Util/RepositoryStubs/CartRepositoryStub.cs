@@ -1,5 +1,6 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
+using CaaS.Core.Transferrecordes;
 
 namespace CaaS.Core.Test.Util.RepositoryStubs
 {
@@ -38,5 +39,18 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
 
         public Task<Cart?> GetByCustomer(int id) =>
             Task.FromResult(carts.Values.FirstOrDefault(x => x.CustomerId == id));
+
+        public Task<Cart?> GetBySession(string sessionId) =>
+            Task.FromResult(carts.Values.FirstOrDefault(x => x.SessionId == sessionId));
+
+        public Task<bool> Update(Cart cart)
+        {
+            if (carts.ContainsKey(cart.Id))
+            {
+                carts[cart.Id] = cart;
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
     }
 }

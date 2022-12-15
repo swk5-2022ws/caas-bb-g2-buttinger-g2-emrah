@@ -1,4 +1,6 @@
 ﻿
+using System.Data;
+
 namespace CaaS.Util
 {
     public class ExceptionUtil
