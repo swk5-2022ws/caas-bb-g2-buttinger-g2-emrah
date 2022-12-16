@@ -3,6 +3,7 @@ using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic.Util;
 using CaaS.Core.Repository;
+using CaaS.Core.Transferrecordes;
 using CaaS.Util;
 using System;
 using System.Collections.Generic;
@@ -49,22 +50,53 @@ namespace CaaS.Core.Logic
             {
                 return await productCartRepository.Delete(productId, cart.Id);
             }
-            if (amount.Value < 0) throw new ArgumentOutOfRangeException("No amount allowed below 1");
+            if (amount.Value <= 0) throw new ArgumentOutOfRangeException("No amount allowed below 1");
 
             var productCart = await productCartRepository.Get(productId, cart.Id);
             if (productCart is null) throw ExceptionUtil.ParameterNullException(nameof(productCart));
-            
-            amount = productCart.Amount - amount;
-            if(amount.Value <= 0)
+
+            if ((productCart.Amount - (int)amount.Value) <= 0)
             {
                 return await productCartRepository.Delete(productId, cart.Id);
             }
+
+            amount = productCart.Amount - amount;
             return await productCartRepository.Update(productId, cart.Id, amount.Value);
         }
 
-        public Task<Cart?> Get(string sessionId, Guid appKey)
+        public async Task<Cart?> Get(string sessionId, Guid appKey)
         {
-            throw new NotImplementedException();
+            var cart = await cartRepository.GetBySession(sessionId);
+            if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(sessionId));
+
+            if (cart.CustomerId.HasValue)
+            {
+                await Check.Customer(shopRepository, customerRepository, cart.CustomerId.Value, appKey);
+            }
+
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+
+            if (productCarts is not null && productCarts.Count > 0)
+            {
+                var productIds = productCarts.Select(x => x.ProductId);
+                var products = await productRepository.Get(productIds.ToList());
+
+
+                if (products is not null && products.Count > 0)
+                {
+                    if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                        throw new ArgumentException("No such product or coupon in shop");
+                    await Check.ShopAuthorization(shopRepository, products.First().ShopId, appKey);
+
+                    foreach (var pc in productCarts)
+                    {
+                        pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+                    }
+                }
+                cart.ProductCarts = productCarts.ToHashSet();
+            }
+
+            return cart;
         }
 
         public async Task<bool> ReferenceCustomerToCart(int customerId, string sessionId, Guid appKey)
@@ -72,7 +104,7 @@ namespace CaaS.Core.Logic
             await Check.Customer(shopRepository, customerRepository, customerId, appKey);
 
             var cart = await Check.CartAvailability(cartRepository, sessionId);
-
+            if (cart.CustomerId.HasValue) throw ExceptionUtil.ReferenceException(nameof(cart));
             cart.CustomerId = customerId;
 
             return await cartRepository.Update(cart);
@@ -83,14 +115,14 @@ namespace CaaS.Core.Logic
             var product = await Check.Product(shopRepository, productRepository, productId, appKey);
             var cart = await Check.CartAvailability(cartRepository, sessionId);
 
-            if(!amount.HasValue || amount.Value < 1)
+            if (!amount.HasValue || amount.Value < 1)
             {
                 amount = 1;
             }
 
             var productCart = await productCartRepository.Get(productId, cart.Id);
 
-            if(productCart is not null)
+            if (productCart is not null)
             {
                 amount += productCart.Amount;
                 return await productCartRepository.Update(productId, cart.Id, amount.Value);

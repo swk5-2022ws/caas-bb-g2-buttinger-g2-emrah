@@ -54,7 +54,7 @@ namespace CaaS.Core.Logic.Util
 
             return product;
         }
-
+        
         public static async Task<Cart> CartAvailability(ICartRepository cartRepository, string sessionId)
         {
             var cart = await cartRepository.GetBySession(sessionId);
