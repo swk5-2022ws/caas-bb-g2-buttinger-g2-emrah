@@ -62,6 +62,11 @@ namespace CaaS.Core.Logic
             return await productCartRepository.Update(productId, cart.Id, amount.Value);
         }
 
+        public Task<Cart?> Get(string sessionId, Guid appKey)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> ReferenceCustomerToCart(int customerId, string sessionId, Guid appKey)
         {
             await Check.Customer(shopRepository, customerRepository, customerId, appKey);

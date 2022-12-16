@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CaaS.Core.Domainmodels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,5 +47,13 @@ namespace CaaS.Core.Interfaces.Logic
         /// <param name="amount">Removes specific amounts of a product. If nothing is set the removal of the whole product is done.</param>
         /// <returns></returns>
         Task<bool> DeleteProductFromCart(string sessionId, int productId, Guid appKey, uint? amount);
+
+        /// <summary>
+        /// Retrieves a cart by its sessionId
+        /// </summary>
+        /// <param name="sessionId">the sessionId of the cart</param>
+        /// <param name="appKey">the appKey</param>
+        /// <returns></returns>
+        Task<Cart?> Get(string sessionId, Guid appKey);
     }
 }
