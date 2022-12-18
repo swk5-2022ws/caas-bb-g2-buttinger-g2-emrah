@@ -20,15 +20,15 @@ namespace CaaS.Core.Interfaces.Logic
         /// <summary>
         /// Creates a new cart without a customer reference
         /// </summary>
-        /// <returns></returns>
-        Task<int> Create();
+        /// <returns>Session id of the created Cart</returns>
+        Task<string> Create();
 
         /// <summary>
         /// Creates a new cart with a customer reference
         /// </summary>
         /// <param name="customerId">the id of the customer</param>
         /// <returns></returns>
-        Task<int> CreateCartForCustomer(int customerId, Guid appKey);
+        Task<string> CreateCartForCustomer(int customerId, Guid appKey);
 
         /// <summary>
         /// Adds a reference from a product and a cart into productCart
@@ -54,6 +54,6 @@ namespace CaaS.Core.Interfaces.Logic
         /// <param name="sessionId">the sessionId of the cart</param>
         /// <param name="appKey">the appKey</param>
         /// <returns></returns>
-        Task<Cart?> Get(string sessionId, Guid appKey);
+        Task<Cart> Get(string sessionId, Guid appKey);
     }
 }

@@ -29,16 +29,22 @@ namespace CaaS.Core.Logic
             this.productRepository = productRepository ?? throw ExceptionUtil.ParameterNullException(nameof(productRepository));
             this.shopRepository = shopRepository ?? throw ExceptionUtil.ParameterNullException(nameof(shopRepository));
         }
-        public async Task<int> Create() => await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString()));
+        public async Task<string> Create()
+        {
+            var cartId = await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString()));
+            return (await cartRepository.Get(cartId))?.SessionId ?? throw new ArgumentException("Cart could not be created");
+        }
 
-        public async Task<int> CreateCartForCustomer(int customerId, Guid appKey)
+        public async Task<string> CreateCartForCustomer(int customerId, Guid appKey)
         {
             await Check.Customer(shopRepository, customerRepository, customerId, appKey);
 
-            return await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString())
+            var cartId = await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString())
             {
                 CustomerId = customerId
             });
+
+            return (await cartRepository.Get(cartId))?.SessionId ?? throw new ArgumentException("Cart could not be created");
         }
 
         public async Task<bool> DeleteProductFromCart(string sessionId, int productId, Guid appKey, uint? amount)
@@ -64,7 +70,7 @@ namespace CaaS.Core.Logic
             return await productCartRepository.Update(productId, cart.Id, amount.Value);
         }
 
-        public async Task<Cart?> Get(string sessionId, Guid appKey)
+        public async Task<Cart> Get(string sessionId, Guid appKey)
         {
             var cart = await cartRepository.GetBySession(sessionId);
             if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(sessionId));
