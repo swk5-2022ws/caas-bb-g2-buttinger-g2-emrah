@@ -10,19 +10,21 @@ namespace CaaS.Core.Interfaces.Repository
     public interface IDiscountCartRepository
     {
         /// <summary>
-        /// Apply a discount action with a specific discount rule on a specific cart.
+        /// Create a DiscountCart
         /// </summary>
-        /// <param name="cartId">cart id</param>
-        /// <param name="ruleId">rule id</param>
-        /// <param name="actionId">action id</param>
-        Task ApplyDiscount(int cartId, int ruleId, int actionId);
+        Task<bool> Create(DiscountCart discountCart);
 
         /// <summary>
         /// Gets all discounts which are valid for a cart.
         /// </summary>
         /// <param name="cartId">cart id</param>
         /// <returns>All discounts applied to a cart.</returns>
-        Task<IList<CaaS.Core.Domainmodels.Discount>> GetByCartId(int cartId);
+        Task<IList<CaaS.Core.Domainmodels.DiscountCart>> GetByCartId(int cartId);
+
+        /// <summary>
+        /// Deletes a discount cart
+        /// </summary>
+        Task<bool> Delete(DiscountCart discountCart);
 
     }
 }

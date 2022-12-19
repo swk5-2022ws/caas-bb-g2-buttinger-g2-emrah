@@ -19,10 +19,12 @@ namespace CaaS.Core.Test.Logic
     [TestFixture]
     public class DiscountLogicTest
     {
-        IDiscountLogic sut;
-        ICartRepository cartRepository;
-        IShopRepository shopRepository;
-        IDiscountRepository discountRepository;
+        private IDiscountLogic sut;
+        private ICartRepository cartRepository;
+        private IShopRepository shopRepository;
+        private IDiscountRepository discountRepository;
+        private IProductCartRepository productCartRepository;
+        private IDiscountCartRepository discountCartRepository;
 
         private static readonly Guid appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
 
@@ -77,7 +79,27 @@ namespace CaaS.Core.Test.Logic
                 {1, new Shop(1, 1, appKey, "shop") }
             });
 
-            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository);
+            productCartRepository = new ProductCartRepositoryStub(new Dictionary<(int, int), ProductCart>()
+            {
+                {(1, 1), new ProductCart(1, 1, 10, 1) },
+                {(2, 1), new ProductCart(2, 1, 20, 2) },
+                {(2, 2), new ProductCart(2, 2, 20, 2) },
+                {(5, 2), new ProductCart(5, 2, 20, 2) },
+                {(3, 3), new ProductCart(3, 3, 20, 1) },
+                {(4, 4), new ProductCart(4, 4, 20, 1) },
+            });
+
+
+            discountCartRepository = new DiscountCartRepositoryStub(new List<DiscountCart>()
+            {
+                // valid 
+                new DiscountCart(1, 1),
+                new DiscountCart(1, 2),
+                // not valid
+                new DiscountCart(1, 3)
+            });
+
+            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository);
         }
 
         [Test]
