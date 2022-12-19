@@ -41,9 +41,10 @@ namespace CaaS.Api.Test.Controllers
             ITenantRepository tenantRepository = new TenantRepository(Setup.GetTemplateEngine());
             ICartRepository cartRepository = new CartRepository(Setup.GetTemplateEngine());
             IProductCartRepository productCartRepository = new ProductCartRepository(Setup.GetTemplateEngine());
+            IDiscountCartRepository discountCartRepository = new DiscountCartRepository(Setup.GetTemplateEngine());
 
             IShopLogic shopLogic = new ShopLogic(shopRepository, tenantRepository);
-            var discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository);
+            var discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository);
 
 
             sut = new DiscountController(discountLogic, tenantRepository, mapper, logger);
