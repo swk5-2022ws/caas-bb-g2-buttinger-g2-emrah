@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CaaS.Api.Transfers;
 using CaaS.Api.Util;
+using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic;
@@ -42,7 +43,8 @@ namespace CaaS.Api.Controllers
 
                 return Ok(tDiscounts);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (Exception ex)
+                when (ex is UnauthorizedAccessException || ex is ArgumentException)
             {
                 return BadRequest(ex.Message);
             }
@@ -50,6 +52,20 @@ namespace CaaS.Api.Controllers
             {
                 return NotFound(ex.Message);
             }
+        }
+
+        [HttpPut("api/cart/{id}/discounts")]
+        public async Task<ActionResult> AddDiscountsToCart([FromHeader] Guid appKey, [FromRoute] int id,
+            [FromBody] IList<int> discountIds)
+        {
+            await discountLogic.AddDiscountsToCart(appKey, id, discountIds);
+            return NoContent();
+        }
+
+        [HttpDelete("api/discount/{id}")]
+        public async Task<ActionResult> DeleteDiscount([FromHeader] Guid appKey, [FromRoute] int id)
+        {
+            return Ok();
         }
     }
 }

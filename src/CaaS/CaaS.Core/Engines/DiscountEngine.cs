@@ -22,7 +22,7 @@ namespace CaaS.Core.Engines
             if (cart == null) throw new ArgumentException($"Can not apply discounts to a null. Check parameter {nameof(cart)}.");
 
             var validDiscounts = Discounts
-                .Where(x => x.DiscountRule!.RuleObject.IsQualifiedForDiscount(cart));
+                .Where(x => x.DiscountRule!.RuleObject!.IsQualifiedForDiscount(cart));
 
             var orderedDiscounts = OrderDiscounts(validDiscounts);
 
