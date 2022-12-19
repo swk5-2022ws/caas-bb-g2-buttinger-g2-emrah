@@ -78,11 +78,13 @@ namespace CaaS.Core.Test.Logic
             var appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
 
             var shop = await shopRepository.Get(1);
+            Assert.That(shop, Is.Not.Null);
             shop.Label = "neu";
             shop.AppKey = appKey;
             shop.TenantId = 2;
             var result = await sut.Update(Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), shop);
             shop = await shopRepository.Get(1);
+            Assert.That(shop, Is.Not.Null);
             Assert.Multiple(() =>
             {
                 Assert.That(appKey, Is.EqualTo(shop.AppKey));

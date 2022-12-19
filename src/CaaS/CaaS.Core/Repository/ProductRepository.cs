@@ -24,23 +24,36 @@ namespace CaaS.Core.Repository
             return await Update(product);
         }
 
-        public async Task<Product?> Get(int id)
-        {
-            return await template.QueryFirstOrDefaultAsync(
+        public async Task<Product?> Get(int id) =>
+            await template.QueryFirstOrDefaultAsync(
                 ProductMapping.ReadProductOnly,
                 whereExpression:
                     new { Id = id }
                 );
-        }
 
-        public async Task<IList<Product>> GetByShopId(int shopId)
-        {
-            return (IList<Product>)await template.QueryAsync(
+        public async Task<IList<Product>> Get(IList<int> ids) =>
+            (IList<Product>)await template.QueryAsync(
+                ProductMapping.ReadProductOnly,
+            whereExpression:
+                new { Id = ids }
+            );
+
+        public async Task<IList<Product>> GetByShopId(int shopId) =>
+            (IList<Product>)await template.QueryAsync(
                 ProductMapping.ReadProductOnly,
             whereExpression:
                 new { ShopId = shopId }
             );
-        }
+
+        public async Task<IList<Product>> GetByShopIdWithFilter(int shopId, string filter) =>
+            (IList<Product>)await template.QueryAsync(
+                ProductMapping.ReadProductOnly,
+            whereExpression:
+                new { 
+                    ShopId = shopId,
+                    Label = new AdoSearch(filter)
+                }
+            );
 
         public async Task<bool> Update(Product product) => 
             (await template.UpdateAsync<Product>(product, new { Id = product.Id })) > 0;

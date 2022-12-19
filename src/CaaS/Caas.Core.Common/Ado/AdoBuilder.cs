@@ -29,7 +29,7 @@ namespace Caas.Core.Common.Ado
             var parameterDictionary = new Dictionary<string, object?>();
             foreach (var property in GetAdoTemplateProperties(properties.GetType().GetProperties()))
             {
-                if (ReflectionUtil.IsSystemType(property))
+                if (ReflectionUtil.IsSystemType(property) || property.GetType() == typeof(AdoSearch))
                 {
                     SetPropertyToDictionary(parameterDictionary, property, properties, addTableNameSpace ? "t." : "");
                     continue;
@@ -171,8 +171,14 @@ namespace Caas.Core.Common.Ado
             bool useWhere = true;
             foreach (var param in parameterDictionary)
             {
-
-                if (param.Value is IEnumerable && param.Value is not string)
+                if(param.Value is AdoSearch)
+                {
+                    var sqlParameterName = AdoBuilder.GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
+                    commandText += $" {(useWhere ? WHERE : AND)} {param.Key} LIKE @{sqlParameterName}";
+                    useWhere = false;
+                    AdoBuilder.AddParam(command, $"%{(param.Value as AdoSearch)?.SearchText}%", sqlParameterName);
+                }
+                else if (param.Value is IEnumerable && param.Value is not string)
                 {
                     var parameterList = new List<string>();
                     foreach (var item in (IEnumerable)param.Value)

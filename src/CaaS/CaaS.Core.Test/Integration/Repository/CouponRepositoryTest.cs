@@ -59,46 +59,6 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(coupons.All(coupon => coupon.Deleted is null), Is.True);
         }
 
-        [Test]
-        [TestCase(-1)]
-        [TestCase(0)]
-        [TestCase(int.MaxValue)]
-        [TestCase(int.MinValue)]
-        public void GetCouponKeyWithInvalidShopIdThrowsException(int id) =>
-           Assert.CatchAsync(async () => await sut.GetAvailableCouponKey(id, 0.0d));
-
-        [Test, Rollback]
-        [TestCase(1, 1.0d)]
-        [TestCase(2, 10)]
-        [TestCase(3, 1.1)]
-        public async Task GetCouponKeyWithValidShopIdReturnsCreatedCouponKey(int id, double value)
-        {
-            var key = await sut.GetAvailableCouponKey(id, value);
-            Assert.That(key, Is.Not.Null);
-
-            var coupons = await sut.GetByShopId(id);
-            Assert.That(coupons.Where(coupon => !coupon.CartId.HasValue).Count(), Is.EqualTo(1));
-        }
-
-        [Test, Rollback]
-        [TestCase(4, 1.0d)]
-        [TestCase(5, 10)]
-        [TestCase(6, 1.1)]
-        public async Task GetCouponKeyWithValidShopIdReturnsAlreadyAvailableCouponKey(int id, double value)
-        {
-            var couponKey = Guid.NewGuid().ToString();
-            await sut.Create(new Domainmodels.Coupon(0, id, value)
-            {
-                CouponKey = couponKey
-            });
-            var key = await sut.GetAvailableCouponKey(id, value);
-            Assert.That(key, Is.Not.Null);
-            Assert.That(key, Is.EqualTo(couponKey));
-
-            var coupons = await sut.GetByShopId(id);
-            Assert.That(coupons.Where(coupon => !coupon.CartId.HasValue).Count(), Is.EqualTo(1));
-        }
-
         [Test, Rollback]
         [TestCase(7, 1, 15.1)]
         [TestCase(8, 2, 3)]
@@ -136,7 +96,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [Test, Rollback]
         [TestCase(11)]
         [TestCase(12)]
-        [TestCase(100)]
+        [TestCase(90)]
         public async Task DeleteCouponWithDeletedIdReturnsFalse(int id) =>
             Assert.That(await sut.Delete(id), Is.False);
 

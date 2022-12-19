@@ -5,6 +5,7 @@ using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Transferrecordes;
+using CaaS.Util;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Tls;
@@ -26,12 +27,12 @@ namespace CaaS.Api.Controllers
         // TODO tenantLogic not repository
         public ShopController(IShopLogic shopLogic, ITenantRepository tenantRepository, IMapper mapper, ILogger<ShopController> logger)
         {
-            this.shopLogic = shopLogic
-                ?? throw new ArgumentNullException($"Parameter {nameof(shopLogic)} is null.");
+            this.shopLogic = shopLogic 
+               ?? throw ExceptionUtil.ParameterNullException(nameof(shopLogic));
             this.tenantRepository = tenantRepository
-                ?? throw new ArgumentNullException($"Parameter {nameof(tenantRepository)} is null"); 
+              ?? throw ExceptionUtil.ParameterNullException(nameof(tenantRepository));
             this.mapper = mapper
-                ?? throw new ArgumentNullException($"Parameter {nameof(mapper)} is null");
+               ?? throw ExceptionUtil.ParameterNullException(nameof(mapper));
             this.logger = logger;
         }
 

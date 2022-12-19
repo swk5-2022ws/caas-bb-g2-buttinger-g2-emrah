@@ -33,5 +33,15 @@ namespace CaaS.Core.Repository
             {
                 CustomerId = id
             });
+
+        public async Task<Cart?> GetBySession(string sessionId) =>
+            await template.QueryFirstOrDefaultAsync(CartMapping.ReadCartOnly, whereExpression: new
+            {
+                SessionId = sessionId
+            });
+
+        public async Task<bool> Update(Cart cart) =>
+                    (await template.UpdateAsync<Cart>(cart, whereExpression: new { Id = cart.Id })) == 1;
+
     }
 }

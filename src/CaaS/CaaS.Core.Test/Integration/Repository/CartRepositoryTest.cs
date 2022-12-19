@@ -30,6 +30,18 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(101)]
         public async Task GetCartByIdWithInvalidValidIdReturnsNull(int id) =>
             Assert.That(await sut.Get(id), Is.Null);
+        
+        [Test]
+        [TestCase(1, 1, "7ee2dcbd-8e42-366d-9919-b96d65afd844")]
+        [TestCase(2, 2, "747c7000-c0b2-330a-930a-1d14e39b1e64")]
+        [TestCase(3, 3, "5c662d68-ead5-35fe-af4c-cf4470a8ff3d")]
+        public async Task GetCartByIdWithValidSessionIdReturnsCart(int id, int? customerId, string sessionId) =>
+            BaseGetAssertions(await sut.GetBySession(sessionId), id, customerId, sessionId);
+
+
+        [Test]
+        public async Task GetCartByIdWithInvalidSessionIdReturnsNull() =>
+            Assert.That(await sut.GetBySession(Guid.NewGuid().ToString()), Is.Null);
 
 
         [Test]
@@ -75,7 +87,35 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(int.MinValue)]
         public async Task DeleteCustomerByInvalidIdReturnsFalse(int id) =>
             Assert.That(await sut.Delete(id), Is.False);
-        
+
+        [Test, Rollback]
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(int.MaxValue)]
+        [TestCase(int.MinValue)]
+
+        public async Task UpdateCartReturnsFalse(int id) =>
+           Assert.That(await sut.Update(new Cart(id, Guid.NewGuid().ToString())), Is.False);
+
+        [Test, Rollback]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+
+        public async Task UpdateCartReturnsTrue(int id)
+        {
+            var cart = await sut.Get(id);
+            Assert.That(cart, Is.Not.Null);
+
+            cart.CustomerId = null;
+            Assert.That(await sut.Update(cart), Is.True);
+
+            cart = await sut.Get(id);
+
+            Assert.That(cart, Is.Not.Null);
+            Assert.That(cart.CustomerId, Is.Null);
+        }
+
         [Test, Rollback]       
         public async Task DeleteCartByValidIdReturnsTrue()
         {

@@ -28,7 +28,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
 
         public Task<bool> Delete(int id)
         {
-            if (carts.TryGetValue(id, out Cart? shop))
+            if (carts.TryGetValue(id, out Cart? cart))
             {
                 carts.Remove(id);
                 return Task.FromResult(true);
@@ -43,6 +43,11 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             return Task.FromResult(cart);
         }
 
+        public Task<Cart?> GetByCustomer(int id) =>
+            Task.FromResult(carts.Values.FirstOrDefault(x => x.CustomerId == id));
+
+        public Task<Cart?> GetBySession(string sessionId) =>
+            Task.FromResult(carts.Values.FirstOrDefault(x => x.SessionId == sessionId));
 
         // TODO check cartrepository implementation
         public Task<Cart> GetByCustomerId(int id)
@@ -55,6 +60,16 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             }
 
             return Task.FromResult(cartsByCustomerId.FirstOrDefault());
+        }
+
+        public Task<bool> Update(Cart cart)
+        {
+            if (carts.ContainsKey(cart.Id))
+            {
+                carts[cart.Id] = cart;
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
         }
     }
 }

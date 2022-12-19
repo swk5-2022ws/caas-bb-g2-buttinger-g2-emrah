@@ -51,6 +51,23 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test]
+        public async Task TestGetByIsdWithValidIdsReturnsProducts()
+        {
+            var products = await sut.Get(new List<int>() { 2, 4, 5, 6});
+
+            Assert.NotNull(products);
+            Assert.That(products.Count, Is.EqualTo(4));
+        }
+
+        [Test]
+        public async Task TestGetByIdsWithValidIdsForDeletedProductsReturnsEmptyProducts()
+        {
+            var products = await sut.Get(new List<int> { 1, 3});
+            Assert.That(products, Is.Not.Null);
+            Assert.That(products.Count, Is.EqualTo(0));
+        }
+
+        [Test]
         [TestCase(1, 236)]
         [TestCase(2, 246)]
         [TestCase(3, 231)]
@@ -80,6 +97,38 @@ namespace CaaS.Core.Test.Integration.Repository
                 Assert.That(products.Count, Is.EqualTo(0));
             });
         }
+
+        [Test]
+        [TestCase(1, "well", 2)]
+        [TestCase(2, "Reverse", 5)]
+        [TestCase(3, "Optimized", 2)]
+        public async Task TestGetByShopIdWithFilterWithValidParamsReturnProducts(int shopId, string filter, int count)
+        {
+            IList<Product> products = await sut.GetByShopIdWithFilter(shopId, filter);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(products.Count, Is.EqualTo(count));
+                foreach (var product in products)
+                {
+                    Assert.That(product, Is.Not.Null);
+                    Assert.That(product.ShopId, Is.EqualTo(shopId));
+                    Assert.That(product.Deleted, Is.Null);
+                }
+            });
+        }
+
+        [Test]
+        public async Task TestGetByShopIdWithFilterInvalidShopIdReturnEmptyList()
+        {
+            IList<Product> products = await sut.GetByShopIdWithFilter(int.MaxValue, "ANY");
+            Assert.Multiple(() =>
+            {
+                Assert.That(products, Is.Not.Null);
+                Assert.That(products.Count, Is.EqualTo(0));
+            });
+        }
+
 
         [TestCase(1, "Description 1", "http://test.org", "Label 1", 100.0)]
         [TestCase(1, "", "", "", 0.0)]

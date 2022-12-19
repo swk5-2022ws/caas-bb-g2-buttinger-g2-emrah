@@ -30,15 +30,6 @@ namespace CaaS.Core.Interfaces.Repository
         Task<IList<Coupon>> GetByShopId(int id);
 
         /// <summary>
-        /// Retrieves an available Coupon key. If
-        /// there are no coupon keys left. A new Coupon is generated.
-        /// </summary>
-        /// <param name="id">The shop id where the coupon is checked</param>
-        /// <param name="value">The value the coupon should have</param>
-        /// <returns>An available coupon Key</returns>
-        Task<string?> GetAvailableCouponKey(int id, double value);
-
-        /// <summary>
         /// Apply a coupon to a cart.
         /// </summary>
         /// <param name="couponKey">coupon key to be applied.</param>
