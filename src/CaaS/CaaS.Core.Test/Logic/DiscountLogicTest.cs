@@ -25,6 +25,7 @@ namespace CaaS.Core.Test.Logic
         private IDiscountRepository discountRepository;
         private IProductCartRepository productCartRepository;
         private IDiscountCartRepository discountCartRepository;
+        private IProductRepository productRepository;
 
         private static readonly Guid appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
 
@@ -47,7 +48,7 @@ namespace CaaS.Core.Test.Logic
                     )
                ) },
                 // not valid
-                {3,              
+                {3,
                 new Discount(3,
                    new DiscountRule(3, 1, "invalid",
                         new TotalAmountDiscountRuleset(500.0)),
@@ -81,12 +82,22 @@ namespace CaaS.Core.Test.Logic
 
             productCartRepository = new ProductCartRepositoryStub(new Dictionary<(int, int), ProductCart>()
             {
-                {(1, 1), new ProductCart(1, 1, 10, 1) },
-                {(2, 1), new ProductCart(2, 1, 20, 2) },
-                {(2, 2), new ProductCart(2, 2, 20, 2) },
-                {(5, 2), new ProductCart(5, 2, 20, 2) },
-                {(3, 3), new ProductCart(3, 3, 20, 1) },
-                {(4, 4), new ProductCart(4, 4, 20, 1) },
+                {(1, 1), new ProductCart(1, 1, 10, 1) { Product = new(1, 1, "Produkt 1", "http://produkt.at", "Produkt 1", 10.0)} },
+                {(2, 1), new ProductCart(2, 1, 20, 2) { Product = new(2, 1, "Produkt 2", "http://produkt.at", "Produkt 2", 10.0)} },
+                {(2, 2), new ProductCart(2, 2, 20, 2) { Product = new(3, 1, "Produkt 3", "http://produkt.at", "Produkt 3", 10.0)} },
+                {(5, 2), new ProductCart(5, 2, 20, 2) { Product = new(4, 1, "Produkt 4", "http://produkt.at", "Produkt 4", 10.0)} },
+                {(3, 3), new ProductCart(3, 3, 20, 1) { Product = new(5, 1, "Produkt 5", "http://produkt.at", "Produkt 5", 10.0)} },
+                {(4, 4), new ProductCart(4, 4, 20, 1) { Product = new(6, 1, "Produkt 6", "http://produkt.at", "Produkt 6", 10.0)} },
+            });
+
+            productRepository = new ProductRepositoryStub(new Dictionary<int, Product>()
+            {
+                {1 ,new(1, 1, "Produkt 1", "http://produkt.at", "Produkt 1", 10.0)},
+                {2 ,new(2, 1, "Produkt 2", "http://produkt.at", "Produkt 2", 10.0)},
+                {3 ,new (3, 1, "Produkt 3", "http://produkt.at", "Produkt 3", 10.0)},
+                { 4 ,new(4, 1, "Produkt 4", "http://produkt.at", "Produkt 4", 10.0)},
+                { 5 ,new(5, 1, "Produkt 5", "http://produkt.at", "Produkt 5", 10.0)},
+                { 6 ,new(6, 1, "Produkt 6", "http://produkt.at", "Produkt 6", 10.0)}
             });
 
 
@@ -99,7 +110,7 @@ namespace CaaS.Core.Test.Logic
                 new DiscountCart(1, 3)
             });
 
-            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository);
+            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository);
         }
 
         [Test]
@@ -124,15 +135,106 @@ namespace CaaS.Core.Test.Logic
         [Test]
         public void TestGetAvailableDiscountsByCartIdWithInvalidCartIdThrowsKeyNotFoundException()
         {
-            Assert.ThrowsAsync<KeyNotFoundException>(async () 
+            Assert.ThrowsAsync<KeyNotFoundException>(async ()
                 => await sut.GetAvailableDiscountsByCartId(appKey, int.MaxValue));
         }
 
         [Test]
         public void TestGetAvailableDiscountsByCartIdWithoutCustomerIdThrowsArgumentException()
         {
-            Assert.ThrowsAsync<ArgumentException>(async () 
-                => await sut.GetAvailableDiscountsByCartId(Guid.Empty, 2));
+            Assert.ThrowsAsync<ArgumentException>(async ()
+                => await sut.GetAvailableDiscountsByCartId(appKey, 2));
+        }
+
+
+        [Test]
+        public void TestAddDiscountsToCartWithoutCustomerIdThrowsArgumentException()
+        {
+            Assert.ThrowsAsync<ArgumentException>(async ()
+                => await sut.AddDiscountsToCart(appKey, 2, new List<int>() { 1 }));
+        }
+
+        [Test]
+        public void TestAddDiscountsToCartWhenCartIdIsInvalidThrowsKeyNotFoundException()
+        {
+            Assert.ThrowsAsync<KeyNotFoundException>(async ()
+                => await sut.AddDiscountsToCart(appKey, int.MaxValue, new List<int>() { 1 }));
+        }
+
+
+        [Test]
+        public async Task TestAddDiscountsToCartWhenProductsFromCartAreMissingThrowsArgumentException()
+        {
+            var productCarts = await productCartRepository.GetByCartId(1);
+            foreach (var protuctCart in productCarts)
+                await productCartRepository.Delete(protuctCart.ProductId, protuctCart.CartId);
+
+            Assert.ThrowsAsync<ArgumentException>(async ()
+                => await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1 }));
+        }
+
+        [Test]
+        public void TestAddDiscountsToCartWhenAppKeyIsInvalidThrowsUnauthorizedAccessException()
+        {
+            Assert.ThrowsAsync<UnauthorizedAccessException>(async ()
+                => await sut.AddDiscountsToCart(Guid.NewGuid(), 1, new List<int>() { 1 }));
+        }
+
+        [Test]
+        public void TestAddDiscountsToCartWhenDiscountIdsAreInvalidThrowsArgumentException()
+        {
+            Assert.ThrowsAsync<ArgumentException>(async ()
+                => await sut.AddDiscountsToCart(appKey, 1, new List<int>() { int.MaxValue }));
+        }
+
+        [Test]
+        public void TestAddDiscountsToCartWhenDiscountIdsAreEmptyThrowsArgumentNullException()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(async ()
+                => await sut.AddDiscountsToCart(appKey, 1, new List<int>()));
+        }
+
+        [Test]
+        public void TestAddDiscountsToCartWhenDiscountIdsAreNullThrowsArgumentNullException()
+        {
+            Assert.ThrowsAsync<ArgumentNullException>(async ()
+                => await sut.AddDiscountsToCart(appKey, 1, null!));
+        }
+
+        [Test]
+        public async Task TestAddDiscountsToCartWithValidDiscountIdsRemovesOldDiscounts()
+        {
+            await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1 });
+
+            var actualDiscounts = await discountCartRepository.GetByCartId(1);
+            Assert.That(actualDiscounts, Has.Count.EqualTo(1));
+        }
+
+        [Test]
+        public async Task TestAddDiscountsToCartWithValidDiscountIdsAddsDiscounts()
+        {
+            var cartDiscounts = await discountCartRepository.GetByCartId(1);
+            foreach (var cartDiscount in cartDiscounts)
+                await discountCartRepository.Delete(cartDiscount);
+
+            await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1, 2 });
+
+            var actualDiscounts = await discountCartRepository.GetByCartId(1);
+            Assert.That(actualDiscounts, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task TestAddDiscountsToCartWithOneInvalidDiscountRuleAddsOnyValidDiscounts()
+        {
+            var cartDiscounts = await discountCartRepository.GetByCartId(1);
+            foreach (var cartDiscount in cartDiscounts)
+                await discountCartRepository.Delete(cartDiscount);
+
+            // rule from discount 3 is not valid
+            await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1, 2, 3 });
+
+            var actualDiscounts = await discountCartRepository.GetByCartId(1);
+            Assert.That(actualDiscounts, Has.Count.EqualTo(2));
         }
     }
 }

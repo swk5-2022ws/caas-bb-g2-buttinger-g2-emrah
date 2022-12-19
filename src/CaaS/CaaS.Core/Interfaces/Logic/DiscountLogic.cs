@@ -19,17 +19,19 @@ namespace CaaS.Core.Interfaces.Logic
         private readonly ICartRepository cartRepository;
         private readonly IProductCartRepository productCartRepository;
         private readonly IDiscountCartRepository discountCartRepository;
+        private readonly IProductRepository productRepository;
 
         public DiscountLogic(IDiscountRepository discountRepository, IShopRepository shopRepository,
             ICartRepository cartRepository,
             IProductCartRepository productCartRepository,
-            IDiscountCartRepository discountCartRepository)
+            IDiscountCartRepository discountCartRepository, IProductRepository productRepository)
         {
             this.discountRepository = discountRepository;
             this.shopRepository = shopRepository;
             this.cartRepository = cartRepository;
             this.productCartRepository = productCartRepository;
             this.discountCartRepository = discountCartRepository;
+            this.productRepository = productRepository;
         }
 
         public async Task<IEnumerable<Domainmodels.Discount>> GetAvailableDiscountsByCartId(Guid appKey, int cartId)
@@ -48,6 +50,9 @@ namespace CaaS.Core.Interfaces.Logic
 
         public async Task AddDiscountsToCart(Guid appKey, int cartId, IList<int> requestedDiscountIds)
         {
+            if (requestedDiscountIds == null || requestedDiscountIds.Count == 0)
+                throw new ArgumentNullException($"No discounts provided.");
+
             Cart cart = await GetCartById(cartId);
             int shopId = await GetShopIdByCartId(cartId);
             await AuthorizationCheck(shopId, appKey);
@@ -67,20 +72,20 @@ namespace CaaS.Core.Interfaces.Logic
         /// <param name="shopId"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        private async Task<List<Domainmodels.Discount>> ValidateDiscountsByShopId(IList<int> requestedDiscountIds, int shopId)
+        private async Task<IList<Domainmodels.Discount>> ValidateDiscountsByShopId(IList<int> requestedDiscountIds, int shopId)
         {
             // fetch all available discounts from shop to double check the requested discounts
             var allDiscountsByShopId = await discountRepository.GetByShopId(shopId);
 
             // extract the requested discounts
-            var discountsChecked = allDiscountsByShopId.Where(x => requestedDiscountIds.Contains(x.Id)).ToList();
-            if (allDiscountsByShopId.Count != requestedDiscountIds.Count)
+            var discountIdsChecked = allDiscountsByShopId.Select(x => x.Id).Intersect(requestedDiscountIds).ToList();
+            if (discountIdsChecked.Count != requestedDiscountIds.Count)
             {
                 throw new ArgumentException($"The passed discount ids do not satisfy this shops ({shopId}) current discount policy." +
                     $" Received {requestedDiscountIds.Count} discounts, but only {allDiscountsByShopId.Count} are valid");
             }
 
-            return discountsChecked;
+            return allDiscountsByShopId.Where(x => discountIdsChecked.Contains(x.Id)).ToList();
         }
 
         /// <summary>
@@ -104,14 +109,19 @@ namespace CaaS.Core.Interfaces.Logic
             if (productCarts == null || productCarts.Count == 0)
                 throw new ArgumentException($"You can't apply a discount to a empty cart.");
 
-            var shopId = productCarts.First().Product!.ShopId;
+            var productCart = productCarts.First();
+            var product = await productRepository.Get(productCart.ProductId);
+            if (product == null) // this should never happen
+                throw new Exception($"The product ({productCart.ProductId}) is currently not available. Please contact your shop vendor.");
+             
+            var shopId = product.ShopId;
             return shopId;
         }
 
         /// <summary>
         /// Returns discounts which are respecting the discount rules for the passed cart.
         /// </summary>
-        private static IList<Domainmodels.Discount> ValidateDiscountsByCart(Cart cart, List<Domainmodels.Discount> discounts)
+        private static IList<Domainmodels.Discount> ValidateDiscountsByCart(Cart cart, IList<Domainmodels.Discount> discounts)
         {
             IDiscountEngine discountEngine = new DiscountEngine(discounts);
             discountEngine.ApplyValidDiscounts(cart);
@@ -125,15 +135,15 @@ namespace CaaS.Core.Interfaces.Logic
         /// </summary>
         private async Task UpdateDiscounts(int cartId, IList<Domainmodels.Discount> validDiscounts)
         {
-            List<Task> deleteTasks = await GetDiscountCartDeleteTasks(cartId);
-            List<Task> createTasks = GetDiscountCartCreateTasks(cartId, validDiscounts);
+            IList<Task> deleteTasks = await GetDiscountCartDeleteTasks(cartId);
+            IList<Task> createTasks = GetDiscountCartCreateTasks(cartId, validDiscounts);
 
             await Task.WhenAll(
                 createTasks.Concat(deleteTasks)
                 );
         }
 
-        private List<Task> GetDiscountCartCreateTasks(int cartId, IList<Domainmodels.Discount> validDiscounts)
+        private IList<Task> GetDiscountCartCreateTasks(int cartId, IList<Domainmodels.Discount> validDiscounts)
         {
             var createTasks = new List<Task>();
             foreach (var validDiscount in validDiscounts)
@@ -148,7 +158,7 @@ namespace CaaS.Core.Interfaces.Logic
             return createTasks;
         }
 
-        private async Task<List<Task>> GetDiscountCartDeleteTasks(int cartId)
+        private async Task<IList<Task>> GetDiscountCartDeleteTasks(int cartId)
         {
             var oldDiscounts = await discountCartRepository.GetByCartId(cartId);
 
