@@ -43,14 +43,18 @@ namespace CaaS.Api.Controllers
 
                 return Ok(tDiscounts);
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
             catch (Exception ex)
                 when (ex is UnauthorizedAccessException || ex is ArgumentException)
             {
                 return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
             }
         }
 
@@ -60,17 +64,22 @@ namespace CaaS.Api.Controllers
         {
             try
             {
+                // TODO test
                 await discountLogic.AddDiscountsToCart(appKey, id, discountIds);
                 return NoContent();
-            }
-            catch (Exception ex)
-                when (ex is UnauthorizedAccessException || ex is ArgumentException)
-            {
-                return BadRequest(ex.Message);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (Exception ex)
+                when (ex is ArgumentException || ex is ArgumentNullException)
+            {
+                return BadRequest(ex.Message);
             }
         }
 
