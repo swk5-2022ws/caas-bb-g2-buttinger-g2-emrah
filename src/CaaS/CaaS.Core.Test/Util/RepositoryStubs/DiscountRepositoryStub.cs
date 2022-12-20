@@ -11,10 +11,16 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
     internal class DiscountRepositoryStub : IDiscountRepository
     {
         private readonly IDictionary<int, Discount> discounts;
+        private readonly IDiscountActionRepository discountActionRepository;
+        private readonly IDiscountRuleRepository discountRuleRepository;
 
-        public DiscountRepositoryStub(IDictionary<int, Discount> discounts)
+        public DiscountRepositoryStub(IDictionary<int, Discount> discounts,
+            IDiscountActionRepository discountActionRepository,
+            IDiscountRuleRepository discountRuleRepository)
         {
             this.discounts = discounts;
+            this.discountActionRepository = discountActionRepository;
+            this.discountRuleRepository = discountRuleRepository;
         }
 
         public Task<int> Create(Discount discount)
@@ -36,10 +42,18 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             return Task.FromResult(false);
         }
 
-        public Task<Discount?> Get(int id)
+        public async Task<Discount?> Get(int id)
         {
             discounts.TryGetValue(id, out Discount? discount);
-            return Task.FromResult(discount);
+            if (discount == null)
+                return null;
+
+            var rule = await discountRuleRepository.Get(discount.RuleId);
+            var action = await discountActionRepository.Get(discount.ActionId);
+
+            Discount fullDiscount = new(id, rule!, action!);
+
+            return fullDiscount;
         }
 
         public Task<IList<Discount>> GetByShopId(int id)

@@ -75,9 +75,9 @@ namespace CaaS.Core.Test.Logic
                     new DiscountAction(3, 1, "invalid",
                         new FixedValueDiscountAction(100.0)
                     ) )}
-
-
-            });
+            },
+            discountActionRepository,
+            discountRuleRepository);
 
             var cart = new Cart(1, "a82724ba-ced5-32e8-9ada-17b06d427906")
             {
@@ -130,7 +130,10 @@ namespace CaaS.Core.Test.Logic
                 new DiscountCart(1, 3)
             });
 
-            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository, discountActionRepository, discountRuleRepository);
+            sut = new DiscountLogic(
+                discountRepository, shopRepository, cartRepository,
+                productCartRepository, discountCartRepository, productRepository,
+                discountActionRepository, discountRuleRepository);
         }
 
         [Test]
@@ -303,6 +306,23 @@ namespace CaaS.Core.Test.Logic
         public void TestDeleteDiscountWithInvalidAppKeyThrowsUnauthorizedException()
         {
             Assert.CatchAsync<UnauthorizedAccessException>(async () => await sut.Delete(Guid.NewGuid(), 1));
+        }
+
+        [Test]
+        public async Task TestCreateWithValidDiscountReturnsId()
+        {
+            Discount discount = new(4, 1, 1);
+
+            var id = await sut.Create(appKey, discount);
+
+            Discount actual = await sut.Get(appKey, id);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actual, Is.Not.Null);
+                Assert.That(actual.RuleId, Is.EqualTo(discount.RuleId));
+                Assert.That(actual.ActionId, Is.EqualTo(discount.ActionId));
+            });
         }
     }
 }
