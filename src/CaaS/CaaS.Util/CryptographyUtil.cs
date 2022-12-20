@@ -16,7 +16,8 @@ namespace CaaS.Util
     public static class CryptographyUtil
     {
         //keysize in bytes
-        private const int Keysize = 256;
+        private const int KEYSIZE = 256;
+        private const int BLOCKSIZE = 128;
 
         // This constant determines the number of iterations for the password bytes generation function.
         private const int DerivationIterations = 1000;
@@ -25,16 +26,15 @@ namespace CaaS.Util
         {
             // Salt and IV is randomly generated each time, but is preprended to encrypted cipher text
             // so that the same Salt and IV values can be used when decrypting.  
-            var saltedBytes = GetRandomized256Bits();
-            var ivBytes = GetRandomized256Bits();
+            var saltedBytes = GetRandomized128Bits();
+            var ivBytes = GetRandomized128Bits();
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
             using (var password = new Rfc2898DeriveBytes(passPhrase, saltedBytes, DerivationIterations))
             {
-                var keyBytes = password.GetBytes(Keysize / 8);
+                var keyBytes = password.GetBytes(KEYSIZE / 8);
                 using (Aes aes = Aes.Create())
                 {
                     //init AES encryption
-                    aes.BlockSize = 256;
                     aes.IV = ivBytes;
                     aes.Key = keyBytes;
 
@@ -62,19 +62,18 @@ namespace CaaS.Util
             var plainTextWithSaltAndIvAsBytes = Convert.FromBase64String(cipherText);
 
             //retrieve salt
-            var salt = plainTextWithSaltAndIvAsBytes.Take(Keysize / 8).ToArray();
+            var salt = plainTextWithSaltAndIvAsBytes.Take(BLOCKSIZE / 8).ToArray();
             //skip salt and get iv
-            var iv = plainTextWithSaltAndIvAsBytes.Skip(Keysize / 8).Take(Keysize / 8).ToArray();
+            var iv = plainTextWithSaltAndIvAsBytes.Skip(BLOCKSIZE / 8).Take(BLOCKSIZE / 8).ToArray();
 
             //skip iv and get the cipheredText as bytes.
-            var cipherTextBytes = plainTextWithSaltAndIvAsBytes.Skip((Keysize / 8) * 2).ToArray();
+            var cipherTextBytes = plainTextWithSaltAndIvAsBytes.Skip((BLOCKSIZE / 8) * 2).ToArray();
 
             using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
             {
-                var keyBytes = password.GetBytes(Keysize / 8);
+                var keyBytes = password.GetBytes(KEYSIZE / 8);
                 using (Aes aes = Aes.Create())
                 {
-                    aes.BlockSize = Keysize;
                     aes.Mode = CipherMode.CBC;
                     aes.Padding = PaddingMode.PKCS7;
 
@@ -89,6 +88,6 @@ namespace CaaS.Util
             }
         }
 
-        private static byte[] GetRandomized256Bits() => RandomNumberGenerator.GetBytes(Keysize / 8);
+        private static byte[] GetRandomized128Bits() => RandomNumberGenerator.GetBytes(BLOCKSIZE / 8);
     }
 }
