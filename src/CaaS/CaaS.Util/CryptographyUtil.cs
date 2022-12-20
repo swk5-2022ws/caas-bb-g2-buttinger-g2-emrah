@@ -20,7 +20,7 @@ namespace CaaS.Util
         private const int BLOCKSIZE = 128;
 
         // This constant determines the number of iterations for the password bytes generation function.
-        private const int DerivationIterations = 1000;
+        private const int ITERATIONS = 1000;
 
         public static string Encrypt(string plainText, string passPhrase)
         {
@@ -29,30 +29,22 @@ namespace CaaS.Util
             var saltedBytes = GetRandomized128Bits();
             var ivBytes = GetRandomized128Bits();
             var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            using (var password = new Rfc2898DeriveBytes(passPhrase, saltedBytes, DerivationIterations))
+
+            using (var password = new Rfc2898DeriveBytes(passPhrase, saltedBytes, ITERATIONS))
+            using (Aes aes = Aes.Create())
+            using (var encryptor = aes.CreateEncryptor(password.GetBytes(KEYSIZE / 8), ivBytes))
+            using (var memoryStream = new MemoryStream())
+            using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
             {
-                var keyBytes = password.GetBytes(KEYSIZE / 8);
-                using (Aes aes = Aes.Create())
-                {
-                    //init AES encryption
-                    aes.IV = ivBytes;
-                    aes.Key = keyBytes;
+                //write plaintext in encrypted bytes
+                cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
+                cryptoStream.FlushFinalBlock();
 
-                    using (var encryptor = aes.CreateEncryptor())
-                    using (var memoryStream = new MemoryStream())
-                    using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
-                    {
-                        //write plaintext in encrypted bytes
-                        cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length);
-                        cryptoStream.FlushFinalBlock();
+                //get cipheredBytes but prepend salt and iv as they are generated randomly
+                var cipheredBytes = saltedBytes.Concat(ivBytes).Concat(memoryStream.ToArray()).ToArray();
 
-                        //get cipheredBytes but prepend salt and iv as they are generated randomly
-                        var cipheredBytes = saltedBytes.Concat(ivBytes).Concat(memoryStream.ToArray()).ToArray();
-
-                        //retrieve the sring as base64 encode
-                        return Convert.ToBase64String(cipheredBytes);
-                    }
-                }
+                //retrieve the sring as base64 encode
+                return Convert.ToBase64String(cipheredBytes);
             }
         }
 
@@ -69,22 +61,14 @@ namespace CaaS.Util
             //skip iv and get the cipheredText as bytes.
             var cipherTextBytes = plainTextWithSaltAndIvAsBytes.Skip((BLOCKSIZE / 8) * 2).ToArray();
 
-            using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations))
+            using (var password = new Rfc2898DeriveBytes(passPhrase, salt, ITERATIONS))
+            using (Aes aes = Aes.Create())
+            using (var decryptor = aes.CreateDecryptor(password.GetBytes(KEYSIZE / 8), iv))
+            using (var memoryStream = new MemoryStream(cipherTextBytes))
+            using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+            using (var streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
             {
-                var keyBytes = password.GetBytes(KEYSIZE / 8);
-                using (Aes aes = Aes.Create())
-                {
-                    aes.Mode = CipherMode.CBC;
-                    aes.Padding = PaddingMode.PKCS7;
-
-                    using (var decryptor = aes.CreateDecryptor(keyBytes, iv))
-                    using (var memoryStream = new MemoryStream(cipherTextBytes))
-                    using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                    using (var streamReader = new StreamReader(cryptoStream, Encoding.UTF8))
-                    {
-                        return streamReader.ReadToEnd();
-                    }
-                }
+                return streamReader.ReadToEnd();
             }
         }
 
