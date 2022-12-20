@@ -27,7 +27,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [Test]
         [TestCase(0)]
         [TestCase(-1)]
-        [TestCase(101)]
+        [TestCase(int.MaxValue)]
         public async Task GetCartByIdWithInvalidValidIdReturnsNull(int id) =>
             Assert.That(await sut.Get(id), Is.Null);
         

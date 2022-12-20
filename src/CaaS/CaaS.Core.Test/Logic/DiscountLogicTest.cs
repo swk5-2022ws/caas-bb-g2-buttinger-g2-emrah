@@ -26,12 +26,32 @@ namespace CaaS.Core.Test.Logic
         private IProductCartRepository productCartRepository;
         private IDiscountCartRepository discountCartRepository;
         private IProductRepository productRepository;
+        private IDiscountActionRepository discountActionRepository;
+        private IDiscountRuleRepository discountRuleRepository;
 
         private static readonly Guid appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
 
         [SetUp]
         public void InitializeSut()
         {
+
+            discountActionRepository = new DiscountActionRepositoryStub(new Dictionary<int, DiscountAction>()
+            {
+                {1, new DiscountAction(1, 1, "valid", new FixedValueDiscountAction(100.0))},
+                {2, new DiscountAction(3, 1, "invalid", new FixedValueDiscountAction(100.0))},
+                {3, new DiscountAction(3, 1, "invalid", new FixedValueDiscountAction(100.0))},
+            });
+
+            discountRuleRepository = new DiscountRuleRepositoryStub(new Dictionary<int, DiscountRule>()
+            {
+                {1, new DiscountRule(1, 1, "valid",
+                        new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now)) },
+                {2, new DiscountRule(2, 1, "valid",
+                        new TotalAmountDiscountRuleset(300.0)) },
+                {3, new DiscountRule(3, 1, "invalid",
+                        new TotalAmountDiscountRuleset(500.0))}
+            });
+
             discountRepository = new DiscountRepositoryStub(new Dictionary<int, Discount>()
             {
                 // valid
@@ -110,7 +130,7 @@ namespace CaaS.Core.Test.Logic
                 new DiscountCart(1, 3)
             });
 
-            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository);
+            sut = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository, discountActionRepository, discountRuleRepository);
         }
 
         [Test]
@@ -235,6 +255,54 @@ namespace CaaS.Core.Test.Logic
 
             var actualDiscounts = await discountCartRepository.GetByCartId(1);
             Assert.That(actualDiscounts, Has.Count.EqualTo(2));
+        }
+
+        [Test]
+        public async Task TestGetDiscountWithValidIdReturnsDiscount()
+        {
+            var discount = await sut.Get(appKey, 1);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(discount, Is.Not.Null);
+                Assert.That(discount.Id, Is.EqualTo(1));
+            });
+        }
+
+        [Test]
+        public void TestGetDiscountWithInvalidAppKeyThrowsUnauthorizedException()
+        {
+            Assert.CatchAsync<UnauthorizedAccessException>(async () => await sut.Get(Guid.NewGuid(), 1));
+        }
+
+        [Test]
+        public void TestGetDiscountWithInvalidDiscountIdThrowsKeyNotFoundException()
+        {
+            Assert.CatchAsync<KeyNotFoundException>(async () => await sut.Get(appKey, int.MaxValue));
+        }
+
+        [Test]
+        public async Task TestDeleteWithValidIdDeletesDiscount()
+        {
+            var isDeleted = await sut.Delete(appKey, 1);
+
+            Assert.Multiple(async () =>
+            {
+                Assert.That(isDeleted, Is.True);
+                Assert.CatchAsync<KeyNotFoundException>(async () => await sut.Get(appKey, 1));
+            });
+        }
+
+        [Test]
+        public void TestDeleteWithInvalidIdThrowsKeyNotFoundException()
+        {
+            Assert.CatchAsync<KeyNotFoundException>(async () => await sut.Delete(appKey, int.MaxValue));
+        }
+
+        [Test]
+        public void TestDeleteDiscountWithInvalidAppKeyThrowsUnauthorizedException()
+        {
+            Assert.CatchAsync<UnauthorizedAccessException>(async () => await sut.Delete(Guid.NewGuid(), 1));
         }
     }
 }

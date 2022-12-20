@@ -64,7 +64,6 @@ namespace CaaS.Api.Controllers
         {
             try
             {
-                // TODO test
                 await discountLogic.AddDiscountsToCart(appKey, id, discountIds);
                 return NoContent();
             }
@@ -86,7 +85,62 @@ namespace CaaS.Api.Controllers
         [HttpDelete("api/discount/{id}")]
         public async Task<ActionResult> DeleteDiscount([FromHeader] Guid appKey, [FromRoute] int id)
         {
-            return Ok();
+            try
+            {
+                await discountLogic.Delete(appKey, id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpGet("api/discount/{id}")]
+        public async Task<ActionResult> Get([FromHeader] Guid appKey, [FromRoute] int id)
+        {
+            try
+            {
+                var discount = await discountLogic.Get(appKey, id);
+                var tDiscounts = mapper.Map<TDiscount>(discount);
+                return Ok(tDiscounts);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost("api/discount")]
+        public async Task<ActionResult> CreateDiscount([FromHeader] Guid appKey, [FromBody] TDiscount discount)
+        {
+            try
+            {
+                Domainmodels.Discount discountBo = mapper.Map<Discount>(discount);
+                int id = await discountLogic.Create(appKey, discountBo);
+
+                return CreatedAtAction(
+                    actionName: nameof(Get),
+                    routeValues: new { id },
+                    value: discount);
+
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
     }
 }

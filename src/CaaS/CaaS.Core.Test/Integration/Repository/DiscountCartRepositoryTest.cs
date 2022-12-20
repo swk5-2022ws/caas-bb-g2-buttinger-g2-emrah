@@ -26,7 +26,7 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.Multiple(() =>
             {
                 Assert.That(actual, Has.Count.EqualTo(expectedCount));
-                Assert.That(actual.All(x => x.CartId== cartId), Is.True);
+                Assert.That(actual.All(x => x.CartId == cartId), Is.True);
             });
         }
 
