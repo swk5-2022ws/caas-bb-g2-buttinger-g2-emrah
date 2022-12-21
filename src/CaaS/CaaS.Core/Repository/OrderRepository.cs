@@ -21,7 +21,7 @@ namespace CaaS.Core.Repository
         public async Task<IList<Order>> GetOrdersByCustomerId(int id)
         {
             ICartRepository cartRepository = new CartRepository(template);
-            var cart = await cartRepository.GetByCustomer(id);
+            var cart = await cartRepository.GetByCustomerId(id);
 
             if (cart is null) return new List<Order>();
 

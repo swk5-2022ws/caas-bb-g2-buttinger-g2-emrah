@@ -18,6 +18,8 @@ namespace CaaS.Core.Domainmodels.DiscountRules
         public DateTime EndDate { get; init; }
         public DateTime OrderDate { get; init; }
 
+        public DateDiscountRuleset() {}
+
         [JsonConstructor]
         public DateDiscountRuleset(DateTime startDate, DateTime endDate, DateTime orderDate)
         {

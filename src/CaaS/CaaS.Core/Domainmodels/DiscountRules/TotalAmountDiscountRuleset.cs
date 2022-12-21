@@ -16,6 +16,8 @@ namespace CaaS.Core.Domainmodels.DiscountRules
     {
         public double MinimumTotalAmount { get; set; }
 
+        public TotalAmountDiscountRuleset() { }
+
         [JsonConstructor]
         public TotalAmountDiscountRuleset(double minimumTotalAmount)
         {

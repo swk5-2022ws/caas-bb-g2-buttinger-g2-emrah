@@ -2,7 +2,6 @@
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Core.Test.Util;
-using CaaS.Core.Transferrecordes;
 using Org.BouncyCastle.Security;
 using System;
 using System.Collections.Generic;
@@ -35,9 +34,9 @@ namespace CaaS.Core.Test.Integration.Repository
             Assert.That(discount.Id, Is.EqualTo(discountId));
         }
 
-        [TestCase(1, 10)]
-        [TestCase(2, 10)]
-        [TestCase(3, 10)]
+        [TestCase(1, 5)]
+        [TestCase(2, 5)]
+        [TestCase(3, 5)]
         [Test, Rollback]
         public async Task TestGetByShopIdWithValidIdReturnsDiscount(int shopId, int expectedCount)
         {
@@ -48,10 +47,11 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(1, 1)]
         [TestCase(21, 21)]
         [TestCase(41, 61)]
+        [TestCase(61, 41)]
         [Test, Rollback]
         public async Task TestCreateWIthValidDiscountCreatesDiscount(int actionId, int ruleId)
         {
-            Discount? discount = new(0, actionId, ruleId);
+            Discount? discount = new(0, ruleId, actionId);
             var id = await sut.Create(discount);
             discount = await sut.Get(id);
             Assert.Multiple(() =>

@@ -670,6 +670,12 @@ UNLOCK TABLES;
 
 -- Dump completed on 2022-10-27 20:05:03
 
+-- INSERT null customer Cart for tests
+INSERT INTO `Cart` (`Id`, `CustomerId`, `SessionId`) VALUES ('101', NULL, 'a82724ba-ced5-32e8-9ada-17b06d427999');
+
+-- DELETE ProductCarts from Deleted Products
+-- DELETE FROM ProductCart pc WHERE pc.ProductId IN (SELECT Id FROM Product WHERE Deleted IS NOT NULL);
+
 -- Manual modification
 
 ALTER TABLE `Customer` DROP FOREIGN KEY `FK_Customer_Shop`; ALTER TABLE `Customer` ADD CONSTRAINT `FK_Customer_Shop` FOREIGN KEY (`ShopId`) REFERENCES `Shop`(`Id`) ON DELETE CASCADE ON UPDATE RESTRICT;

@@ -1,12 +1,18 @@
 ﻿using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Repository;
-using CaaS.Core.Transferrecordes;
+using CaaS.Core.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CaaS.Core.Test.Util.RepositoryStubs
 {
-    public class CartRepositoryStub: ICartRepository
+    internal class CartRepositoryStub : ICartRepository
     {
-        IDictionary<int, Cart> carts;
+        private readonly IDictionary<int, Cart> carts;
+
         public CartRepositoryStub(IDictionary<int, Cart> carts)
         {
             this.carts = carts;
@@ -42,6 +48,19 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
 
         public Task<Cart?> GetBySession(string sessionId) =>
             Task.FromResult(carts.Values.FirstOrDefault(x => x.SessionId == sessionId));
+
+        // TODO check cartrepository implementation
+        public Task<Cart> GetByCustomerId(int id)
+        {
+            IList<Cart> cartsByCustomerId = new List<Cart>();
+            foreach (var keyValuePair in carts)
+            {
+                if (keyValuePair.Value.CustomerId == id)
+                    cartsByCustomerId.Add(keyValuePair.Value);
+            }
+
+            return Task.FromResult(cartsByCustomerId.FirstOrDefault());
+        }
 
         public Task<bool> Update(Cart cart)
         {

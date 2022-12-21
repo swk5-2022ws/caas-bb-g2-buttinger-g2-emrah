@@ -10,9 +10,9 @@ namespace CaaS.Core.Engines
 {
     public class DiscountEngine : IDiscountEngine
     {
-        public List<Discount> Discounts { get; }
+        public IEnumerable<Discount> Discounts { get; }
 
-        public DiscountEngine(List<Discount> discounts)
+        public DiscountEngine(IEnumerable<Discount> discounts)
         {
             Discounts = discounts;
         }
@@ -22,7 +22,7 @@ namespace CaaS.Core.Engines
             if (cart == null) throw new ArgumentException($"Can not apply discounts to a null. Check parameter {nameof(cart)}.");
 
             var validDiscounts = Discounts
-                .Where(x => x.DiscountRule!.RuleObject.IsQualifiedForDiscount(cart));
+                .Where(x => x.DiscountRule!.RuleObject!.IsQualifiedForDiscount(cart));
 
             var orderedDiscounts = OrderDiscounts(validDiscounts);
 

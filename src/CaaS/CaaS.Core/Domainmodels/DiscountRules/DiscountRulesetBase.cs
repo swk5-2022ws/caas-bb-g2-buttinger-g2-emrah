@@ -1,5 +1,6 @@
 ﻿using CaaS.Core.Domainmodels.DiscountActions;
 using CaaS.Core.Interfaces.Discount;
+using CaaS.Core.Logic.Util.Discounts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace CaaS.Core.Domainmodels.DiscountRules
     [JsonDerivedType(typeof(TotalAmountDiscountRuleset), nameof(TotalAmountDiscountRuleset))]
     [Serializable]
     public abstract class DiscountRulesetBase : IDiscountRule, ISerializable
-    {
+    { 
         public abstract void GetObjectData(SerializationInfo info, StreamingContext context);
         public abstract bool IsQualifiedForDiscount(Cart cart);
 
@@ -28,6 +29,11 @@ namespace CaaS.Core.Domainmodels.DiscountRules
         public static string Serialize<T>(T toSerialize) where T : DiscountRulesetBase
         {
             return JsonSerializer.Serialize<DiscountRulesetBase>(toSerialize) ?? throw new ArgumentException($"Could not deserialize {toSerialize}");
+        }
+
+        public static IEnumerable<DiscountRulesetBase> BuildSamples()
+        {
+            return SampleBuilder.BuildSamples<DiscountRulesetBase>();
         }
     }
 }

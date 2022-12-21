@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace CaaS.Util
 {
@@ -78,6 +79,21 @@ namespace CaaS.Util
             }
 
             return attribute.Name;
+        }
+
+        /// <summary>
+        /// Returns all classes which inherit from a type.
+        /// </summary>
+        public static IEnumerable<Type> GetSubTypes<T>() where T : class, ISerializable
+        {
+            var types = Assembly.GetAssembly(typeof(T))!.GetTypes()
+                .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T)));
+
+            List<T> objects = new List<T>();
+            foreach (Type type in types)
+            {
+                yield return type;
+            }
         }
     }
 }

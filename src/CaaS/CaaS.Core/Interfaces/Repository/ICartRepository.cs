@@ -28,7 +28,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// </summary>
         /// <param name="id">customer id</param>
         /// <returns>A cart</returns>
-        Task<Cart?> GetByCustomer(int id);
+        Task<Cart?> GetByCustomerId(int id);
 
         /// <summary>
         /// Deletes a cart. Only carts without orders can be deleted.

@@ -27,7 +27,7 @@ namespace CaaS.Core.Test.Integration.Repository
         [Test]
         [TestCase(0)]
         [TestCase(-1)]
-        [TestCase(101)]
+        [TestCase(int.MaxValue)]
         public async Task GetCartByIdWithInvalidValidIdReturnsNull(int id) =>
             Assert.That(await sut.Get(id), Is.Null);
         
@@ -49,14 +49,14 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(2, 2, "747c7000-c0b2-330a-930a-1d14e39b1e64")]
         [TestCase(3, 3, "5c662d68-ead5-35fe-af4c-cf4470a8ff3d")]
         public async Task GetCartByCustomerIdWithValidCustomerIdReturnsCart(int id, int? customerId, string sessionId) =>
-            BaseGetAssertions(await sut.GetByCustomer(id), id, customerId, sessionId);
+            BaseGetAssertions(await sut.GetByCustomerId(id), id, customerId, sessionId);
 
         [Test]
         [TestCase(0)]
         [TestCase(-1)]
         [TestCase(101)]
         public async Task GetCartByInvalidCustomerIdReturnsNull(int id) =>
-            Assert.That(await sut.GetByCustomer(id), Is.Null);
+            Assert.That(await sut.GetByCustomerId(id), Is.Null);
 
         [Test,Rollback]
         public async Task CreateValidCartReturnsId()
