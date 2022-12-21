@@ -324,5 +324,31 @@ namespace CaaS.Core.Test.Logic
                 Assert.That(actual.ActionId, Is.EqualTo(discount.ActionId));
             });
         }
+
+        [Test]
+        public void TestCreateWithInvalidActionThrowsKeyNotFoundException()
+        {
+            Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.Create(appKey, new(4, 1, int.MaxValue)));
+        }
+
+        [Test]
+        public void TestCreateWithInvalidRuleThrowsKeyNotFoundException()
+        {
+            Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.Create(appKey, new(4, int.MaxValue, 1)));
+        }
+
+        [Test]
+        public async Task TestGetByShopIdWithValidShopIdReturnsDiscounts()
+        {
+            var discounts = (await sut.GetByShopId(appKey, 1)).ToList();
+
+            Assert.That(discounts, Has.Count.EqualTo(3));
+        }
+
+        [Test]
+        public async Task TestGetByShopIdWithInvalidShopIdThrowsUnauthorizedException()
+        {
+            Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await sut.GetByShopId(Guid.NewGuid(), 1));
+        }
     }
 }

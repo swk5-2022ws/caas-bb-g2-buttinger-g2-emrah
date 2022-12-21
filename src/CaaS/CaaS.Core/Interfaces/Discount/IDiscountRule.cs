@@ -1,4 +1,5 @@
 ﻿using CaaS.Core.Domainmodels;
+using CaaS.Core.Domainmodels.DiscountRules;
 using System;
 using System.Collections.Generic;
 using System.Linq;

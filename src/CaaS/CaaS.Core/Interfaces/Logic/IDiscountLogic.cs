@@ -39,5 +39,9 @@ namespace CaaS.Core.Interfaces.Logic
         /// Creates a discount.
         /// </summary>
         Task<int> Create(Guid appKey, Domainmodels.Discount discount);
+        /// <summary>
+        /// Get discounts by shop
+        /// </summary>
+        Task<IEnumerable<Domainmodels.Discount>> GetByShopId(Guid appKey, int id);
     }
 }

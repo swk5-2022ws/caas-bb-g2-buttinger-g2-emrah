@@ -17,7 +17,6 @@ namespace CaaS.Api.Transfers.Mappings
             CreateMap<TDiscount, Discount>()
                 .ConstructUsing(x =>
                 new Discount(x.Id, x.DiscountRule.Id, x.discountAction.Id));
-
         }
     }
 }

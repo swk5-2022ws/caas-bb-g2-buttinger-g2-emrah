@@ -7,8 +7,15 @@ namespace CaaS.Core.Logic.Util
 {
     public static class Check
     {
+        // TODO merge with ShopAuthorization => adapt tests to use UnauthorizedAccessException
+        public static async Task Shop(IShopRepository shopRepository, int shopId, Guid appKey)
+        {
+            var availableShop = await shopRepository.Get(shopId) ?? throw new ArgumentException($"The shop with id={shopId} is currently not available.");
+            if (availableShop.AppKey != appKey) throw new UnauthorizedAccessException($"You have not the right privileges.");
+        }
+
         /// <summary>
-        /// Checks wether a shop with a given id is in the repository and
+        /// Checks weather a shop with a given id is in the repository and
         /// if the shops appkey matches with the passed one
         /// </summary>
         /// <param name="shopRepository">ShopRepository</param>
@@ -22,7 +29,7 @@ namespace CaaS.Core.Logic.Util
         }
 
         /// <summary>
-        /// Checks wether a given customer is already there and if the customers shop matches the passed appKeys shop
+        /// Checks weather a given customer is already there and if the customers shop matches the passed appKeys shop
         /// </summary>
         /// <param name="shopRepository">The shopRepository</param>
         /// <param name="customerRepository">The customerRepository</param>
@@ -38,7 +45,7 @@ namespace CaaS.Core.Logic.Util
         }
 
         /// <summary>
-        /// Checks wether a product is there and wether or not the product references the correct shop
+        /// Checks weather a product is there and weather or not the product references the correct shop
         /// </summary>
         /// <param name="shopRepository">the shoprepository</param>
         /// <param name="productRepository">the productRepository</param>
@@ -61,6 +68,14 @@ namespace CaaS.Core.Logic.Util
             if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(cart));
 
             return cart;
+        }
+
+        public static async Task DiscountRule(IShopRepository shopRepository, IDiscountRuleRepository discountRuleRepository, Guid appKey, int ruleId)
+        {
+            var rule = await discountRuleRepository.Get(ruleId);
+            if (rule is null) throw ExceptionUtil.NoSuchIdException(nameof(rule));
+            await Shop(shopRepository, rule.ShopId, appKey);
+            
         }
     }
 }

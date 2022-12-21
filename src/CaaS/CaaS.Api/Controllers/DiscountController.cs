@@ -52,7 +52,7 @@ namespace CaaS.Api.Controllers
                 return Unauthorized();
             }
             catch (Exception ex)
-                when (ex is UnauthorizedAccessException || ex is ArgumentException)
+                when (ex is ArgumentNullException || ex is ArgumentException)
             {
                 return BadRequest(ex.Message);
             }
@@ -119,12 +119,32 @@ namespace CaaS.Api.Controllers
             }
         }
 
+
+        [HttpGet("api/shop/{id}/discounts")]
+        public async Task<ActionResult> GetDiscounts([FromHeader] Guid appKey, [FromRoute] int id)
+        {
+            try
+            {
+                var discounts = await discountLogic.GetByShopId(appKey, id);
+                var tDiscounts = mapper.Map<IEnumerable<TDiscount>>(discounts.ToList());
+                return Ok(tDiscounts);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
         [HttpPost("api/discount")]
         public async Task<ActionResult> CreateDiscount([FromHeader] Guid appKey, [FromBody] TDiscount discount)
         {
             try
             {
-                Domainmodels.Discount discountBo = mapper.Map<Discount>(discount);
+                Discount discountBo = mapper.Map<Discount>(discount);
                 int id = await discountLogic.Create(appKey, discountBo);
 
                 return CreatedAtAction(

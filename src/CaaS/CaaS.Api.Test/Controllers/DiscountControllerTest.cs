@@ -47,9 +47,12 @@ namespace CaaS.Api.Test.Controllers
             IProductCartRepository productCartRepository = new ProductCartRepository(Setup.GetTemplateEngine());
             IDiscountCartRepository discountCartRepository = new DiscountCartRepository(Setup.GetTemplateEngine());
             IProductRepository productRepository = new ProductRepository(Setup.GetTemplateEngine());
+            IDiscountActionRepository discountActionRepository = new DiscountActionRepository(Setup.GetTemplateEngine());
+            IDiscountRuleRepository discountRuleRepository = new DiscountRuleRepository(Setup.GetTemplateEngine());
 
             IShopLogic shopLogic = new ShopLogic(shopRepository, tenantRepository);
-            var discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository);
+            var discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository
+                , discountActionRepository, discountRuleRepository);
 
 
             sut = new DiscountController(discountLogic, tenantRepository, mapper, logger);
@@ -111,5 +114,12 @@ namespace CaaS.Api.Test.Controllers
             NoContentResult response = (NoContentResult) await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1 });
             Assert.That(response, Is.Not.Null);
         }
+
+        //[Test, Rollback]
+        //public async Task TestGetDiscountsByShopIdWithValidShopIdReturnsOkObjectResult()
+        //{
+        //    OkObjectResult response = (OkObjectResult)(await sut.GetDiscounts(appKey, 1));
+        //    Assert.That(response, Is.Not.Null);
+        //}
     }
 }

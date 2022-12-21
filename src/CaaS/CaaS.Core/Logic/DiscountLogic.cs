@@ -45,6 +45,12 @@ namespace CaaS.Core.Logic
             return await GetDiscountWithAuthorizationCheck(appKey, discountId); ;
         }
 
+        public async Task<IEnumerable<Discount>> GetByShopId(Guid appKey, int shopId)
+        {
+            await AuthorizationCheck(shopId, appKey);
+            return await discountRepository.GetByShopId(shopId);
+        }
+
         public async Task<int> Create(Guid appKey, Discount discount)
         {
             var rule = await discountRuleRepository.Get(discount.RuleId);
