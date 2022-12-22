@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using CaaS.Api.Controllers;
-using CaaS.Core.Domainmodels;
 using CaaS.Core.Domainmodels.DiscountRules;
+using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
-using CaaS.Core.Logic;
 using CaaS.Core.Repository;
-using CaaS.Core.Test;
 using CaaS.Core.Test.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,14 +13,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CaaS.Core.Logic;
+using CaaS.Core.Test;
+using CaaS.Core.Domainmodels.DiscountActions;
 
 namespace CaaS.Api.Test.Controllers
 {
     [Category("Integration")]
     [TestFixture]
-    public class DiscountRuleControllerTest
+    public class DiscountActionControllerTest
     {
-        private DiscountRuleController sut;
+        private DiscountActionController sut;
         private Guid appKey = Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906");
 
         [OneTimeSetUp]
@@ -39,10 +40,10 @@ namespace CaaS.Api.Test.Controllers
 
 
             IShopRepository shopRepository = new ShopRepository(Setup.GetTemplateEngine());
-            IDiscountRuleRepository discountRuleRepository = new DiscountRuleRepository(Setup.GetTemplateEngine());
-            IDiscountRuleLogic DiscountRuleLogic = new DiscountRuleLogic(discountRuleRepository, shopRepository);
+            IDiscountActionRepository discountActionRepository = new DiscountActionRepository(Setup.GetTemplateEngine());
+            IDiscountActionLogic discountActionLogic = new DiscountActionLogic(discountActionRepository, shopRepository);
 
-            sut = new DiscountRuleController(DiscountRuleLogic, mapper);
+            sut = new DiscountActionController(discountActionLogic, mapper);
         }
 
         [Test, Rollback]
@@ -50,7 +51,7 @@ namespace CaaS.Api.Test.Controllers
         {
             OkObjectResult result = (OkObjectResult)await sut.GetDiscountRules();
 
-            IList<DiscountRulesetBase> values = ((IEnumerable<DiscountRulesetBase>)result.Value!).ToList();
+            IList<DiscountActionBase> values = ((IEnumerable<DiscountActionBase>)result.Value!).ToList();
 
             Assert.Multiple(() =>
             {
@@ -65,12 +66,12 @@ namespace CaaS.Api.Test.Controllers
             OkObjectResult result = (OkObjectResult)await sut.GetByShopId(appKey, 1);
 
 
-            IList<DiscountRule> values = ((IEnumerable<DiscountRule>)result.Value!).ToList();
+            IList<DiscountAction> values = ((IEnumerable<DiscountAction>)result.Value!).ToList();
 
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.Not.Null);
-                Assert.That(values, Has.Count.EqualTo(5));
+                Assert.That(values, Has.Count.EqualTo(10));
             });
         }
 
@@ -112,27 +113,26 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithValidDiscountRuleReturnsOkObjectResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, 1, "new",
-                        new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
+            DiscountAction discountAction = new DiscountAction(0, 1, "new",
+                        new TotalPercentageDiscountAction(0.5d));
 
-            CreatedAtActionResult result = (CreatedAtActionResult)await sut.Create(appKey, discountRule);
+            CreatedAtActionResult result = (CreatedAtActionResult)await sut.Create(appKey, discountAction);
             int id = (int)result.Value!;
 
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.Not.Null);
                 Assert.That(id, Is.AtLeast(1));
-
             });
         }
 
         [Test, Rollback]
         public async Task TestCreateWithInvalidAppKeyReturnsUnauthorizedResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, 1, "new",
-            new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
+            DiscountAction discountAction = new DiscountAction(0, 1, "new",
+                        new TotalPercentageDiscountAction(0.5d));
 
-            UnauthorizedResult result = (UnauthorizedResult)await sut.Create(Guid.NewGuid(), discountRule);
+            UnauthorizedResult result = (UnauthorizedResult)await sut.Create(Guid.NewGuid(), discountAction);
 
             Assert.That(result, Is.Not.Null);
         }
@@ -140,10 +140,10 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithInvalidShopIdReturnsUnauthorizedResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, int.MaxValue, "new",
-            new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
+            DiscountAction discountAction = new DiscountAction(0, int.MaxValue, "new",
+                        new TotalPercentageDiscountAction(0.5d));
 
-            BadRequestObjectResult result = (BadRequestObjectResult)await sut.Create(appKey, discountRule);
+            BadRequestObjectResult result = (BadRequestObjectResult)await sut.Create(appKey, discountAction);
 
             Assert.That(result, Is.Not.Null);
         }

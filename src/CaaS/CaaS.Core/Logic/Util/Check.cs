@@ -2,6 +2,7 @@
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Util;
+using System.Data;
 
 namespace CaaS.Core.Logic.Util
 {
@@ -76,6 +77,13 @@ namespace CaaS.Core.Logic.Util
             if (rule is null) throw ExceptionUtil.NoSuchIdException(nameof(rule));
             await Shop(shopRepository, rule.ShopId, appKey);
             
+        }
+
+        internal async static Task DiscountAction(IShopRepository shopRepository, IDiscountActionRepository discountActionRepository, Guid appKey, int actionId)
+        {
+            var action = await discountActionRepository.Get(actionId);
+            if (action is null) throw ExceptionUtil.NoSuchIdException(nameof(action));
+            await Shop(shopRepository, action.ShopId, appKey);
         }
     }
 }

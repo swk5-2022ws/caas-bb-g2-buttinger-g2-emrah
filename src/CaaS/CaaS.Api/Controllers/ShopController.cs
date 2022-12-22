@@ -97,7 +97,7 @@ namespace CaaS.Api.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPut]
         public async Task<ActionResult> UpdateShop([FromHeader] Guid appKey, [FromBody] Transfers.TShop tShop)
         {
             try

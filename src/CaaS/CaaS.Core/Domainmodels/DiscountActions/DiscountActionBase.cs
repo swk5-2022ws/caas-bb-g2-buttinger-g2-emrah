@@ -1,4 +1,6 @@
-﻿using CaaS.Core.Interfaces.Discount;
+﻿using CaaS.Core.Domainmodels.DiscountRules;
+using CaaS.Core.Interfaces.Discount;
+using CaaS.Core.Logic.Util.Discounts;
 using Org.BouncyCastle.Asn1.X509.Qualified;
 using System;
 using System.Collections.Generic;
@@ -43,6 +45,11 @@ namespace CaaS.Core.Domainmodels.DiscountActions
         public static string Serialize<T>(T toSerialize) where T : DiscountActionBase
         {
             return JsonSerializer.Serialize<DiscountActionBase>(toSerialize) ?? throw new ArgumentException($"Could not deserialize {toSerialize}");
+        }
+
+        internal static IEnumerable<DiscountActionBase> BuildSamples()
+        {
+            return SampleBuilder.BuildSamples<DiscountActionBase>();
         }
     }
 }

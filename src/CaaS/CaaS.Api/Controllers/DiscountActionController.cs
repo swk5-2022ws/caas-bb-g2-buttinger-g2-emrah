@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CaaS.Api.Transfers;
 using CaaS.Api.Util;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
@@ -12,35 +11,35 @@ namespace CaaS.Api.Controllers
     [ApiConventionType(typeof(WebApiConventions))]
     [Route("api/[controller]")]
     [ApiController]
-    public class DiscountRuleController : ControllerBase
+    public class DiscountActionController : ControllerBase
     {
-        private readonly IDiscountRuleLogic discountRuleLogic;
+        private readonly IDiscountActionLogic discountActionLogic;
         private readonly IMapper mapper;
 
-        public DiscountRuleController(IDiscountRuleLogic discountRuleLogic, IMapper mapper)
+        public DiscountActionController(IDiscountActionLogic discountActionLogic, IMapper mapper)
         {
-            this.discountRuleLogic = discountRuleLogic;
+            this.discountActionLogic = discountActionLogic;
             this.mapper = mapper;
         }
 
-        [Route("api/discount/rules/types")]
+        [Route("api/discount/actions/types")]
         [HttpGet]
         public async Task<IActionResult> GetDiscountRules()
         {
-            var rules = await discountRuleLogic.GetRulesets();
+            var rules = await discountActionLogic.GetRulesets();
             return Ok(rules);
         }
 
-        [Route("api/discount/rules/{id}")]
+        [Route("api/discount/actions/{id}")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromHeader] Guid appKey, [FromBody] DiscountRule discountRule)
+        public async Task<IActionResult> Create([FromHeader] Guid appKey, [FromBody] DiscountAction discountAction)
         {
             try
             {
-                var id = await discountRuleLogic.Create(appKey, discountRule);
+                var id = await discountActionLogic.Create(appKey, discountAction);
                 return CreatedAtAction(
                 actionName: nameof(GetByShopId),
-                routeValues: new { discountRule.ShopId },
+                routeValues: new { discountAction.ShopId },
                 value: id);
             }
             catch (KeyNotFoundException ex)
@@ -58,13 +57,13 @@ namespace CaaS.Api.Controllers
             }
         }
 
-        [Route("api/shop/{id}/discount/rules")]
+        [Route("api/shop/{id}/actions/rules")]
         [HttpGet]
         public async Task<IActionResult> GetByShopId([FromHeader] Guid appKey, [FromRoute] int id)
         {
             try
             {
-                var discounts = await discountRuleLogic.GetByShopId(appKey, id);
+                var discounts = await discountActionLogic.GetByShopId(appKey, id);
                 return Ok(discounts);
             }
             catch (KeyNotFoundException ex)
@@ -82,13 +81,13 @@ namespace CaaS.Api.Controllers
             }
         }
 
-        [Route("api/discount/rules/{id}")]
+        [Route("api/discount/actions/{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromHeader] Guid appKey, [FromRoute] int id)
         {
             try
             {
-                var discounts = await discountRuleLogic.Delete(appKey, id);
+                var discounts = await discountActionLogic.Delete(appKey, id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
