@@ -50,7 +50,7 @@ namespace CaaS.Core.Logic
         {
             return Task.FromResult(
                 DiscountRulesetBase.BuildSamples()
-                );
+            );
         }
     }
 }

@@ -18,6 +18,8 @@ namespace CaaS.Core.Domainmodels.DiscountActions
         public override int ApplyPriority => (int) DiscountActionApplyPriority.PERCENTAGE;
         public override int SubApplyPriority => (int)Percentage;
 
+        public TotalPercentageDiscountAction() { }
+
         [JsonConstructor]
         public TotalPercentageDiscountAction(double percentage)
         {

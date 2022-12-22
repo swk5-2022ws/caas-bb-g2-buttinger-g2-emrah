@@ -50,7 +50,7 @@ namespace CaaS.Api.Test.Controllers
         {
             OkObjectResult result = (OkObjectResult)await sut.GetDiscountRules();
 
-            IEnumerable<DiscountRulesetBase> values = ((IEnumerable<DiscountRulesetBase>)result.Value!).ToList();
+            IList<DiscountRulesetBase> values = ((IEnumerable<DiscountRulesetBase>)result.Value!).ToList();
 
             Assert.Multiple(() =>
             {
@@ -65,7 +65,7 @@ namespace CaaS.Api.Test.Controllers
             OkObjectResult result = (OkObjectResult)await sut.GetByShopId(appKey, 1);
 
 
-            IEnumerable<DiscountRule> values = ((IEnumerable<DiscountRule>)result.Value!).ToList();
+            IList<DiscountRule> values = ((IEnumerable<DiscountRule>)result.Value!).ToList();
 
             Assert.Multiple(() =>
             {
