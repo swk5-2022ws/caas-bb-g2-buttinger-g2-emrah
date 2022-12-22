@@ -98,7 +98,7 @@ namespace CaaS.Core.Test.Logic
         [Test]
         public void TestDeleteWithInvalidAppKeyThrowsArgumentException()
         {
-            Assert.CatchAsync<ArgumentException>(async () => await sut.Delete(Guid.NewGuid(), 1));
+            Assert.CatchAsync<UnauthorizedAccessException>(async () => await sut.Delete(Guid.NewGuid(), 1));
         }
 
         [Test]
