@@ -2,6 +2,7 @@ using Caas.Core.Common.Attributes;
 using CaaS.Core.Domainmodels.DiscountActions;
 using CaaS.Core.Domainmodels.DiscountRules;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CaaS.Core.Domainmodels;
 public record DiscountRule
@@ -24,6 +25,7 @@ public record DiscountRule
     public string Name { get; set; }
     [AdoIgnore]
     public DiscountRulesetBase RuleObject { get; set; }
+    [JsonIgnore]
     public string Ruleset => DiscountRulesetBase.Serialize(RuleObject);
     
 }

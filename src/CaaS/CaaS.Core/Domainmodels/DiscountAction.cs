@@ -1,6 +1,7 @@
 using Caas.Core.Common.Attributes;
 using CaaS.Core.Domainmodels.DiscountActions;
 using CaaS.Core.Domainmodels.DiscountRules;
+using System.Text.Json.Serialization;
 
 namespace CaaS.Core.Domainmodels;
 public record DiscountAction
@@ -23,5 +24,6 @@ public record DiscountAction
     public string Name { get; set; }
     [AdoIgnore]
     public DiscountActionBase ActionObject { get; set; }
+    [JsonIgnore]
     public string Action => DiscountActionBase.Serialize(ActionObject);
 }
