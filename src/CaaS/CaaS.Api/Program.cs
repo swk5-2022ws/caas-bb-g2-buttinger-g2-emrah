@@ -22,10 +22,18 @@ builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductCartRepository, ProductCartRepository>();
+builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<IDiscountActionRepository, DiscountActionRepository>();
+builder.Services.AddScoped<IDiscountRuleRepository, DiscountRuleRepository>();
+builder.Services.AddScoped<IDiscountCartRepository, DiscountCartRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICouponLogic, CouponLogic>();
 builder.Services.AddScoped<IShopLogic, ShopLogic>();
 builder.Services.AddScoped<IProductLogic, ProductLogic>();
+builder.Services.AddScoped<IDiscountActionLogic, DiscountActionLogic>();
+builder.Services.AddScoped<IDiscountLogic, DiscountLogic>();
+builder.Services.AddScoped<IDiscountRuleLogic, DiscountRuleLogic>();
 builder.Services.AddScoped<IAdoTemplate, AdoTemplate>();
 builder.Services.AddAutoMapper(typeof(Program));
 
