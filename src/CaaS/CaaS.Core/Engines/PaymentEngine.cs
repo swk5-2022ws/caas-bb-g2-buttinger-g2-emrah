@@ -101,7 +101,7 @@ namespace CaaS.Core.Engines
 
             if (int.Parse(year) < 0) throw new FormatException("The year must be positiv");
 
-            int millenium = (Convert.ToInt32(DateTime.UtcNow.Year.ToString().Substring(0,2)) + 1) * 100;
+            int millenium = GetCurrentMillenium();
             var currentDate = DateTime.UtcNow;
             if (currentDate.Year >= millenium + int.Parse(year))
             {
@@ -110,6 +110,19 @@ namespace CaaS.Core.Engines
                     throw new ArgumentException("Your credit card expired");
                 }
             }
+        }
+
+        /// <summary>
+        /// Retrieves the current millenium
+        /// </summary>
+        /// <returns></returns>
+        private int GetCurrentMillenium()
+        {
+            var currentYear = DateTime.UtcNow.Year;
+            var currentCenturyString = currentYear.ToString().Substring(0, 2);
+            var currentCentury = Convert.ToInt32(currentCenturyString);
+
+            return currentCentury * 100;
         }
 
         /// <summary>
