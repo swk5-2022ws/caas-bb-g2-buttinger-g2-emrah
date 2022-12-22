@@ -26,6 +26,8 @@ namespace CaaS.Core.Logic
         public async Task<int> Create(Guid appKey, Customer customer)
         {
             if (customer is null) throw ExceptionUtil.ParameterNullException(nameof(customer));
+            if (customer.Id != 0) throw ExceptionUtil.ReferenceException(nameof(customer.Id));
+            await Check.Shop(shopRepository, customer.ShopId, appKey);
             var customerId = await customerRepository.Create(customer);
             return customerId;
         }
