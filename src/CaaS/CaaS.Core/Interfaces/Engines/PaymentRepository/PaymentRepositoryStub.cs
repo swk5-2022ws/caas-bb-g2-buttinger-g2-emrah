@@ -77,6 +77,15 @@ namespace CaaS.Core.Interfaces.Engines.PaymentRepository
             return true;
         }
 
+        /// <summary>
+        /// Retrieves the credit information if available.
+        /// Passed data is encrypted.
+        /// </summary>
+        /// <param name="creditCartnumber">the credit card number</param>
+        /// <param name="cvv">the cvv</param>
+        /// <param name="expiration">the expiration</param>
+        /// <returns></returns>
+        /// <exception cref="AccessViolationException">If the credit information are no longer in use.</exception>
         private async Task<PaymentInformation?> GetInformation(string creditCartnumber, string cvv, string expiration)
         {
             var _dcCn = CryptographyUtil.Decrypt(creditCartnumber, Constants.PASS);

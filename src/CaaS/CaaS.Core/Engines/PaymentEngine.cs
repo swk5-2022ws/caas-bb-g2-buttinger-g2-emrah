@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using ZstdNet;
 
 namespace CaaS.Core.Engines
@@ -23,18 +24,29 @@ namespace CaaS.Core.Engines
     {
         private readonly IPaymentRepository repository;
         private readonly Random random = new();
-        public PaymentEngine()
+        private readonly bool delay;
+
+        public PaymentEngine(bool delay = true)
         {
             this.repository = new PaymentRepositoryStub();
+            this.delay = delay;
         }
 
         public async Task<bool> Payment(double amount, string creditCardNumber, string cvv, string expiration)
-        {           
-            await Task.Delay(random.Next(1000,3000));
-            var availableAmount = await repository.Get(creditCardNumber, cvv, expiration);
-            Check(amount, availableAmount, creditCardNumber, cvv, expiration);            
+        {
+            using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                if (delay)
+                {
+                    await Task.Delay(random.Next(1000, 3000));
+                }
+                var availableAmount = await repository.Get(creditCardNumber, cvv, expiration);
+                Check(amount, availableAmount, creditCardNumber, cvv, expiration);
 
-            return await repository.Update(creditCardNumber, cvv, expiration, availableAmount.Value - amount);
+                var updated = await repository.Update(creditCardNumber, cvv, expiration, availableAmount.Value - amount);
+                transaction.Complete();
+                return updated;
+            }
         }
 
        
@@ -48,6 +60,7 @@ namespace CaaS.Core.Engines
         {
             if (creditCardNumber.Length != 16) throw new ArgumentOutOfRangeException("A credit card number has to have exactly 16 numbers");
             if (!Int64.TryParse(creditCardNumber, out _)) throw new InvalidDataException("Only numbers can be passed as a credit card");
+            if (Int64.Parse(creditCardNumber) < 0) throw new InvalidDataException("Not a valid credit card number");
         }
 
         /// <summary>
@@ -60,6 +73,8 @@ namespace CaaS.Core.Engines
         {
             if (cvv.Length != 3) throw new ArgumentOutOfRangeException("A cvv has to have exactly 3 numbers");
             if (!int.TryParse(cvv, out _)) throw new InvalidDataException("Only numbers can be passed as cvv");
+            if (Int64.Parse(cvv) < 0) throw new InvalidDataException("Not a valid cvv number");
+
         }
 
         /// <summary>
@@ -86,9 +101,9 @@ namespace CaaS.Core.Engines
 
             if (int.Parse(year) < 0) throw new FormatException("The year must be positiv");
 
-            const int YEAR_CENTURY = 2000;
+            int millenium = (Convert.ToInt32(DateTime.UtcNow.Year.ToString().Substring(0,2)) + 1) * 100;
             var currentDate = DateTime.UtcNow;
-            if (currentDate.Year >= YEAR_CENTURY + int.Parse(year))
+            if (currentDate.Year >= millenium + int.Parse(year))
             {
                 if(currentDate.Month > int.Parse(month))
                 {
@@ -131,6 +146,10 @@ namespace CaaS.Core.Engines
             if (!availableAmount.HasValue)
             {
                 throw new ArgumentNullException("No such credit card informations!");
+            }
+            else if(amount <= 0)
+            {
+                throw new ArgumentOutOfRangeException("An amount less or equal to zero can not be booked");
             }
             else if (availableAmount.Value < amount)
             {
