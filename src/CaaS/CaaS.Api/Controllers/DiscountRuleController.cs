@@ -58,7 +58,7 @@ namespace CaaS.Api.Controllers
             }
         }
 
-        [Route("api/shop/{id}discount/rules")]
+        [Route("api/shop/{id}/discount/rules")]
         [HttpGet]
         public async Task<IActionResult> GetByShopId([FromHeader] Guid appKey, [FromRoute] int id)
         {

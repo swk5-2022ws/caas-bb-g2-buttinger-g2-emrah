@@ -9,7 +9,7 @@ using CaaS.Core.Domainmodels.DiscountActions;
 
 namespace CaaS.Core.Interfaces.Logic
 {
-    internal interface IDiscountActionLogic
+    public interface IDiscountActionLogic
     {
         /// <summary>
         /// Gets all actions.
