@@ -27,7 +27,7 @@ namespace CaaS.Api.Controllers
         {
             try
             {
-                var customer = customerLogic.Get(appKey, id);
+                var customer = await customerLogic.Get(appKey, id);
                 return Ok(mapper.Map<TCustomer>(customer));
             }
             catch (KeyNotFoundException ex)
@@ -50,7 +50,7 @@ namespace CaaS.Api.Controllers
         {
             try
             {
-                var customers = customerLogic.GetByShopId(appKey, id);
+                var customers = await customerLogic.GetByShopId(appKey, id);
                 return Ok(mapper.Map<IEnumerable<TCustomer>>(customers));
             }
             catch (KeyNotFoundException ex)
@@ -73,8 +73,9 @@ namespace CaaS.Api.Controllers
         {
             try
             {
-                await customerLogic.Delete(appKey, id);
-                return NoContent();
+                bool isDeleted = await customerLogic.Delete(appKey, id);
+                
+                return isDeleted ?  NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (KeyNotFoundException ex)
             {
@@ -124,8 +125,8 @@ namespace CaaS.Api.Controllers
         {
             try
             {
-                await customerLogic.Update(appKey, mapper.Map<Customer>(customer));
-                return NoContent();
+                var isUpdated = await customerLogic.Update(appKey, mapper.Map<Customer>(customer));
+                return isUpdated ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
             }
             catch (KeyNotFoundException ex)
             {

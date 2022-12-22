@@ -54,6 +54,7 @@ namespace CaaS.Core.Logic
         {
             if (customer is null) throw ExceptionUtil.ParameterNullException(nameof(customer));
             await Check.Customer(shopRepository, customerRepository, customer.Id, appKey);
+            await Check.Shop(shopRepository, customer.ShopId, appKey);
             return await customerRepository.Update(customer);
         }
     }
