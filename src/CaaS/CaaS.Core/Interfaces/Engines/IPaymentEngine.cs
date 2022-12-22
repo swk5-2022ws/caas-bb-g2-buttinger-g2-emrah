@@ -17,6 +17,6 @@ namespace CaaS.Core.Interfaces.Engines
         /// <param name="cvv">the cvv</param>
         /// <param name="expiration">the expiration date in format MM/YY</param>
         /// <returns>True if the payment could be handled else it would return either an exception or false if the amount could not be booked from the creditCard</returns>
-        bool Payment(double amount, string creditCardNumber, string cvv, string expiration);
+        Task<bool> Payment(double amount, string creditCardNumber, string cvv, string expiration);
     }
 }
