@@ -9,7 +9,8 @@ namespace CaaS.Api.Transfers.Mappings
         public CartProfile()
         {
             CreateMap<ProductCart, TProductCart>();
-            CreateMap<Cart, TCart>().ForMember(dest => dest.ProductCarts, opt => opt.MapFrom(src => src.ProductCarts));
+            CreateMap<Cart, TCart>().ForMember(dest => dest.ProductCarts, opt => opt.MapFrom(src => src.ProductCarts))
+                .ForMember(dest => dest.Discounts, opt => opt.MapFrom(src => src.Discounts));
         }
     }
 }

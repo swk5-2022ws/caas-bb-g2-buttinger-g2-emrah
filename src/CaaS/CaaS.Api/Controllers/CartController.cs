@@ -16,9 +16,9 @@ namespace CaaS.Api.Controllers
     {
         private readonly ICartLogic cartLogic;
         private readonly IMapper mapper;
-        private readonly ILogger<CouponController> logger;
+        private readonly ILogger<CartController> logger;
 
-        public CartController(ICartLogic cartLogic, IMapper mapper, ILogger<CouponController> logger)
+        public CartController(ICartLogic cartLogic, IMapper mapper, ILogger<CartController> logger)
         {
             this.cartLogic = cartLogic
                 ?? throw ExceptionUtil.ParameterNullException(nameof(cartLogic));

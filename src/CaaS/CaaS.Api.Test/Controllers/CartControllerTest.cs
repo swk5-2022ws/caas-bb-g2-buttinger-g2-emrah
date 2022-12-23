@@ -26,11 +26,12 @@ namespace CaaS.Api.Test.Controllers
         public void InitializeSut()
         {
             using ILoggerFactory loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            ILogger<CouponController> logger = loggerFactory.CreateLogger<CouponController>();
+            ILogger<CartController> logger = loggerFactory.CreateLogger<CartController>();
 
             var mockMapper = new MapperConfiguration(cfg =>
             {
                 cfg.AddMaps(typeof(ProductController));
+                cfg.AddMaps(typeof(DiscountController));
             });
             var mapper = mockMapper.CreateMapper();
 
