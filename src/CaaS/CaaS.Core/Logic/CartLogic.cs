@@ -1,4 +1,6 @@
 ﻿using CaaS.Core.Domainmodels;
+using CaaS.Core.Engines;
+using CaaS.Core.Interfaces.Engines;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic.Util;
@@ -19,14 +21,21 @@ namespace CaaS.Core.Logic
         private readonly IProductCartRepository productCartRepository;
         private readonly ICustomerRepository customerRepository;
         private readonly IShopRepository shopRepository;
+        private readonly IDiscountLogic discountLogic;
+        private readonly IDiscountCartRepository discountCartRepository;
 
-        public CartLogic(ICartRepository cartRepository, IProductRepository productRepository, IProductCartRepository productCartRepository, ICustomerRepository customerRepository, IShopRepository shopRepository)
+        public CartLogic(ICartRepository cartRepository, IProductRepository productRepository, IProductCartRepository productCartRepository, 
+            ICustomerRepository customerRepository, IShopRepository shopRepository,
+            IDiscountLogic discountLogic,
+            IDiscountCartRepository discountCartRepository)
         {
             this.cartRepository = cartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(cartRepository));
             this.productCartRepository = productCartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(productCartRepository));
             this.customerRepository = customerRepository ?? throw ExceptionUtil.ParameterNullException(nameof(customerRepository));
             this.productRepository = productRepository ?? throw ExceptionUtil.ParameterNullException(nameof(productRepository));
             this.shopRepository = shopRepository ?? throw ExceptionUtil.ParameterNullException(nameof(shopRepository));
+            this.discountLogic = discountLogic ?? throw ExceptionUtil.ParameterNullException(nameof(discountLogic));
+            this.discountCartRepository = discountCartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(discountCartRepository));
         }
         public async Task<string> Create()
         {
@@ -71,6 +80,8 @@ namespace CaaS.Core.Logic
 
         public async Task<Cart> Get(string sessionId, Guid appKey)
         {
+            int? shopId = null;
+
             var cart = await cartRepository.GetBySession(sessionId);
             if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(sessionId));
 
@@ -91,17 +102,35 @@ namespace CaaS.Core.Logic
                 {
                     if (products.Select(x => x.ShopId).Distinct().Count() > 1)
                         throw new ArgumentException("No such product or coupon in shop");
-                    await Check.ShopAuthorization(shopRepository, products.First().ShopId, appKey);
+
+                    shopId = products.First().ShopId;
+                    await Check.ShopAuthorization(shopRepository, shopId.Value, appKey);
 
                     foreach (var pc in productCarts)
                     {
                         pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
                     }
+
+                    
+
                 }
                 cart.ProductCarts = productCarts.ToHashSet();
+                // must be executed after products have been applied
+                if(shopId.HasValue) await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, shopId.Value);
+
+                
             }
 
             return cart;
+        }
+
+        private async Task AddAlreadyAppliedDiscountsToCartIfStillValid(Guid appKey, Cart cart, int shopId)
+        {
+            var cartDiscounts = await discountCartRepository.GetByCartId(cart.Id);
+            var allDiscounts = await discountLogic.GetByShopId(appKey, shopId);
+            var discountsByCart = allDiscounts.Where(x => cartDiscounts.Any(y => y.DiscountId == x.Id));
+            IDiscountEngine discountEngine = new DiscountEngine(discountsByCart);
+            discountEngine.ApplyValidDiscounts(cart);
         }
 
         public async Task<bool> ReferenceCustomerToCart(int customerId, string sessionId, Guid appKey)

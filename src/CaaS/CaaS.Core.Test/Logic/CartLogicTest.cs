@@ -1,4 +1,6 @@
 ﻿using CaaS.Core.Domainmodels;
+using CaaS.Core.Domainmodels.DiscountActions;
+using CaaS.Core.Domainmodels.DiscountRules;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic;
@@ -22,6 +24,11 @@ namespace CaaS.Core.Test.Logic
         private IProductCartRepository productCartRepository;
         private ICustomerRepository customerRepository;
         private IShopRepository shopRepository;
+        private IDiscountLogic discountLogic;
+        private IDiscountCartRepository discountCartRepository;
+        private IDiscountActionRepository discountActionRepository;
+        private IDiscountRuleRepository discountRuleRepository;
+        private IDiscountRepository discountRepository;
 
         [SetUp]
         public void InitializeSut()
@@ -68,8 +75,63 @@ namespace CaaS.Core.Test.Logic
                 {1, new Shop(1, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), "shop") }
             });
 
+            discountActionRepository = new DiscountActionRepositoryStub(new Dictionary<int, DiscountAction>()
+            {
+                {1, new DiscountAction(1, 1, "action 1", new FixedValueDiscountAction(100.0))},
+                {2, new DiscountAction(2, 1, "action 2", new FixedValueDiscountAction(100.0))},
+                {3, new DiscountAction(3, 1, "action 3", new FixedValueDiscountAction(100.0))},
+            });
 
-            sut = new CartLogic(cartRepository, productRepository, productCartRepository, customerRepository, shopRepository);
+            discountRuleRepository = new DiscountRuleRepositoryStub(new Dictionary<int, DiscountRule>()
+            {
+                {1, new DiscountRule(1, 1, "valid",
+                        new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now)) },
+                {2, new DiscountRule(2, 1, "valid",
+                        new TotalAmountDiscountRuleset(5.0)) },
+                {3, new DiscountRule(3, 1, "invalid",
+                        new TotalAmountDiscountRuleset(500.0))}
+            });
+
+            discountRepository = new DiscountRepositoryStub(new Dictionary<int, Discount>()
+            {
+                // valid
+                {1, new Discount(1, new DiscountRule(1, 1, "valid",
+                        new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now)),
+                    new DiscountAction(1, 1, "valid",
+                        new FixedValueDiscountAction(100.0)
+                    )) },
+                {2, new Discount(2,
+                    new DiscountRule(2, 1, "valid",
+                        new TotalAmountDiscountRuleset(5.0)),
+                    new DiscountAction(2, 1, "valid",
+                        new FixedValueDiscountAction(100.0)
+                    )
+               ) },
+                // not valid
+                {3,
+                new Discount(3,
+                   new DiscountRule(3, 1, "invalid",
+                        new TotalAmountDiscountRuleset(500.0)),
+                    new DiscountAction(3, 1, "invalid",
+                        new FixedValueDiscountAction(100.0)
+                    ) )}
+            },
+            discountActionRepository,
+            discountRuleRepository);
+
+
+            discountCartRepository = new DiscountCartRepositoryStub(new List<DiscountCart>()
+            {
+                // valid 
+                new DiscountCart(1, 1),
+                new DiscountCart(1, 2),
+                // not valid
+                new DiscountCart(1, 3)
+            });
+
+            discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, productCartRepository, discountCartRepository, productRepository, discountActionRepository, discountRuleRepository);
+
+            sut = new CartLogic(cartRepository, productRepository, productCartRepository, customerRepository, shopRepository, discountLogic, discountCartRepository);
         }
 
         [Test, Rollback]
@@ -261,7 +323,7 @@ namespace CaaS.Core.Test.Logic
 
         [Test, Rollback]
         [TestCase("test1", "a82724ba-ced5-32e8-9ada-17b06d427906")]
-        public async Task GetCartWithProductsReturnscart(string sessionId, string appKey)
+        public async Task GetCartWithProductsAndDiscountsReturnscart(string sessionId, string appKey)
         {
             var cart = await sut.Get(sessionId, Guid.Parse(appKey));
             Assert.That(cart, Is.Not.Null);
@@ -269,6 +331,8 @@ namespace CaaS.Core.Test.Logic
             Assert.That(cart.SessionId, Is.EqualTo(sessionId));
             Assert.That(cart.ProductCarts.First().Product, Is.Not.Null);
             Assert.That(cart.ProductCarts.Last().Product, Is.Not.Null);
+            Assert.That(cart.Discounts, Is.Not.Null);
+            Assert.That(cart.Discounts.Count, Is.EqualTo(2));
         }
     }
 }

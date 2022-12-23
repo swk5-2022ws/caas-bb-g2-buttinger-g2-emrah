@@ -59,7 +59,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
                     cartsByCustomerId.Add(keyValuePair.Value);
             }
 
-            return Task.FromResult(cartsByCustomerId.FirstOrDefault());
+            return Task.FromResult(cartsByCustomerId.First());
         }
 
         public Task<bool> Update(Cart cart)

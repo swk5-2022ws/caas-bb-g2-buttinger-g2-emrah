@@ -14,7 +14,6 @@ namespace CaaS.Api.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-
         private readonly ICartLogic cartLogic;
         private readonly IMapper mapper;
         private readonly ILogger<CouponController> logger;

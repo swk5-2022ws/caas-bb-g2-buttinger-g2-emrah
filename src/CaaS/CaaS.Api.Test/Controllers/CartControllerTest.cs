@@ -34,13 +34,21 @@ namespace CaaS.Api.Test.Controllers
             });
             var mapper = mockMapper.CreateMapper();
 
+            
 
             IShopRepository shopRepository = new ShopRepository(Setup.GetTemplateEngine());
             IProductRepository productRepository = new ProductRepository(Setup.GetTemplateEngine());
             IProductCartRepository productCartRepository = new ProductCartRepository(Setup.GetTemplateEngine());
             ICartRepository cartRepository = new CartRepository(Setup.GetTemplateEngine());
             ICustomerRepository customerRepository = new CustomerRepository(Setup.GetTemplateEngine());
-            ICartLogic cartLogic = new CartLogic(cartRepository, productRepository, productCartRepository, customerRepository, shopRepository);
+            IDiscountCartRepository discountCartRepository = new DiscountCartRepository(Setup.GetTemplateEngine());
+            IDiscountRepository discountRepository = new DiscountRepository(Setup.GetTemplateEngine());
+            IDiscountActionRepository discountActionRepository = new DiscountActionRepository(Setup.GetTemplateEngine());
+            IDiscountRuleRepository discountRuleRepository = new DiscountRuleRepository(Setup.GetTemplateEngine());
+
+            IDiscountLogic discountLogic = new DiscountLogic(discountRepository, shopRepository, cartRepository, 
+                productCartRepository, discountCartRepository, productRepository, discountActionRepository, discountRuleRepository);
+            ICartLogic cartLogic = new CartLogic(cartRepository, productRepository, productCartRepository, customerRepository, shopRepository, discountLogic, discountCartRepository);
 
             sut = new CartController(cartLogic, mapper, logger);
         }
@@ -60,7 +68,7 @@ namespace CaaS.Api.Test.Controllers
 
             Assert.That(cart, Is.Not.Null);
             Assert.That(cart.SessionId, Is.EqualTo(sessionId));
-            Assert.That(cart.ProductCarts.Count, Is.EqualTo(count));
+            Assert.That(cart.ProductCarts, Has.Count.EqualTo(count));
             Assert.That(result.StatusCode, Is.EqualTo(200));
         }
 
@@ -164,7 +172,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(resultCart, Is.Not.Null);
             Assert.That(resultCart.RouteValues, Is.Not.Null);
             Assert.That(resultCart.RouteValues["sessionId"], Is.Not.Null);
-            var actionResult = (NoContentResult)(await sut.ReferenceCustomer(customerId, resultCart!.RouteValues["sessionId"]!.ToString(), new Guid(key)));
+            var actionResult = (NoContentResult)(await sut.ReferenceCustomer(customerId, resultCart!.RouteValues["sessionId"]!.ToString()!, new Guid(key)));
 
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(actionResult.StatusCode, Is.EqualTo(204));
@@ -179,7 +187,7 @@ namespace CaaS.Api.Test.Controllers
             Assert.That(resultCart, Is.Not.Null);
             Assert.That(resultCart.RouteValues, Is.Not.Null);
             Assert.That(resultCart.RouteValues["sessionId"], Is.Not.Null);
-            var actionResult = (BadRequestObjectResult)(await sut.ReferenceCustomer(customerId, resultCart!.RouteValues["sessionId"]!.ToString(), new Guid(key)));
+            var actionResult = (BadRequestObjectResult)(await sut.ReferenceCustomer(customerId, resultCart!.RouteValues["sessionId"]!.ToString()!, new Guid(key)));
 
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(actionResult.StatusCode, Is.EqualTo(400));
