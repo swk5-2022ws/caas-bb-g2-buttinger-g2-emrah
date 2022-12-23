@@ -346,7 +346,7 @@ namespace CaaS.Core.Test.Logic
         }
 
         [Test]
-        public async Task TestGetByShopIdWithInvalidShopIdThrowsUnauthorizedException()
+        public void TestGetByShopIdWithInvalidShopIdThrowsUnauthorizedException()
         {
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await sut.GetByShopId(Guid.NewGuid(), 1));
         }

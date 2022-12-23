@@ -24,5 +24,12 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="amount">the amount</param>
         /// <returns></returns>
         Task<bool> Update(string creditCartnumber, string cvv, string expiration, double amount);
+
+        /// <summary>
+        /// Retrieves all payment information. 
+        /// This is used just for update statement creation
+        /// </summary>
+        /// <returns></returns>
+        IList<PaymentInformation> GetAll();
     }
 }

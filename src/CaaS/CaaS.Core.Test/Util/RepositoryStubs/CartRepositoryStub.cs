@@ -50,7 +50,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             Task.FromResult(carts.Values.FirstOrDefault(x => x.SessionId == sessionId));
 
         // TODO check cartrepository implementation
-        public Task<Cart> GetByCustomerId(int id)
+        public Task<Cart?> GetByCustomerId(int id)
         {
             IList<Cart> cartsByCustomerId = new List<Cart>();
             foreach (var keyValuePair in carts)
@@ -71,5 +71,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             }
             return Task.FromResult(false);
         }
+
+        public Task<IList<Cart>> Get(IList<int> ids) => Task.FromResult((IList<Cart>)carts.Values.Where(x => ids.Contains(x.Id)).ToList());
     }
 }

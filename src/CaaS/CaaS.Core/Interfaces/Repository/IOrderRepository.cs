@@ -33,6 +33,6 @@ namespace CaaS.Core.Interfaces.Repository
         /// Creates a new order from a cart.
         /// </summary>
         /// <param name="cart">The cart which is ordered.</param>
-        Task<int> Create(Cart cart);
+        Task<int> Create(Cart cart, double discount = 0);
     }
 }

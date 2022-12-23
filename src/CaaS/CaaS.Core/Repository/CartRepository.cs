@@ -26,6 +26,11 @@ namespace CaaS.Core.Repository
                 {
                     Id = id
                 });
+        public async Task<IList<Cart>> Get(IList<int> ids) =>
+            (IList<Cart>)await template.QueryAsync(CartMapping.ReadCartOnly, whereExpression: new
+                {
+                    Id = ids
+                });
 
         // TODO is that right? do we want a list of carts or do we want the last open cart?
         public async Task<Cart?> GetByCustomerId(int id) =>

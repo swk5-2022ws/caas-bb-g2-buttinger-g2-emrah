@@ -64,6 +64,8 @@ namespace CaaS.Core.Interfaces.Engines.PaymentRepository
             },
 
         };
+
+        public IList<PaymentInformation> GetAll() => _informations;
         public async Task<double?> Get(string creditCartnumber, string cvv, string expiration) => (await GetInformation(creditCartnumber, cvv, expiration))?.AvailableAmount ?? null;
 
         public async Task<bool> Update(string creditCartnumber, string cvv, string expiration, double amount)
