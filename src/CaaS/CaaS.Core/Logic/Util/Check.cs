@@ -57,12 +57,12 @@ namespace CaaS.Core.Logic.Util
         {
             var product = await productRepository.Get(productId);
 
-            if(product is null) throw ExceptionUtil.ParameterNullException(nameof(product));
+            if (product is null) throw ExceptionUtil.ParameterNullException(nameof(product));
             await ShopAuthorization(shopRepository, product.ShopId, appKey);
 
             return product;
         }
-        
+
         public static async Task<Cart> CartAvailability(ICartRepository cartRepository, string sessionId)
         {
             var cart = await cartRepository.GetBySession(sessionId);
@@ -70,13 +70,112 @@ namespace CaaS.Core.Logic.Util
 
             return cart;
         }
+        public static async Task<Cart> CartAvailability(ICartRepository cartRepository, int id)
+        {
+            var cart = await cartRepository.Get(id);
+            if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(cart));
+
+            return cart;
+        }
+        public static async Task<IList<Cart>> CartAvailability(ICartRepository cartRepository, IList<int> ids)
+        {
+            var carts = await cartRepository.Get(ids);
+            if (carts is null) throw ExceptionUtil.NoSuchIdException(nameof(carts));
+            if (carts.Count != ids.Count) throw ExceptionUtil.NoSuchIdException(nameof(carts));
+
+            return carts;
+        }
+
+        public static async Task<Cart> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
+                                                        IShopRepository shopRepository, string sessionId, Guid appKey)
+        {
+            var cart = await CartAvailability(cartRepository, sessionId);
+
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+            if (productCarts is null || !productCarts.Any()) throw new ArgumentNullException("Cannot create an order from an empty cart!");
+
+            var productIds = productCarts.Select(x => x.ProductId);
+            var products = await productRepository.Get(productIds.ToList());
+
+            if (products is null || !products.Any()) throw new ArgumentNullException("Cannot create an order without referenced products!");
+
+            if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                throw new ArgumentException("Products from multiple shops in cart!");
+
+            await ShopAuthorization(shopRepository, products.First().ShopId, appKey);
+
+            foreach (var pc in productCarts)
+            {
+                pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+            }
+
+            cart.ProductCarts = productCarts.ToHashSet();
+            return cart;
+        }
+
+        public static async Task<Cart> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
+                                                        IShopRepository shopRepository, int id, Guid appKey)
+        {
+            var cart = await CartAvailability(cartRepository, id);
+
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+            if (productCarts is null || !productCarts.Any()) throw new ArgumentNullException("Cannot create an order from an empty cart!");
+
+            var productIds = productCarts.Select(x => x.ProductId);
+            var products = await productRepository.Get(productIds.ToList());
+
+            if (products is null || !products.Any()) throw new ArgumentNullException("Cannot create an order without referenced products!");
+
+            if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                throw new ArgumentException("Products from multiple shops in cart!");
+
+            await ShopAuthorization(shopRepository, products.First().ShopId, appKey);
+
+            foreach (var pc in productCarts)
+            {
+                pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+            }
+
+            cart.ProductCarts = productCarts.ToHashSet();
+            return cart;
+        }
+
+        public static async Task<IList<Cart>> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
+                                                        IShopRepository shopRepository, List<int> ids, Guid appKey)
+        {
+            var carts = await CartAvailability(cartRepository, ids);
+
+            var productCarts = await productCartRepository.GetByCartIds(ids);
+            if (productCarts is null || !productCarts.Any()) throw new ArgumentNullException("Cannot create an order from an empty cart!");
+
+            var productIds = productCarts.Select(x => x.ProductId);
+            var products = await productRepository.Get(productIds.ToList());
+
+            if (products is null || !products.Any()) throw new ArgumentNullException("Cannot create an order without referenced products!");
+
+            if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                throw new ArgumentException("Products from multiple shops in cart!");
+
+            await ShopAuthorization(shopRepository, products.First().ShopId, appKey);
+
+            foreach (var pc in productCarts)
+            {
+                pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+            }
+
+            foreach (var cart in carts)
+            {
+                cart.ProductCarts = productCarts.Where(pc => pc.CartId == cart.Id).ToHashSet();
+            }
+            return carts;
+        }
 
         public static async Task DiscountRule(IShopRepository shopRepository, IDiscountRuleRepository discountRuleRepository, Guid appKey, int ruleId)
         {
             var rule = await discountRuleRepository.Get(ruleId);
             if (rule is null) throw ExceptionUtil.NoSuchIdException(nameof(rule));
             await Shop(shopRepository, rule.ShopId, appKey);
-            
+
         }
 
         internal async static Task DiscountAction(IShopRepository shopRepository, IDiscountActionRepository discountActionRepository, Guid appKey, int actionId)
