@@ -289,7 +289,7 @@ namespace CaaS.Core.Test.Logic
         {
             var isDeleted = await sut.Delete(appKey, 1);
 
-            Assert.Multiple(async () =>
+            Assert.Multiple(() =>
             {
                 Assert.That(isDeleted, Is.True);
                 Assert.CatchAsync<KeyNotFoundException>(async () => await sut.Get(appKey, 1));
@@ -346,7 +346,7 @@ namespace CaaS.Core.Test.Logic
         }
 
         [Test]
-        public async Task TestGetByShopIdWithInvalidShopIdThrowsUnauthorizedException()
+        public void TestGetByShopIdWithInvalidShopIdThrowsUnauthorizedException()
         {
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await sut.GetByShopId(Guid.NewGuid(), 1));
         }
