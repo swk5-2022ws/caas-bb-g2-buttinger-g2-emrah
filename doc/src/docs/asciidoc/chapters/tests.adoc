@@ -5,6 +5,10 @@ Tests für das Projekt `CaaS.Core` implementiert. Wichtig ist uns, dass wir eine
 hohe Testabdeckung mit sinnvollen Tests erzielen. Dabei wurde noch nicht
 quantifiziert, welche Testabdeckung wir erreichen wollen.
 
+Bei jedem Push in `main` oder Pull-Request in `main` werden alle Tests durch unsere CI/CD-Pipeline ausgeführt. Dabei wird mit Docker-Compose eine Datenbank-Container und ein Runner-Container erstellt.
+Anschließend führt der Runner die Tests gegen die Datenbank aus. Das Ergebnis ist in Github zu sehen.
+Bei fehlerhaften Tests erhalten die Projektmitarbeiter eine Email.
+
 === Integration-Tests
 
 Integration-Tests erwarten einen laufenden Container der `caas-dev-db` mit

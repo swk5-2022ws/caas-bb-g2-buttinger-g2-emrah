@@ -20,7 +20,7 @@ Url: https://caas-swk5.atlassian.net/
 
 === Definition of Done:
 * Implementiert
-* Unit-Tests erstellt
+* Tests erstellt
 * Alle Testsuites in Ordnung
 * Push auf Git in working Branch triggert die Tests. Diese müssen auch durchlaufen.
 * Dokumentiert
