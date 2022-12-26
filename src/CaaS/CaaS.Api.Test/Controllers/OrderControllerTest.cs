@@ -186,5 +186,50 @@ namespace CaaS.Api.Test.Controllers
 
             Assert.That(result.StatusCode, Is.EqualTo(200));
         }
+
+        [Test, Rollback]
+        public async Task TestGetByCustomerOrderWithIncorrectAppKeyReturnsBadRequest()
+        {
+            var actionResult = await sut.GetByCustomer(1, Guid.NewGuid());
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (BadRequestObjectResult)actionResult.Result;
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
+        [Test, Rollback]
+        public async Task TestGetByCustomerOrderWithIncorrectIdReturnsNotFound()
+        {
+            var actionResult = await sut.GetByCustomer(-1, Guid.NewGuid());
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (NotFoundObjectResult)actionResult.Result;
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+
+        [Test, Rollback]
+        [TestCase(5, "8f26f620-9957-3251-8002-d593fad0003a", 5)]
+        public async Task TestByCustomerGetOrderWithValidIdReturnsOk(int customerId, string appKey, int cartId)
+        {
+            var actionResult = await sut.GetByCustomer(customerId, new Guid(appKey));
+
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (OkObjectResult)actionResult.Result;
+            IList<TOrder> orders = (IList<TOrder>)result!.Value;
+            Assert.That(orders, Is.Not.Null);
+            Assert.That(orders.Count, Is.EqualTo(2));
+
+            var order = orders[0];
+            Assert.That(order, Is.Not.Null);
+            Assert.That(order.Id, Is.EqualTo(customerId));
+            Assert.That(order.CartId, Is.EqualTo(cartId));
+            Assert.That(order.Cart, Is.Not.Null);
+
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+        }
     }
 }
