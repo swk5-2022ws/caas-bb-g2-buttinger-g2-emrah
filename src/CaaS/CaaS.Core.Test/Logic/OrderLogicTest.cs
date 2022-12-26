@@ -38,6 +38,23 @@ namespace CaaS.Core.Test.Logic
                 {6, new Customer(6, 1, "Test", "mail") },
                 {7, new Customer(7, 1, "Test", "mail") },
                 {8, new Customer(8, 1, "Test", "mail") },
+                {9, new Customer(9, 3, "Test", "mail"){ 
+                    CVV="+mY3fecYSQ0ivYVMkovf1UCOtQvD+2u9FLrBEXoNJuJOzgmYsH6WK6jZMbvs9pmm", 
+                    CreditCardNumber="OrkRWqplepEtBD8m++7Cgnoc66VFVaAky7xs7NnbjeZOMzttjLSsOQf+7rYXr0va1Ydhlv7BAWAJ1lZyM3WGpQ==",
+                    Expiration="RwvMfB/obNiIgHDM8kru60zdjRuGf162LDGjUCNDdeQiLEJIMVCy//RV3gTztC4W"
+                } },
+                {10, new Customer(10, 4, "Test", "mail"){ 
+                    CreditCardNumber="OrkRWqplepEtBD8m++7Cgnoc66VFVaAky7xs7NnbjeZOMzttjLSsOQf+7rYXr0va1Ydhlv7BAWAJ1lZyM3WGpQ==",
+                    Expiration="RwvMfB/obNiIgHDM8kru60zdjRuGf162LDGjUCNDdeQiLEJIMVCy//RV3gTztC4W"
+                } },
+                {11, new Customer(11, 4, "Test", "mail"){
+                    CVV="+mY3fecYSQ0ivYVMkovf1UCOtQvD+2u9FLrBEXoNJuJOzgmYsH6WK6jZMbvs9pmm",
+                    Expiration="RwvMfB/obNiIgHDM8kru60zdjRuGf162LDGjUCNDdeQiLEJIMVCy//RV3gTztC4W"
+                } },
+                {12, new Customer(12, 4, "Test", "mail"){
+                    CVV="+mY3fecYSQ0ivYVMkovf1UCOtQvD+2u9FLrBEXoNJuJOzgmYsH6WK6jZMbvs9pmm",
+                    CreditCardNumber="OrkRWqplepEtBD8m++7Cgnoc66VFVaAky7xs7NnbjeZOMzttjLSsOQf+7rYXr0va1Ydhlv7BAWAJ1lZyM3WGpQ=="
+                } },
             });
             cartRepository = new CartRepositoryStub(new Dictionary<int, Cart>()
             {
@@ -82,6 +99,25 @@ namespace CaaS.Core.Test.Logic
                     Customer = await customerRepository.Get(7),
                 }
                 },
+                {12, new Cart(12, "test12") {
+                    CustomerId = 9,
+                    Customer = await customerRepository.Get(9),
+                }
+                }, 
+                {13, new Cart(13, "test13") {
+                    CustomerId = 10,
+                    Customer = await customerRepository.Get(10),
+                }
+                }, {14, new Cart(14, "test14") {
+                    CustomerId = 11,
+                    Customer = await customerRepository.Get(11),
+                }
+                },
+                {15, new Cart(15, "test15") {
+                    CustomerId = 12,
+                    Customer = await customerRepository.Get(12),
+                }
+                }
 
             });
             orderRepository = new OrderRepositoryStub(new Dictionary<int, Order>()
@@ -95,6 +131,10 @@ namespace CaaS.Core.Test.Logic
                 {7, new Order(7, 9, 0, DateTime.Now){ Cart = await cartRepository.Get(9) } },
                 {8, new Order(8, 10, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(10) } },
                 {9, new Order(9, 11, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(11) } },
+                {10, new Order(10, 12, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(12) } },
+                {11, new Order(11, 13, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(13) } },
+                {12, new Order(12, 14, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(14) } },
+                {13, new Order(13, 15, 0, new DateTime(2022, 12, 23)){ Cart = await cartRepository.Get(15) } },
             });
             productRepository = new ProductRepositoryStub(new Dictionary<int, Product>()
             {
@@ -105,6 +145,8 @@ namespace CaaS.Core.Test.Logic
                 {5, new Product(5, 2, "test", "test", "test", 20) },
                 {6, new Product(6, 2, "test", "test", "test", 20) },
                 {7, new Product(7, 1, "test", "test", "test", 20) },
+                {8, new Product(8, 3, "test", "test", "test", 20) },
+                {9, new Product(9, 4, "test", "test", "test", 20) },
             });
             productCartRepository = new ProductCartRepositoryStub(new Dictionary<(int, int), ProductCart>()
             {
@@ -119,11 +161,17 @@ namespace CaaS.Core.Test.Logic
                 {(7, 9), new ProductCart(7, 9, 20, 1) },
                 {(7, 10), new ProductCart(7, 10, 20, 1) },
                 {(7, 11), new ProductCart(7, 11, 20, 1) },
+                {(9, 12), new ProductCart(8, 12, 20, 1) },
+                {(9, 13), new ProductCart(9, 13, 20, 1) },
+                {(9, 14), new ProductCart(9, 14, 20, 1) },
+                {(9, 15), new ProductCart(9, 15, 20, 1) },
             });
 
             shopRepository = new ShopRepositoryStub(new Dictionary<int, Shop>()
             {
-                {1, new Shop(1, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), "shop") }
+                {1, new Shop(1, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906"), "shop") },
+                {3, new Shop(3, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427901"), "shop") },
+                {4, new Shop(4, 1, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427900"), "shop") },
             });
 
             couponRepository = new CouponRepositoryStub(new Dictionary<int, Coupon>()
@@ -223,6 +271,43 @@ namespace CaaS.Core.Test.Logic
             BaseOrderAssertions(orders[0], orderId, cartId, discount, year, month, day);
 
         }
+
+        [Test]
+        [TestCase(-1)]
+        [TestCase(0)]
+        [TestCase(int.MinValue)]
+        [TestCase(int.MaxValue)]
+        public void GetOrderByShopIdWithInvalidIdThrowsException(int shopId) =>
+            Assert.CatchAsync<ArgumentException>(async () => await sut.GetByShopId(shopId, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427906")));
+
+        [Test]
+        public void GetOrderByShopIdWithInvalidAppKeyThrowsException() =>
+            Assert.CatchAsync<ArgumentException>(async () => await sut.GetByShopId(1, Guid.Parse("ac2724ba-ced5-32e8-9ada-17b06d427906")));
+
+        [Test]
+        [TestCase(3, "a82724ba-ced5-32e8-9ada-17b06d427901", 10, 12, 0, 2022, 12, 23)]
+        public async Task GetOrderByShopIdReturnsOrders(int shopId, string key, int orderId, int cartId, double discount, int year, int month, int day)
+        {
+            var orders = await sut.GetByShopId(shopId, Guid.Parse(key));
+            Assert.That(orders, Is.Not.Null);
+            Assert.That(orders.Count, Is.EqualTo(1));
+            BaseOrderAssertions(orders[0], orderId, cartId, discount, year, month, day);
+        }
+
+        [Test]
+        public void PayOrderWithoutCVVThrowsException() =>
+            Assert.CatchAsync<ArgumentNullException>(async () => await sut.Pay(11, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427900")));
+        [Test]
+        public void PayOrderWithoutExpirationThrowsException() =>
+            Assert.CatchAsync<ArgumentNullException>(async () => await sut.Pay(12, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427900")));
+        [Test]
+        public void PayOrderWithoutCreditCardNumberThrowsException() =>
+            Assert.CatchAsync<ArgumentNullException>(async () => await sut.Pay(13, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427900")));
+
+        [Test]
+        public async Task PayOrderReturnTrue() =>
+            Assert.That(await sut.Pay(10, Guid.Parse("a82724ba-ced5-32e8-9ada-17b06d427901")), Is.True);
+
 
         private void BaseOrderAssertions(Order order, int id, int cartId, double discount, int year, int month, int day)
         {
