@@ -84,7 +84,7 @@ namespace CaaS.Api.Controllers
             catch (KeyNotFoundException e)
             {
                 logger.LogError($"No order with id {id} found.");
-                return NotFound(e.Message);
+                return BadRequest(e.Message);
             }
             catch (ArgumentException e)
             {

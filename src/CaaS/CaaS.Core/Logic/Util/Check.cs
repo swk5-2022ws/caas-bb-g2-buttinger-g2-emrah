@@ -81,7 +81,7 @@ namespace CaaS.Core.Logic.Util
         {
             var carts = await cartRepository.Get(ids);
             if (carts is null) throw ExceptionUtil.NoSuchIdException(nameof(carts));
-            if (carts.Count != ids.Count) throw ExceptionUtil.NoSuchIdException(nameof(carts));
+            if (carts.Count != ids.Distinct().Count()) throw ExceptionUtil.NoSuchIdException(nameof(carts));
 
             return carts;
         }

@@ -89,25 +89,102 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestPayOrderWithIncorrectAppKeyReturnsBadRequest()
         {
-            BadRequestObjectResult actionResult = (BadRequestObjectResult)await sut.Create(1, Guid.NewGuid());
+            BadRequestObjectResult actionResult = (BadRequestObjectResult)await sut.Pay(1, Guid.NewGuid());
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(actionResult.StatusCode, Is.EqualTo(400));
         }
        
         [Test, Rollback]
-        public async Task TestPayOrderWithIncorrectIdReturnsNotFound()
+        public async Task TestPayOrderWithIncorrectIdReturnsBadRequest()
         {
-            NotFoundObjectResult actionResult = (NotFoundObjectResult)await sut.Create(-1, Guid.NewGuid());
+            BadRequestObjectResult actionResult = (BadRequestObjectResult)await sut.Pay(-1, new Guid("8f26f620-9957-3251-8002-d593fad0003a"));
             Assert.That(actionResult, Is.Not.Null);
-            Assert.That(actionResult.StatusCode, Is.EqualTo(404));
+            Assert.That(actionResult.StatusCode, Is.EqualTo(400));
         }
 
         [Test, Rollback]
-        public async Task TestEditProductWithValidIdReturnsNoContent()
+        public async Task TestPayOrderReturnsNoContent()
         {
             var actionResult = (NoContentResult)await sut.Pay(5, new Guid("8f26f620-9957-3251-8002-d593fad0003a"));
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(actionResult.StatusCode, Is.EqualTo(204));
+        }
+
+        [Test, Rollback]
+        public async Task TestGetOrderWithIncorrectAppKeyReturnsBadRequest()
+        {
+            var actionResult = await sut.Get(1, Guid.NewGuid());
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (BadRequestObjectResult)actionResult.Result;
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
+
+        [Test, Rollback]
+        public async Task TestGetOrderWithIncorrectIdReturnsNotFound()
+        {
+            var actionResult = await sut.Get(-1, Guid.NewGuid());
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (NotFoundObjectResult)actionResult.Result;
+            Assert.That(result.StatusCode, Is.EqualTo(404));
+        }
+
+        [Test, Rollback]
+        [TestCase(5, "8f26f620-9957-3251-8002-d593fad0003a", 5)]
+        public async Task TestGetOrderWithValidIdReturnsOk(int orderId, string appKey, int cartId)
+        {
+            var actionResult = await sut.Get(orderId, new Guid(appKey));
+
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (OkObjectResult)actionResult.Result;
+            TOrder? order = (TOrder?)result!.Value;
+
+            Assert.That(order, Is.Not.Null);
+            Assert.That(order.Id, Is.EqualTo(orderId));
+            Assert.That(order.CartId, Is.EqualTo(cartId));
+            Assert.That(order.Cart, Is.Not.Null);
+
+            Assert.That(result.StatusCode, Is.EqualTo(200));
+        }
+
+        [Test, Rollback]
+        public async Task TestGetByShopOrderWithIncorrectAppKeyReturnsBadRequest()
+        {
+            var actionResult = await sut.GetByShop(1, Guid.NewGuid());
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (BadRequestObjectResult)actionResult.Result;
+            Assert.That(result.StatusCode, Is.EqualTo(400));
+        }
+
+
+        [Test, Rollback]
+        [TestCase(5, "8f26f620-9957-3251-8002-d593fad0003a", 5)]
+        public async Task TestByShopGetOrderWithValidIdReturnsOk(int orderId, string appKey, int cartId)
+        {
+            var actionResult = await sut.GetByShop(orderId, new Guid(appKey));
+
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(actionResult.Result, Is.Not.Null);
+
+            var result = (OkObjectResult)actionResult.Result;
+            IList <TOrder> orders = (IList<TOrder>)result!.Value;
+            Assert.That(orders, Is.Not.Null);
+            Assert.That(orders.Count, Is.EqualTo(8));
+
+            var order = orders[0];
+            Assert.That(order, Is.Not.Null);
+            Assert.That(order.Id, Is.EqualTo(orderId));
+            Assert.That(order.CartId, Is.EqualTo(cartId));
+            Assert.That(order.Cart, Is.Not.Null);
+
+            Assert.That(result.StatusCode, Is.EqualTo(200));
         }
     }
 }
