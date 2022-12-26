@@ -12,9 +12,9 @@ namespace CaaS.Core.Repository.Mappings
                  record.GetStringByName(nameof(Customer.Name)), 
                  record.GetStringByName(nameof(Customer.Email)),
                  record.GetNullableIntByName(nameof(Customer.CartId)),
-                 record.GetStringByName(nameof(Customer.CreditCardNumber)),
-                 record.GetStringByName(nameof(Customer.CVV)),
-                 record.GetStringByName(nameof(Customer.Expiration)))
+                 record.GetNullableStringByName(nameof(Customer.CreditCardNumber)),
+                 record.GetNullableStringByName(nameof(Customer.CVV)),
+                 record.GetNullableStringByName(nameof(Customer.Expiration)))
             {
                 Deleted = record.GetNullableDateTimeByName(nameof(Customer.Deleted))
             };
