@@ -33,3 +33,30 @@ Die UNIT-Test benötigen keine besonderen Vorbereitung für eine korrekte
 Ausführung.
 
 UNIT-Tests werden mit "Unit" getaggt.
+
+=== System-Tests
+
+Systemtests erwarten Datensätze aus dem Container `caas-dev-db` und sind mit `System` getaggt.
+Hier werden sinnvolle Anwendungsfälle automatisiert überprüft.
+
+==== Use Case: create Discount 
+
+Klasse: CaaS.Api.Test.UseCases.CreateDiscountUseCase
+
+> Ich, als Shopbetreiber, will eine neue Rabattregel und Rabattaktion einführen. Anschließend möchte ich einen konkreten Rabatt für meinen Shop erstellen.
+
+. Rabattaktion erstellen
+.. Alle verfügbaren Rabattaktionen laden
+.. Passende Rabattaktion auswählen
+.. Rabattaktion mit gewünschten Parametern erstellen
+.. Id der neuen Rabattaktion speichern
+. Rabattregel erstellen
+.. Alle verfügbaren Rabattregeln laden
+.. Passende Rabattregel auswählen
+.. Rabattregel mit gewünschten Parametern erstellen
+.. Id der neuen Rabattregel speichern
+. Rabatt erstellen
+.. Rabatt mit den gespeicherten Ids für Rabattaktion und Rabattregel erstellen
+.. Neue Id speichern
+.. Rabatt laden mit gespeicherter Id
+.. Vergleichen, ob die dazugehörige Rabattregel und Rabattaktion valide sind.

@@ -2,19 +2,26 @@
 
 === Regeln und Aktionen
 
-Discounts bestehen aus `DiscountAction`s und `DiscountRule`. Aktionen besagen,
+Discounts bestehen aus `DiscountActions` und `DiscountRules`. Aktionen besagen,
 wie viel Preisnachlass gewährt wird. Regeln definieren, wann ein Preisnachlass
 angewendet werden kann. Jede Regel kann mit jeder Aktion kombiniert werden.
 Damit zukünftig beliebige weitere Aktionen und Regeln implementiert werden
 können, existiert eine definierte Schnittstelle sowie abstrakte Basisklasse für
 das Implementieren von weiteren Regeln
 (CaaS.Core.Domainmodels.DiscountActions.DiscountActionBase und
-CaaS.Core.Domainmodels.DiscountRules). Die abstrakten Basisklassen bieten
+CaaS.Core.Domainmodels.DiscountRules.DiscountRulesetBase). Die abstrakten Basisklassen bieten
 statische Methoden zum Serialisieren und Deserialisieren von Ableitungen Ihrer
 selbst.
  
 Die serialisierten Regeln und Aktionen werden in der Datenbank unter
 `DiscountAction.Action` und `DiscountRule.Ruleset` abgelegt.
+
+Alle verfügbaren Typen können über die Endpunkte `GET api/discount/rules/types` und `GET api/discount/actions/types` abgefragt werden. Damit wir Codeänderungen bei neuen Typen vermeiden, werden verfügbare Typen
+über Reflection geladen. Hier ist zwingend erforderlich, dass ein Parameterloser Konstruktor bei den Subklassen existiert. In Folge werden Instanzen erzeugt, welche von DiscountActionBase und DiscountRulesetBase ableiten.
+
+Ein Shopbetreiber kann mit den zuvor geladenen Typen konkrete Aktionen und Regeln für seinen Shop erzeugen.
+Dazu sind die Endpunkte `POST api/discount/action` und `POST api/discount/rule` vorgesehen. 
+Aus den erstellten Aktionen und Regeln kann mit `POST api/discount` ein konkreter Rabatt für einen Shop erstellt werden.
 
 ==== DiscountAction
 
