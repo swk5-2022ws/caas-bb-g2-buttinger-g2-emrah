@@ -24,6 +24,13 @@ namespace CaaS.Core.Interfaces.Repository
         Task<IList<ProductCart>> GetByCartId(int id);
 
         /// <summary>
+        /// Get productCarts for multiple cartIds
+        /// </summary>
+        /// <param name="ids">the list of cart ids</param>
+        /// <returns></returns>
+        Task<IList<ProductCart>> GetByCartIds(List<int> ids);
+
+        /// <summary>
         /// Updates the amount of a product cart.
         /// </summary>
         /// <param name="productId">product id</param>

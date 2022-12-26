@@ -9,8 +9,8 @@ namespace CaaS.Core.Repository
     {
         public OrderRepository(IAdoTemplate template) : base(template) { }
 
-        public async Task<int> Create(Cart cart) =>
-               (await template.InsertAsync<Order>(new Order(0, cart.Id, 0, DateTime.Now)))?.ElementAt(0) ?? 0;
+        public async Task<int> Create(Cart cart, double discount = 0) =>
+               (await template.InsertAsync<Order>(new Order(0, cart.Id, discount, DateTime.Now)))?.ElementAt(0) ?? 0;
 
         public async Task<Order?> Get(int id) =>
             await template.QueryFirstOrDefaultAsync(OrderMapping.ReadOrderOnly, whereExpression: new

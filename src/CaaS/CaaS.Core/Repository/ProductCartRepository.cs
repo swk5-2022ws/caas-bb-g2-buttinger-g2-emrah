@@ -31,6 +31,11 @@ namespace CaaS.Core.Repository
             {
                 CartId = id
             });
+        public async Task<IList<ProductCart>> GetByCartIds(List<int> ids) =>
+            (IList<ProductCart>)await template.QueryAsync(ProductCartMapping.ReadProductCartOnly, whereExpression: new
+            {
+                CartId = ids
+            });
 
         public async Task<bool> Update(int productId, int cartId, uint amount) =>
             await template.UpdateAsync<ProductCart>(new { Amount = amount}, whereExpression: new {

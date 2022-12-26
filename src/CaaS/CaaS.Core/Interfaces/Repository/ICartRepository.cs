@@ -17,6 +17,13 @@ namespace CaaS.Core.Interfaces.Repository
         Task<Cart?> Get(int id);
 
         /// <summary>
+        /// Get multiple carts by their ids
+        /// </summary>
+        /// <param name="ids">the ids of the carts</param>
+        /// <returns></returns>
+        Task<IList<Cart>> Get(IList<int> ids);
+
+        /// <summary>
         /// Returns a cart
         /// </summary>
         /// <param name="sessionId">sesion id of cart</param>

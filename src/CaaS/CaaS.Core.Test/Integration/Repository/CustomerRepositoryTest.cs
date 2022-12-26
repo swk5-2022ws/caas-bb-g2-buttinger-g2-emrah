@@ -117,7 +117,7 @@ namespace CaaS.Core.Test.Integration.Repository
         public async Task CreateCustomerWithValidValuesReturnsId(int shopId, string email, string name, int cartId)
         {
             var previousCustomerCount = (await sut.GetAllByShopId(shopId)).Count;
-            var insertedId = await sut.Create(new Domainmodels.Customer(0, shopId, name, email, cartId));
+            var insertedId = await sut.Create(new Domainmodels.Customer(0, shopId, name, email, cartId, "nah", "nah", "nah"));
             var afterwardsCustomerCount = (await sut.GetAllByShopId(shopId)).Count;
 
             Assert.That(insertedId, Is.GreaterThan(0));

@@ -43,6 +43,16 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(int.MinValue)]
         public async Task GetProductCartsByInvalidCartIdReturnsEmptyProductCartList(int cartId) =>
             Assert.That((await sut.GetByCartId(cartId)).Count, Is.EqualTo(0));
+        
+        [Test]
+        [TestCase(0)]
+        public async Task GetProductCartsByInvalidIdsReturnsEmptyProductCartList(int count) =>
+            Assert.That((await sut.GetByCartIds(new List<int> { -1, 0})).Count, Is.EqualTo(count));
+        
+        [Test]
+        [TestCase(100)]
+        public async Task GetProductCartsValidIdsReturnsProductCartList(int count) =>
+            Assert.That((await sut.GetByCartIds(new List<int> { 1, 2})).Count, Is.EqualTo(count));
 
         [Test]
         [TestCase(1, 50)]

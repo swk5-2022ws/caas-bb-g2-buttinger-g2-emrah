@@ -12,6 +12,8 @@ namespace CaaS.Common.Mappings
            record[propertyName] == DBNull.Value ? null : Convert.ToInt32(record[propertyName]);
         public static string GetStringByName(this IDataRecord record, string propertyName) =>
             (string)record[propertyName];
+        public static string? GetNullableStringByName(this IDataRecord record, string propertyName) =>
+            record[propertyName] == DBNull.Value ? null : (string)record[propertyName];
         public static double GetDoubleByName(this IDataRecord record, string propertyName) =>
             (double)record[propertyName];
         public static Guid GetGuidByName(this IDataRecord record, string propertyName) =>

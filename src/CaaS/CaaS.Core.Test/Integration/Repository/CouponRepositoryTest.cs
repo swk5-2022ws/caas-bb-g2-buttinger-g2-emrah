@@ -2,6 +2,7 @@
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Core.Test.Util;
+using Google.Protobuf.WellKnownTypes;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
@@ -20,6 +21,24 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase("nope")]
         public async Task GetCouponByKeyWithInvalidKeyReturnsNull(string key) =>
             Assert.That(await sut.GetByKey(key), Is.Null);
+        
+        [Test]
+        [TestCase(0)]
+        [TestCase(-1)]
+        public async Task GetCouponByCartIdWithInvalidIdReturnsNull(int cartId) =>
+            Assert.That(await sut.GetByCartId(cartId), Is.Null);
+
+        [Test]
+        [TestCase(1, "5c3b41d7-b823-45e3-b6d2-bdf749076687", 1, 1, 0.01)]
+        public async Task GetCouponByCartIdWithValidIdReturnsNull(int cartId, string key, int id, int shopId, double value)
+        {
+            var coupon = await sut.GetByCartId(cartId);
+            Assert.That(coupon, Is.Not.Null);
+            Assert.That(coupon.Id, Is.EqualTo(id));
+            Assert.That(coupon.CartId, Is.EqualTo(cartId));
+            Assert.That(coupon.ShopId, Is.EqualTo(shopId));
+            Assert.That(coupon.Value, Is.EqualTo(value));
+        }
 
         [Test]
         [TestCase("5c3b41d7-b823-45e3-b6d2-bdf749076687", 1, 1, 1, 0.01)]

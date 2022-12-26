@@ -45,6 +45,11 @@ namespace CaaS.Core.Repository
              {
                  ShopId = id
              });
+        public async Task<Coupon?> GetByCartId(int id) =>
+             await template.QueryFirstOrDefaultAsync(CouponMapping.ReadCouponOnly, whereExpression: new
+             {
+                 CartId = id
+             });
 
         private async Task<Coupon?> Get(int id) =>
             await template.QueryFirstOrDefaultAsync(CouponMapping.ReadCouponOnly, whereExpression: new

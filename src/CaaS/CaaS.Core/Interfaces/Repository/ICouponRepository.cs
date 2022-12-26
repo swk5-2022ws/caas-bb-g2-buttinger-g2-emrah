@@ -30,6 +30,13 @@ namespace CaaS.Core.Interfaces.Repository
         Task<IList<Coupon>> GetByShopId(int id);
 
         /// <summary>
+        /// Retrieves a coupon by its cartId
+        /// </summary>
+        /// <param name="id">the cart id</param>
+        /// <returns></returns>
+        Task<Coupon?> GetByCartId(int id);
+
+        /// <summary>
         /// Apply a coupon to a cart.
         /// </summary>
         /// <param name="couponKey">coupon key to be applied.</param>

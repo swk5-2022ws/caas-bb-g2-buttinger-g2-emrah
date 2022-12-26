@@ -43,6 +43,9 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
         public Task<IList<ProductCart>> GetByCartId(int id) =>
             Task.FromResult((IList<ProductCart>)productCarts.Where(x => x.Key.Item2 == id).Select(y => y.Value).ToList());
 
+        public Task<IList<ProductCart>> GetByCartIds(List<int> ids) =>
+            Task.FromResult((IList<ProductCart>)productCarts.Values.Where(x => ids.Contains(x.CartId)).ToList());
+
         public Task<bool> Update(int productId, int cartId, uint amount)
         {
             if (productCarts.ContainsKey((productId, cartId)))

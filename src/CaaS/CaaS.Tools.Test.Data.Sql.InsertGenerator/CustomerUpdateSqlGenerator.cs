@@ -1,4 +1,6 @@
 ﻿using CaaS.Core.Domainmodels.DiscountActions;
+using CaaS.Core.Interfaces.Engines.PaymentRepository;
+using CaaS.Core.Interfaces.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,12 @@ namespace CaaS.Tools.Test.Data.Sql.InsertGenerator
         {
             int count = 500;
             return GenerateCustomerUpdateStatement(count);
+        }
+        
+        internal IEnumerable<string> GenerateCreditInformationForExistingCustomers()
+        {
+            int count = 500;
+            return GenererateCustomerCreditInformationStatement(count);
         }
 
         private IEnumerable<string> GenerateCustomerUpdateStatement(int count)
@@ -30,6 +38,20 @@ namespace CaaS.Tools.Test.Data.Sql.InsertGenerator
 
                 yield return sql;
             }
+        }
+
+        private IEnumerable<string> GenererateCustomerCreditInformationStatement(int count)
+        {
+            IPaymentRepository repository = new PaymentRepositoryStub();
+
+            var infos = repository.GetAll();
+            for (int i = 1; i <= count; i++)
+            {
+                var info = infos[i % 5];
+                string sql = $"UPDATE Customer SET CreditCardNumber='{info.CreditCardNumber}',CVV='{info.CVV}',Expiration='{info.Expiration}' WHERE Id = {i};";
+                yield return sql;
+            }
+
         }
     }
 }

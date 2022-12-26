@@ -12,7 +12,7 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="cvv">cvv</param>
         /// <param name="expiration">expiration</param>
         /// <returns></returns>
-        Task<double?> Get(string creditCartnumber, string cvv, string expiration);
+        double? Get(string creditCartnumber, string cvv, string expiration);
         /// <summary>
         /// Updates the amount of the passed credit information.
         /// All data must be encrypted.
@@ -23,6 +23,13 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="expiration">expiration</param>
         /// <param name="amount">the amount</param>
         /// <returns></returns>
-        Task<bool> Update(string creditCartnumber, string cvv, string expiration, double amount);
+        bool Update(string creditCartnumber, string cvv, string expiration, double amount);
+
+        /// <summary>
+        /// Retrieves all payment information. 
+        /// This is used just for update statement creation
+        /// </summary>
+        /// <returns></returns>
+        IList<PaymentInformation> GetAll();
     }
 }

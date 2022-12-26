@@ -11,5 +11,6 @@
 //Console.WriteLine(string.Join(" ", update));
 
 //var update = new CouponUpdateSqlGenerator().GenerateCouponKeyForExistingCoupons();
-var update = new CouponUpdateSqlGenerator().RemoveCartIdForLast10CouponsForExistingCoupons();
+//var update = new CouponUpdateSqlGenerator().RemoveCartIdForLast10CouponsForExistingCoupons();
+var update = new CustomerUpdateSqlGenerator().GenerateCreditInformationForExistingCustomers();
 Console.WriteLine(string.Join(" ", update));

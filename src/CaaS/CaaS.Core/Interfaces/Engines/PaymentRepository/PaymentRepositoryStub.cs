@@ -64,11 +64,13 @@ namespace CaaS.Core.Interfaces.Engines.PaymentRepository
             },
 
         };
-        public async Task<double?> Get(string creditCartnumber, string cvv, string expiration) => (await GetInformation(creditCartnumber, cvv, expiration))?.AvailableAmount ?? null;
 
-        public async Task<bool> Update(string creditCartnumber, string cvv, string expiration, double amount)
+        public IList<PaymentInformation> GetAll() => _informations;
+        public double? Get(string creditCartnumber, string cvv, string expiration) => (GetInformation(creditCartnumber, cvv, expiration))?.AvailableAmount ?? null;
+
+        public bool Update(string creditCartnumber, string cvv, string expiration, double amount)
         {
-            var info = await GetInformation(creditCartnumber, cvv, expiration);
+            var info = GetInformation(creditCartnumber, cvv, expiration);
 
             if (info is null) return false;
             if (amount > info.AvailableAmount) throw new InvalidOperationException("A higher amount is not possible");
@@ -86,7 +88,7 @@ namespace CaaS.Core.Interfaces.Engines.PaymentRepository
         /// <param name="expiration">the expiration</param>
         /// <returns></returns>
         /// <exception cref="AccessViolationException">If the credit information are no longer in use.</exception>
-        private async Task<PaymentInformation?> GetInformation(string creditCartnumber, string cvv, string expiration)
+        private PaymentInformation? GetInformation(string creditCartnumber, string cvv, string expiration)
         {
             var _dcCn = CryptographyUtil.Decrypt(creditCartnumber, Constants.PASS);
             var _dcvv = CryptographyUtil.Decrypt(cvv, Constants.PASS);

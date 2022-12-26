@@ -2,6 +2,7 @@
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Core.Test.Util;
+using Org.BouncyCastle.Security;
 
 namespace CaaS.Core.Test.Integration.Repository
 {
@@ -22,6 +23,26 @@ namespace CaaS.Core.Test.Integration.Repository
         [TestCase(3, 3, "5c662d68-ead5-35fe-af4c-cf4470a8ff3d")]
         public async Task GetCartByIdWithValidIdReturnsCart(int id, int? customerId, string sessionId) =>
             BaseGetAssertions(await sut.Get(id), id, customerId, sessionId);
+        
+        [Test]
+        [TestCase(2)]
+        public async Task GetCartByIdWithValidIdsReturnsCarts(int count)
+        {
+            var carts = await sut.Get(new List<int> { 1, 2 });
+
+            Assert.That(carts, Is.Not.Null); 
+            Assert.That(carts.Count, Is.EqualTo(count)); 
+        }
+
+        [Test]
+        [TestCase(0)]
+        public async Task GetCartByIdWithInValidIdsReturnsEmptyCarts(int count)
+        {
+            var carts = await sut.Get(new List<int> { -1, 0 });
+
+            Assert.That(carts, Is.Not.Null);
+            Assert.That(carts.Count, Is.EqualTo(count));
+        }
 
 
         [Test]
