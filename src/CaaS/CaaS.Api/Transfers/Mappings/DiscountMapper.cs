@@ -31,6 +31,10 @@ namespace CaaS.Api.Transfers.Mappings
             CreateMap<TCreateDiscountRule, DiscountRule>()
            .ConstructUsing(x =>
            new DiscountRule(0, x.ShopId, x.Name, x.RuleSet));
+
+            CreateMap<TCreateDiscount, Discount>()
+           .ConstructUsing(x => new Discount(0, x.RuleId, x.ActionId));
+            
         }
     }
 }

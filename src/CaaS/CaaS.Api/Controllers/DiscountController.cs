@@ -140,7 +140,7 @@ namespace CaaS.Api.Controllers
         }
 
         [HttpPost("api/discount")]
-        public async Task<ActionResult> CreateDiscount([FromHeader] Guid appKey, [FromBody] TDiscount discount)
+        public async Task<ActionResult> CreateDiscount([FromHeader] Guid appKey, [FromBody] TCreateDiscount discount)
         {
             try
             {

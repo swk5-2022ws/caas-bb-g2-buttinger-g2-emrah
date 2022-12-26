@@ -50,7 +50,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestGetDiscountRuleTypes()
         {
-            OkObjectResult result = (OkObjectResult)await sut.GetDiscountRules();
+            OkObjectResult result = (OkObjectResult)await sut.GetDiscountActions();
 
             IList<DiscountActionBase> values = ((IEnumerable<DiscountActionBase>)result.Value!).ToList();
 
