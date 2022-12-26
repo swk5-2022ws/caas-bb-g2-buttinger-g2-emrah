@@ -114,12 +114,5 @@ namespace CaaS.Api.Test.Controllers
             NoContentResult response = (NoContentResult) await sut.AddDiscountsToCart(appKey, 1, new List<int>() { 1 });
             Assert.That(response, Is.Not.Null);
         }
-
-        //[Test, Rollback]
-        //public async Task TestGetDiscountsByShopIdWithValidShopIdReturnsOkObjectResult()
-        //{
-        //    OkObjectResult response = (OkObjectResult)(await sut.GetDiscounts(appKey, 1));
-        //    Assert.That(response, Is.Not.Null);
-        //}
     }
 }

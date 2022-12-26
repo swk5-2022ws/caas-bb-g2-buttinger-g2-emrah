@@ -24,7 +24,7 @@ namespace CaaS.Api.Controllers
 
         [Route("api/discount/actions/types")]
         [HttpGet]
-        public async Task<IActionResult> GetDiscountRules()
+        public async Task<IActionResult> GetDiscountActions()
         {
             var rules = await discountActionLogic.GetRulesets();
             return Ok(rules);
