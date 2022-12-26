@@ -36,9 +36,9 @@ namespace CaaS.Core.Logic
             this.shopRepository = shopRepository ?? throw ExceptionUtil.ParameterNullException(nameof(shopRepository));
         }
 
-        public async Task<int> Create(string sessionId, IEnumerable<Discount> discounts, Guid appKey)
+        public async Task<int> Create(int id, IEnumerable<Discount> discounts, Guid appKey)
         {
-            var cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, sessionId, appKey);
+            var cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, id, appKey);
             if (!cart.CustomerId.HasValue) throw new KeyNotFoundException("Cannot create an order from a cart without customerId");
 
             cart.Discounts = discounts.ToList();

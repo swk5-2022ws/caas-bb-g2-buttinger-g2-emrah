@@ -87,33 +87,6 @@ namespace CaaS.Core.Logic.Util
         }
 
         public static async Task<Cart> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
-                                                        IShopRepository shopRepository, string sessionId, Guid appKey)
-        {
-            var cart = await CartAvailability(cartRepository, sessionId);
-
-            var productCarts = await productCartRepository.GetByCartId(cart.Id);
-            if (productCarts is null || !productCarts.Any()) throw new ArgumentNullException("Cannot create an order from an empty cart!");
-
-            var productIds = productCarts.Select(x => x.ProductId);
-            var products = await productRepository.Get(productIds.ToList());
-
-            if (products is null || !products.Any()) throw new ArgumentNullException("Cannot create an order without referenced products!");
-
-            if (products.Select(x => x.ShopId).Distinct().Count() > 1)
-                throw new ArgumentException("Products from multiple shops in cart!");
-
-            await ShopAuthorization(shopRepository, products.First().ShopId, appKey);
-
-            foreach (var pc in productCarts)
-            {
-                pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
-            }
-
-            cart.ProductCarts = productCarts.ToHashSet();
-            return cart;
-        }
-
-        public static async Task<Cart> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
                                                         IShopRepository shopRepository, int id, Guid appKey)
         {
             var cart = await CartAvailability(cartRepository, id);

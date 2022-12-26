@@ -12,10 +12,10 @@ namespace CaaS.Core.Interfaces.Logic
         /// <summary>
         /// Creates an order from a cart.
         /// </summary>
-        /// <param name="sessionId">the sessionId of the cart</param>
+        /// <param name="id">the id of the cart</param>
         /// <param name="appKey">the appKey of the shop</param>
         /// <returns></returns>
-        Task<int> Create(string sessionId, IEnumerable<CaaS.Core.Domainmodels.Discount> discounts, Guid appKey);
+        Task<int> Create(int id, IEnumerable<CaaS.Core.Domainmodels.Discount> discounts, Guid appKey);
 
         /// <summary>
         /// Retrieves all orders for a shop

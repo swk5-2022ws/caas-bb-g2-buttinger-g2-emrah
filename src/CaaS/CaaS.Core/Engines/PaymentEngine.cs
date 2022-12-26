@@ -40,10 +40,10 @@ namespace CaaS.Core.Engines
                 {
                     await Task.Delay(random.Next(1000, 3000));
                 }
-                var availableAmount = await repository.Get(creditCardNumber, cvv, expiration);
+                var availableAmount = repository.Get(creditCardNumber, cvv, expiration);
                 Check(amount, availableAmount, creditCardNumber, cvv, expiration);
 
-                var updated = await repository.Update(creditCardNumber, cvv, expiration, availableAmount.Value - amount);
+                var updated = repository.Update(creditCardNumber, cvv, expiration, availableAmount!.Value - amount);
                 transaction.Complete();
                 return updated;
             }
