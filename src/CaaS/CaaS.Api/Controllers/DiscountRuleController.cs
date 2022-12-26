@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace CaaS.Api.Controllers
 {
     [ApiConventionType(typeof(WebApiConventions))]
-    [Route("api/[controller]")]
     [ApiController]
     public class DiscountRuleController : ControllerBase
     {
@@ -31,16 +30,16 @@ namespace CaaS.Api.Controllers
             return Ok(rules);
         }
 
-        [Route("api/discount/rules/{id}")]
+        [Route("api/discount/rule")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromHeader] Guid appKey, [FromBody] DiscountRule discountRule)
+        public async Task<IActionResult> Create([FromHeader] Guid appKey, [FromBody] TCreateDiscountRule discountRule)
         {
             try
             {
-                var id = await discountRuleLogic.Create(appKey, discountRule);
+                var id = await discountRuleLogic.Create(appKey, mapper.Map<DiscountRule>(discountRule));
                 return CreatedAtAction(
                 actionName: nameof(GetByShopId),
-                routeValues: new { discountRule.ShopId },
+                routeValues: new { id = discountRule.ShopId },
                 value: id);
             }
             catch (KeyNotFoundException ex)
@@ -58,7 +57,7 @@ namespace CaaS.Api.Controllers
             }
         }
 
-        [Route("api/shop/{id}/discount/rules")]
+        [Route("api/shop/{id}/rules")]
         [HttpGet]
         public async Task<IActionResult> GetByShopId([FromHeader] Guid appKey, [FromRoute] int id)
         {
@@ -82,7 +81,7 @@ namespace CaaS.Api.Controllers
             }
         }
 
-        [Route("api/discount/rules/{id}")]
+        [Route("api/discount/rule/{id}")]
         [HttpDelete]
         public async Task<IActionResult> Delete([FromHeader] Guid appKey, [FromRoute] int id)
         {

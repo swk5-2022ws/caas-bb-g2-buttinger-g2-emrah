@@ -19,10 +19,12 @@ namespace CaaS.Core.Domainmodels.DiscountActions
     [Serializable]
     public abstract class DiscountActionBase : IDiscountAction, ISerializable
     {
+        [JsonIgnore]
         /// <summary>
         /// Determines in which order multiple discounts must be applied. Highest priority discounts must be applied first.
         /// </summary>
         public abstract int ApplyPriority { get; }
+        [JsonIgnore]
         /// <summary>
         /// Determines in which order multiple discounts must be applied if two discounts got the same ApplyPriority.
         /// </summary>

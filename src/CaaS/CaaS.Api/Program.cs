@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
@@ -51,5 +52,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
