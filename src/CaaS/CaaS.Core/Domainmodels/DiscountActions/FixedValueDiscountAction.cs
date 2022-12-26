@@ -13,8 +13,9 @@ namespace CaaS.Core.Domainmodels.DiscountActions
     {
         public double Value { get; init; }
 
+        [JsonIgnore]
         public override int ApplyPriority => (int) DiscountActionApplyPriority.FIXEDVALUE;
-
+        [JsonIgnore]
         public override int SubApplyPriority => (int)Value;
 
         public FixedValueDiscountAction() {}

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CaaS.Api.Controllers;
+using CaaS.Api.Transfers;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Domainmodels.DiscountRules;
 using CaaS.Core.Interfaces.Logic;
@@ -112,7 +113,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithValidDiscountRuleReturnsOkObjectResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, 1, "new",
+            TCreateDiscountRule discountRule = new TCreateDiscountRule(1, "new",
                         new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
 
             CreatedAtActionResult result = (CreatedAtActionResult)await sut.Create(appKey, discountRule);
@@ -129,7 +130,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithInvalidAppKeyReturnsUnauthorizedResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, 1, "new",
+            TCreateDiscountRule discountRule = new TCreateDiscountRule(1, "new",
             new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
 
             UnauthorizedResult result = (UnauthorizedResult)await sut.Create(Guid.NewGuid(), discountRule);
@@ -140,7 +141,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithInvalidShopIdReturnsUnauthorizedResult()
         {
-            DiscountRule discountRule = new DiscountRule(0, int.MaxValue, "new",
+            TCreateDiscountRule discountRule = new TCreateDiscountRule(int.MaxValue, "new",
             new DateDiscountRuleset(DateTime.Now.AddMinutes(-5), DateTime.Now.AddMinutes(5), DateTime.Now));
 
             BadRequestObjectResult result = (BadRequestObjectResult)await sut.Create(appKey, discountRule);

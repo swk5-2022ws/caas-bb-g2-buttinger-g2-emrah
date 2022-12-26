@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using CaaS.Core.Logic;
 using CaaS.Core.Test;
 using CaaS.Core.Domainmodels.DiscountActions;
+using CaaS.Api.Transfers;
 
 namespace CaaS.Api.Test.Controllers
 {
@@ -113,7 +114,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithValidDiscountRuleReturnsOkObjectResult()
         {
-            DiscountAction discountAction = new DiscountAction(0, 1, "new",
+            TCreateDiscountAction discountAction = new TCreateDiscountAction(1, "new",
                         new TotalPercentageDiscountAction(0.5d));
 
             CreatedAtActionResult result = (CreatedAtActionResult)await sut.Create(appKey, discountAction);
@@ -129,7 +130,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithInvalidAppKeyReturnsUnauthorizedResult()
         {
-            DiscountAction discountAction = new DiscountAction(0, 1, "new",
+            TCreateDiscountAction discountAction = new TCreateDiscountAction(1, "new",
                         new TotalPercentageDiscountAction(0.5d));
 
             UnauthorizedResult result = (UnauthorizedResult)await sut.Create(Guid.NewGuid(), discountAction);
@@ -140,7 +141,7 @@ namespace CaaS.Api.Test.Controllers
         [Test, Rollback]
         public async Task TestCreateWithInvalidShopIdReturnsUnauthorizedResult()
         {
-            DiscountAction discountAction = new DiscountAction(0, int.MaxValue, "new",
+            TCreateDiscountAction discountAction = new TCreateDiscountAction(int.MaxValue, "new",
                         new TotalPercentageDiscountAction(0.5d));
 
             BadRequestObjectResult result = (BadRequestObjectResult)await sut.Create(appKey, discountAction);
