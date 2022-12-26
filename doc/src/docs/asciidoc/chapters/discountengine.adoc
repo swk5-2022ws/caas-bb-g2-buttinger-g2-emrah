@@ -33,7 +33,7 @@ Aktuell existieren zwei unterschiedliche Aktionen:
 Für eine korrekte Deserialisierung einr Unterklasse von der Basisklasse
 `DiscountActionBase` muss dazu die Basisklasse mit dem Attribut
 `JsonDerivedType` annotiert werden. Das ist ärgerlich und bietet noch
-Verbesserungspotenzial.
+Verbesserungspotenzial. Nach aktuellen Recherchen gibt es hier keine einfache Lösung mit System.Text.Json.
 
 ==== DiscountRule
 
@@ -81,10 +81,6 @@ CalculateDiscountPrice(Cart cart)` kann der Preis eines Warenkorbs _nach_ Abzug
 der Preisnachlässe berechnet werden.
 
 Ein reduzierter Preis eines Warenkorbs darf somit nur über die `DiscountEngine`
-gesetzt werden. Hier wird in der nächsten Ausbaustufe ein Mechanismus
-geschaffen, der das Setzen von Discounts bei einer Cart-Instanz restriktiver
-gestaltet. Somit können Fehlbedienungen der API verhindert werden.
+gesetzt werden. 
 
-Für die DiscountEngine existieren ausführliche UNIT-Tests. Diese werden im
-nächsten Ausbauschritt ebenfalls erweitert.
-
+Für die DiscountEngine existieren ausführliche UNIT-Tests.

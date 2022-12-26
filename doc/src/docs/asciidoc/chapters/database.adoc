@@ -2,6 +2,13 @@
 
 Als Datenbank wird in diesem Projekt mysql eingesetzt. Die beliebte OpenSource - Datenkbank kennen wir bereits aus anderen Übungen und der Funktionsumfang ist für dieses Projekt ausreichend.
 
+Die Testprojekte respektieren verschiedene Konfigurationsdateien für verschiedene Umgebungen.
+Dabei wird das Namensschema 'appSettings.ENVIRONMENT.json' für die Konfigurationsdatei verwendet.
+ENVIRONMENT wird auf 'development' gesetzt. Falls eine Umgebungsvariable namens 'environment' existiert, 
+wird dieser Wert verwendet.
+
+Der REST-Service erwartet eine Verbindungszeichenkette mit dem Namen `caas-db`.
+
 === Entwicklungsdatenbank mit Docker
 ==== Allgemein
 Für eine gute Entwicklererfahrung setzen wir auf Docker. Im Projektverzeichnis existieren unter `caas-bb-g2-buttinger-g2-emrah\src\CaaS\Docker\db_dev` alle notwendigen Dateien zum Erstellen eines Docker-Images. 
@@ -20,12 +27,11 @@ Ausgangsbasis ist das Image mysql:latest. Dieses wird mit dem SQL-Skript `init.s
 
 Testdaten werden mit https://filldb.info/ erstellt und anschließend manuell angepasst. Für die zusätzliche Adaptierung wurde unter `./src/CaaS/Tools` ein simples Projekt zum Updaten von bestehender Daten erstellt. Das war für die Migration usnerer DiscountAction und DiscountRule-Tabellen notwendig.
 
-
 ==== caas-dev-db Image erstellen
 
 Neben dem eigentlichen Image für die Datenbank wird hier auch ein Image für phpmyadmin erstellt. Somit haben wir eine bequeme Möglichkeit die Datenbank zu konfigurieren.
 
-Das Image kann mit dem Skript `./src/CaaS/Docker/db_dev/build_dev_db.bat` erstellt werden.
+Das Image kann mit dem Skript `./src/CaaS/build_dev_db.bat` erstellt werden.
 
 .Voraussetzungen
 * Docker Desktop installiert und konfiguriert
@@ -37,8 +43,8 @@ Das Image kann mit dem Skript `./src/CaaS/Docker/db_dev/build_dev_db.bat` erstel
 
 ==== caas-dev-db starten
 
-Der Container kann mit dem Skript `./src/CaaS/Docker/db_dev/run_dev_db.bat` gestartet werden.
-Für das Entfernen kann das Skript `./src/CaaS/Docker/db_dev/remove_dev_db_container.bat` benutzt werden.
+Der Container kann mit dem Skript `./src/CaaS/run_dev_db.bat` gestartet werden.
+Für das Entfernen kann das Skript `./src/CaaS/remove_dev_db_container.bat` benutzt werden.
 
 .Voraussetzungen
 * Iamge `caas-dev-db` wurde erfolgreich erstellt
@@ -56,8 +62,8 @@ Für das Entfernen kann das Skript `./src/CaaS/Docker/db_dev/remove_dev_db_conta
 
 ==== myphpadmin Container starten und mit caas-dev-db verbinden
 
-Der Container kann mit dem Skript `./src/CaaS/Docker/db_dev/run_mysqladmin_container.bat` gestartet werden.
-Für das Entfernen kann das Skript `./src/CaaS/Docker/db_dev/remove_mysqladmin_container.bat` benutzt werden.
+Der Container kann mit dem Skript `./src/CaaS/run_mysqladmin_container.bat` gestartet werden.
+Für das Entfernen kann das Skript `./src/CaaS/remove_mysqladmin_container.bat` benutzt werden.
 
 .Voraussetzungen
 * Image `caas-dev-db` wurde erfolgreich erstellt
