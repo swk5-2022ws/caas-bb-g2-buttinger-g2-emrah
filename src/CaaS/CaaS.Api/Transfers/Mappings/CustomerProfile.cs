@@ -11,11 +11,11 @@ namespace CaaS.Api.Transfers.Mappings
 
             CreateMap<TCustomer, Customer>()
                 .ConstructUsing(x =>
-                    new Customer(x.id, x.shopId, x.name, x.email, x.cartId));
+                    new Customer(x.id, x.shopId, x.name, x.email, x.cartId, null, null, null));
 
             CreateMap<TCreateCustomer, Customer>()
                 .ConstructUsing(x =>
-                    new Customer(0, x.shopId, x.name, x.email, null));
+                    new Customer(0, x.shopId, x.name, x.email, null, null, null, null));
         }
     }
 }
