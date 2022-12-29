@@ -103,7 +103,7 @@ namespace CaaS.Api.Controllers
                 return CreatedAtAction(
                     actionName: nameof(Create),
                     routeValues: new { orderId },
-                    value: null);
+                    value: orderId);
             }
             catch(ArgumentNullException e)
             {
