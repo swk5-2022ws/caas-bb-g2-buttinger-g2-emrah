@@ -22,6 +22,11 @@ namespace CaaS.Core.Interfaces.Repository
         /// <param name="ids">the ids of the carts</param>
         /// <returns></returns>
         Task<IList<Cart>> Get(IList<int> ids);
+        /// <summary>
+        /// Returns a list of all carts
+        /// </summary>
+        /// <returns></returns>
+        Task<IList<Cart>> GetAll();
 
         /// <summary>
         /// Returns a cart

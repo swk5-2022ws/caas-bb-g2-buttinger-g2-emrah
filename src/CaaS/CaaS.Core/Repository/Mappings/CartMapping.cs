@@ -9,7 +9,8 @@ namespace CaaS.Core.Repository.Mappings
         internal static Cart ReadCartOnly(IDataRecord record) =>
                 new Cart(record.GetIntByName(nameof(Cart.Id)), record.GetStringByName(nameof(Cart.SessionId)))
                 {
-                    CustomerId = record.GetNullableIntByName(nameof(Cart.CustomerId))
+                    CustomerId = record.GetNullableIntByName(nameof(Cart.CustomerId)),
+                    ModifiedDate = record.GetNullableDateTimeByName(nameof(Cart.ModifiedDate))
                 };
 }
 }

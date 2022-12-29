@@ -39,7 +39,7 @@ namespace CaaS.Core.Logic
         }
         public async Task<string> Create()
         {
-            var cartId = await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString()));
+            var cartId = await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString()) { ModifiedDate = DateTime.UtcNow });
             return (await cartRepository.Get(cartId))?.SessionId ?? throw new ArgumentException("Cart could not be created");
         }
 
@@ -49,7 +49,8 @@ namespace CaaS.Core.Logic
 
             var cartId = await cartRepository.Create(new Cart(0, Guid.NewGuid().ToString())
             {
-                CustomerId = customerId
+                CustomerId = customerId,
+                ModifiedDate = DateTime.UtcNow
             });
 
             return (await cartRepository.Get(cartId))?.SessionId ?? throw new ArgumentException("Cart could not be created");
@@ -75,7 +76,11 @@ namespace CaaS.Core.Logic
             }
 
             amount = productCart.Amount - amount;
-            return await productCartRepository.Update(productId, cart.Id, amount.Value);
+            var updatedProductCart = await productCartRepository.Update(productId, cart.Id, amount.Value);
+            if (!updatedProductCart) return false;
+
+            cart.ModifiedDate = DateTime.UtcNow;
+            return await cartRepository.Update(cart);
         }
 
         public async Task<Cart> Get(string sessionId, Guid appKey)
@@ -140,7 +145,7 @@ namespace CaaS.Core.Logic
             var cart = await Check.CartAvailability(cartRepository, sessionId);
             if (cart.CustomerId.HasValue) throw ExceptionUtil.ReferenceException(nameof(cart));
             cart.CustomerId = customerId;
-
+            cart.ModifiedDate = DateTime.UtcNow;
             return await cartRepository.Update(cart);
         }
 
@@ -162,7 +167,11 @@ namespace CaaS.Core.Logic
                 return await productCartRepository.Update(productId, cart.Id, amount.Value);
             }
 
-            return await productCartRepository.Create(new ProductCart(productId, cart.Id, product.Price, amount.Value)) > 0;
+            var addedToCart = await productCartRepository.Create(new ProductCart(productId, cart.Id, product.Price, amount.Value)) > 0;
+
+            if (!addedToCart) return false;
+            cart.ModifiedDate = DateTime.UtcNow;
+            return await cartRepository.Update(cart);
         }
     }
 }

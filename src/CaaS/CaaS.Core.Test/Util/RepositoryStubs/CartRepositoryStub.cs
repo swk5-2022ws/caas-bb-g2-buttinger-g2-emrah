@@ -59,7 +59,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
                     cartsByCustomerId.Add(keyValuePair.Value);
             }
 
-            return Task.FromResult(cartsByCustomerId.First());
+            return Task.FromResult(cartsByCustomerId.FirstOrDefault());
         }
 
         public Task<bool> Update(Cart cart)
@@ -73,5 +73,7 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
         }
 
         public Task<IList<Cart>> Get(IList<int> ids) => Task.FromResult((IList<Cart>)carts.Values.Where(x => ids.Contains(x.Id)).ToList());
+
+        public Task<IList<Cart>> GetAll() => Task.FromResult((IList<Cart>)carts.Values.ToList());
     }
 }

@@ -1,4 +1,5 @@
-﻿using CaaS.Core.Domainmodels;
+﻿using CaaS.Common.Mappings;
+using CaaS.Core.Domainmodels;
 using System.Data;
 
 namespace CaaS.Core.Test.Integration.Template
@@ -63,7 +64,8 @@ namespace CaaS.Core.Test.Integration.Template
             new Cart((int)reader[0], (string)reader["SessionId"])
             {
                 CustomerId = (int)reader["CustomerId"],
-                Customer = new Customer((int)reader[3], (int)reader["ShopId"], (string)reader["Name"], (string)reader["Email"])
+                ModifiedDate = reader.GetNullableDateTimeByName(nameof(Cart.ModifiedDate)),
+                Customer = new Customer((int)reader[4], (int)reader["ShopId"], (string)reader["Name"], (string)reader["Email"]),
             };
 
         private void BasicSingleCartAssertions(Cart? cart, int cartId, string sessionId, int customerId)

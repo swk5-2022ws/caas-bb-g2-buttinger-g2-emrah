@@ -16,6 +16,8 @@ public record Cart
     public int? CustomerId { get; set; }
     public string SessionId { get; set; }
 
+    public DateTime? ModifiedDate { get; set; }
+
     [AdoIgnore]
     public Customer? Customer { get; set; }
     /// <summary>

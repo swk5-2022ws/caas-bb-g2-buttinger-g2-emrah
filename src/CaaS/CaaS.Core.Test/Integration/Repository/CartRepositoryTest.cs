@@ -35,6 +35,16 @@ namespace CaaS.Core.Test.Integration.Repository
         }
 
         [Test]
+        [TestCase(101)]
+        public async Task GetAllCartsReturnsCarts(int count)
+        {
+            var carts = await sut.GetAll();
+
+            Assert.That(carts, Is.Not.Null);
+            Assert.That(carts.Count, Is.EqualTo(count));
+        }
+
+        [Test]
         [TestCase(0)]
         public async Task GetCartByIdWithInValidIdsReturnsEmptyCarts(int count)
         {
