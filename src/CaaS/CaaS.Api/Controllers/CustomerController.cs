@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CaaS.Api.Transfers;
+using CaaS.Api.Util;
 using CaaS.Core.Domainmodels;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Logic;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CaaS.Api.Controllers
 {
+    [ApiConventionType(typeof(WebApiConventions))]
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : ControllerBase

@@ -47,6 +47,32 @@ namespace Caas.Core.Common.Ado
         }
 
         /// <summary>
+        /// Creates a query with a stored procedure
+        /// </summary>
+        /// <typeparam name="T">Generic object used to select the elements</typeparam>
+        /// <param name="read">The conversion function for the reader to the dedicated generic element</param>
+        /// <param name="storedProcedureName">The name of the stored procedure to be called</param>
+        /// <param name="parameter">Input parameters for the stored procedure</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<T>> QueryStoredProcedure<T>(Func<IDataRecord, T> read, string storedProcedureName, object? parameter = null)
+        {
+            var list = new List<T>();
+            await using DbConnection connection = await connectionFactory.CreateConnectionAsync();
+            await using (var cmd = connection.CreateCommand())
+            {
+                AdoBuilder.BuildStoredProcedureCommand(cmd, storedProcedureName, parameter);
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    list.Add(read(reader));
+                }
+            }
+            return list;
+        }
+
+
+        /// <summary>
         /// Retrieves an element from the database
         /// </summary>
         /// <typeparam name="T">The generic type of the object</typeparam>

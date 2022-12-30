@@ -14,5 +14,6 @@ namespace Caas.Core.Common.Ado
         Task<bool> DeleteAsync<T>(object? whereExpression = null);
         Task<List<int>?> InsertAsync<T>(object valuesToPass, bool isNewIdNeeded = true);
         Task<int> UpdateAsync<T>(object valuesToUpdate, object? whereExpression = null, bool isSoftDeletionExcluded = true);
+        Task<IEnumerable<T>> QueryStoredProcedure<T>(Func<IDataRecord, T> read, string storedProcedureName, object? parameter = null);
     }
 }

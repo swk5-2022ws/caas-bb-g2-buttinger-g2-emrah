@@ -3,6 +3,7 @@ using CaaS.Util;
 using System.Collections;
 using System.Data.Common;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Caas.Core.Common.Ado
 {
@@ -144,6 +145,31 @@ namespace Caas.Core.Common.Ado
 
             AddWhereExpression(command, commandText, whereExpression, isSoftDeletePossible: HasSoftDelete(typeof(T)), isSoftDeleteExcluded: isSoftDeletionExcluded);
         }
+
+        /// <summary>
+        /// Builds a stored procedure DbCommands
+        /// </summary>
+        /// <param name="command">The DbCommands</param>
+        /// <param name="storedProcedure">The name of the stored procedure</param>
+        /// <param name="parameters">Input parameters</param>
+        internal static void BuildStoredProcedureCommand(DbCommand command, string storedProcedure, object? parameters = null)
+        {
+            string commandText = $"CALL {storedProcedure}";
+
+            command.CommandText = commandText;
+            if (parameters is null) return;
+
+            var parameterDictionary = AdoBuilder.ParametersToDictinary(parameters, true);
+            foreach (var param in parameterDictionary)
+            {
+                DbParameter dbParameter = command.CreateParameter();
+                dbParameter.ParameterName = $"@{param.Key}";
+                dbParameter.Value = param.Value;
+                dbParameter.Direction = System.Data.ParameterDirection.Input;
+                command.Parameters.Add(dbParameter);
+            }
+        }
+
 
         /// <summary>
         /// adds the where expression to the given commandText as well as
