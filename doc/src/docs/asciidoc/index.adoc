@@ -27,3 +27,6 @@ include::chapters/baseflow.adoc[leveloffset=+1]
 include::chapters/adoengine.adoc[leveloffset=+1]
 include::chapters/tests.adoc[leveloffset=+1]
 include::chapters/discountengine.adoc[leveloffset=+1]
+include::chapters/paymentengine.adoc[leveloffset=+1]
+include::chapters/hangfire.adoc[leveloffset=+1]
+

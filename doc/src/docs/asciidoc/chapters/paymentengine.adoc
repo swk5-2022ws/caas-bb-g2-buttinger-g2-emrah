@@ -1,0 +1,40 @@
+== Zahlungen
+
+Zahlungen können nur auf Bestellungen erfolgen. Wobei eine Bestellung nur auf einen Warenkorb erfolgen kann,
+der Produkte enthält. Um eine Zahlung durchzuführen werden Kreditkarteninformationen zu einem Kunden benötigt.
+
+Existieren hier keine Informationen zu einem Kunden, kann keine Zahlung abgewickelt werden.
+Die Zahlungen werden über eine Simulation eines Zahlungsdienstes abgewickelt.
+
+=== Simulation des Zahlungsdienstes
+
+Die Simulation des Zahlungsdienstes besteht grundsätzlich aus einer extern erreichbaren Methode. 
+Dieser Methode werden verschlüsselte Daten übergeben. 
+
+==== Prüfungen 
+Die Methode prüft dann, ob die Kreditkarteninformationen valide sind. Um dies zu bewerkstelligen existiert ein Repository, dass in Fall der Simulation durch einen Stub abgebildet ist.
+Dieses Repository beinhaltet verfügbare Kreditkarteninformationen sowie einen boolschen Wert, der aussagt, ob Kreditkarteninformationen noch in Verwendung sind. Zusätzlich beinhaltet das Repository 
+den abbuchbaren Betrag für die Kredirkarte.
+
+Finden sich die Kreditkarteninformationen nicht in der Tabelle, sind zu kurz oder enthalten falsche Zeichen, so ist die übergebene Kreditkarteninformationen nicht gültig. 
+Die Kreditkarteninformationen bestehen aus der Kreditkartennummer, dem Ablaufdatum und dem CVV. Alle drei Daten müssen deren Format entsprechen und korrekt übergeben werden, um eine Zahlung durchführen zu können.
+
+Folgende Formate müssen erfüllt werden:
+
+* CVV - 3 stellig, nur Zahlen
+* Kreditkartennummer - 16 stellig, nur Zahlen
+* Ablaufdatum - 5 stellig, die ersten zwei Stellen sind für das Monat (01 - 12) und die letzten 2 Stellen sind die letzten zwei Stellen des Ablaufjahres. An dritter Stelle muss sich ein Schrägstrich (/) befinden.
+
+Zusätzlich zu den Formatprüfungen werden nur Karten in Betracht gezogen, die das Ablaufdatum nicht überschritten haben und in Verwendung sind. 
+Ist der Betrag, der abgebucht werden soll, größer als der hinterlegte abbuchbare Betrag wird die Zahlung nicht durchgeführt.
+
+
+=== Verschlüsselung der Daten
+Die Daten werden intern über den AES Verschlüsselungsalgorithmus ver- und entschlüsselt. Der AES Algorithmus wird mit einem Passwort (Schlüssel) sowie zusätzlich über 32 Byte lange zufällige salt und iv bytes verschlüsselt. 
+Salt und IV dienen als zusätzliche Verschlüsselungsschicht. 
+
+Salt und IV wurden im Projekt an erster Stelle der Verschlüsselung angehängt. In einer Produktivversion der Verschlüsselung würden hierzu vermutlich assymetrische Verschlüsselungsverfahren zum Einsatz kommen, um die Salt und IV bytes
+entsprechen zu übergeben. Hierzu wäre eine zusätzliche RSA Übermittlung der Salt und IV bytes denkbar. Aus Gründen der Vereinfachung wurde dies aber ausgelassen und die Salt und IV bytes stattdessen vorne an die Verschlüsselte Nachricht angehängt.
+
+
+Die Entschlüsselung der Daten passiert nur zum Vergleich mit dem Repository, um die Sicherheit auf den unerlaubten Zugriff der Kreditkarteninformationen zu maximieren.

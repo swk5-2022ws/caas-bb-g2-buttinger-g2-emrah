@@ -64,3 +64,14 @@ Klasse: CaaS.Api.Test.UseCases.CreateDiscountUseCase
 .. Neue Id speichern
 .. Rabatt laden mit gespeicherter Id
 .. Vergleichen, ob die dazugehörige Rabattregel und Rabattaktion valide sind.
+
+==== Use Case: Bestell- und Bezahlprozess
+Klasse: CaaS.Api.Test.UseCases.PaymentUseCase
+
+> Ich, als Kunde, will ein Produkt zum Warenkorb hinzufügen. Anschließend möchte ich das Produkt bestellen und bezahlen.
+
+. Warenkorb erstellen.
+. Produkt mit Warenkorb verknüpfen.
+. Kunde mit Warenkorb verknüpfen.
+. Bestellung anlegen.
+. Die Bestellung bezahlen.

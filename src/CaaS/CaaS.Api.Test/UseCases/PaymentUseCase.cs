@@ -74,17 +74,17 @@ namespace CaaS.Api.Test.UseCases
             var createdCartAction = (CreatedAtActionResult)await cartController.Create(appKey);
             Assert.That(createdCartAction, Is.Not.Null);
             Assert.That(createdCartAction.Value, Is.Not.Null);
-            string sessionId = (string)createdCartAction.Value!;
-
-            //map customer to cart
-            var noContentCustomerReference = (NoContentResult)await cartController.ReferenceCustomer(5, sessionId, appKey);
-            Assert.That(noContentCustomerReference, Is.Not.Null);
-            Assert.That(noContentCustomerReference.StatusCode, Is.EqualTo(204));
+            string sessionId = (string)createdCartAction.Value!;           
 
             //reference product to cart
             var noContentProductReference = (NoContentResult) await cartController.ReferenceProduct(sessionId, 5, 1, appKey);
             Assert.That(noContentProductReference, Is.Not.Null);
             Assert.That(noContentProductReference.StatusCode, Is.EqualTo(204));
+
+            //map customer to cart
+            var noContentCustomerReference = (NoContentResult)await cartController.ReferenceCustomer(5, sessionId, appKey);
+            Assert.That(noContentCustomerReference, Is.Not.Null);
+            Assert.That(noContentCustomerReference.StatusCode, Is.EqualTo(204));
 
             //create order
             var okCart = await cartController.Get(sessionId, appKey);

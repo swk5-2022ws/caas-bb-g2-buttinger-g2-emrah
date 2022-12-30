@@ -1,0 +1,19 @@
+== Löschen von inaktiven Warenkörben
+
+Anforderung: Ist eine Warenkorb inaktiv, so soll dieser nach einer festgelegten Zeitdauer gelöscht werden.
+
+=== Hangfire
+Zur Umsetzung der Anforderung wurde ein Hangfire Server eingebunden. Dieser Dient dazu um Hintergrundprozesse nach einer festgelegten Zeitdauer zu starten.
+Die hinterlegten Jobs für den Hangfire Server werden in einem in-memory Speicher abgelegt.
+
+=== Hangfire Job
+Der Job für das Löschen der inkaktiven Warenkörbe läuft jede Minute. Gelöscht werden Warenkörbe, auf denen seit mehr als einer Stunde keine Aktion durchgeführt wurde.
+Für das Prüfen der Aktion wurde in der Tabelle Carts ein Bearbeitungsdatum hinterlegt. Dieses wird geändert, sobald eine Aktion auf den Warenkorb erfolgt. Aktionen sind:
+
+* Produkte hinzufügen.
+* Produkte löschen.
+* Warenkorb erstellen.
+* Kunden zum Warenkorb verknüpfen.
+
+Die initial erstellten Warenkörbe werden nicht gelöscht, da das Bearbeitungsdatum hier auf NULL gesetzt wurde. Diese Warenkörbe werden absichtlich nicht von dem Löschdienst erfasst. 
+Dies dient der Vereinfachung von Tests in der dritten Ausbaustufe des Projekts (Web Applikation).
