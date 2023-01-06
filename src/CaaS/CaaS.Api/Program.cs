@@ -41,6 +41,7 @@ builder.Services.AddScoped<IDiscountRuleRepository, DiscountRuleRepository>();
 builder.Services.AddScoped<IDiscountCartRepository, DiscountCartRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICartLogic, CartLogic>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICouponLogic, CouponLogic>();
 builder.Services.AddScoped<IShopLogic, ShopLogic>();

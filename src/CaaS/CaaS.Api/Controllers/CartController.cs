@@ -39,7 +39,7 @@ namespace CaaS.Api.Controllers
                 return CreatedAtAction(
                     actionName: nameof(Get),
                     routeValues: new { sessionId },
-                    value: sessionId);
+                    value: new { SessionId = sessionId });
             }
             catch (ArgumentException e)
             {
