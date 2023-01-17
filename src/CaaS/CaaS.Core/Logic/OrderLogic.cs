@@ -24,8 +24,11 @@ namespace CaaS.Core.Logic
         private readonly IProductCartRepository productCartRepository;
         private readonly ICustomerRepository customerRepository;
         private readonly IShopRepository shopRepository;
+        private readonly IDiscountLogic discountLogic;
+        private readonly IDiscountCartRepository discountCartRepository;
 
-        public OrderLogic(IOrderRepository orderRepository, ICartRepository cartRepository, ICouponRepository couponRepository, IProductRepository productRepository, IProductCartRepository productCartRepository, ICustomerRepository customerRepository, IShopRepository shopRepository)
+        public OrderLogic(IOrderRepository orderRepository, ICartRepository cartRepository, ICouponRepository couponRepository, IProductRepository productRepository, IProductCartRepository productCartRepository, ICustomerRepository customerRepository, IShopRepository shopRepository,
+            IDiscountLogic discountLogic, IDiscountCartRepository discountCartRepository)
         {
             this.orderRepository = orderRepository ?? throw ExceptionUtil.ParameterNullException(nameof(orderRepository));
             this.cartRepository = cartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(cartRepository));
@@ -34,11 +37,13 @@ namespace CaaS.Core.Logic
             this.customerRepository = customerRepository ?? throw ExceptionUtil.ParameterNullException(nameof(customerRepository));
             this.productRepository = productRepository ?? throw ExceptionUtil.ParameterNullException(nameof(productRepository));
             this.shopRepository = shopRepository ?? throw ExceptionUtil.ParameterNullException(nameof(shopRepository));
+            this.discountLogic = discountLogic ?? throw ExceptionUtil.ParameterNullException(nameof(discountLogic));
+            this.discountCartRepository = discountCartRepository;
         }
 
         public async Task<int> Create(int id, IEnumerable<Discount> discounts, Guid appKey)
         {
-            var cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, id, appKey);
+            var cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, id, appKey, discountLogic, discountCartRepository, couponRepository);
             if (!cart.CustomerId.HasValue) throw new KeyNotFoundException("Cannot create an order from a cart without customerId");
 
             cart.Discounts = discounts.ToList();
@@ -46,7 +51,11 @@ namespace CaaS.Core.Logic
             cart.Coupon = await couponRepository.GetByCartId(cart.Id);
 
             var couponValue = cart.Coupon?.Value ?? 0;
-            var completeDiscount = Math.Min(cart.Price, couponValue + discountEngine.CalculateDiscountPrice(cart));
+
+
+            var discount = couponValue + (cart.Price - discountEngine.CalculateDiscountPrice(cart));
+
+            var completeDiscount = Math.Min(cart.Price, discount);
             return await orderRepository.Create(cart, completeDiscount);
         }
 
@@ -54,7 +63,7 @@ namespace CaaS.Core.Logic
         {
             var order = await orderRepository.Get(id);
             if (order is null) throw ExceptionUtil.ParameterNullException(nameof(order));
-            order.Cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, order.CartId, appKey);
+            order.Cart = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, order.CartId, appKey, discountLogic, discountCartRepository, couponRepository);
             if (!order.Cart.CustomerId.HasValue) throw new KeyNotFoundException("Cart in order has no CustomerID!!");
 
             order.Cart.Customer = await customerRepository.Get(order.Cart.CustomerId.Value);
@@ -114,7 +123,7 @@ namespace CaaS.Core.Logic
         /// <returns></returns>
         private async Task ReferenceCartsToOrders(IList<Order> orders, Guid appKey)
         {
-            var carts = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, orders.Select(order => order.CartId).ToList(), appKey);
+            var carts = await Check.CartAvailabilityWithReferences(cartRepository, productCartRepository, productRepository, shopRepository, orders.Select(order => order.CartId).ToList(), appKey, discountLogic, discountCartRepository, couponRepository);
 
             foreach (var order in orders)
             {

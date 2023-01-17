@@ -42,6 +42,7 @@ builder.Services.AddScoped<IDiscountCartRepository, DiscountCartRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<ICartLogic, CartLogic>();
+builder.Services.AddScoped<ICustomerLogic, CustomerLogic>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICouponLogic, CouponLogic>();
 builder.Services.AddScoped<IShopLogic, ShopLogic>();
@@ -50,8 +51,10 @@ builder.Services.AddScoped<IDiscountActionLogic, DiscountActionLogic>();
 builder.Services.AddScoped<IDiscountLogic, DiscountLogic>();
 builder.Services.AddScoped<IDiscountRuleLogic, DiscountRuleLogic>();
 builder.Services.AddScoped<IOrderLogic, OrderLogic>();
+builder.Services.AddScoped<ITenantRepository, TenantRepository>();
 builder.Services.AddScoped<IAdoTemplate, AdoTemplate>();
 builder.Services.AddScoped<ICleanupService, CleanupService>();
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 

@@ -3,6 +3,7 @@ using CaaS.Core.Engines;
 using CaaS.Core.Interfaces.Engines;
 using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
+using CaaS.Core.Logic.Util;
 using CaaS.Core.Repository;
 using CaaS.Core.Repository.Mappings;
 using System;
@@ -24,11 +25,13 @@ namespace CaaS.Core.Logic
         private readonly IProductRepository productRepository;
         private readonly IDiscountActionRepository discountActionRepository;
         private readonly IDiscountRuleRepository discountRuleRepository;
+        private readonly ICustomerRepository customerRepository;
 
         public DiscountLogic(IDiscountRepository discountRepository, IShopRepository shopRepository,
             ICartRepository cartRepository, IProductCartRepository productCartRepository,
             IDiscountCartRepository discountCartRepository, IProductRepository productRepository,
-            IDiscountActionRepository discountActionRepository, IDiscountRuleRepository discountRuleRepository)
+            IDiscountActionRepository discountActionRepository, IDiscountRuleRepository discountRuleRepository,
+            ICustomerRepository customerRepository)
         {
             this.discountRepository = discountRepository;
             this.shopRepository = shopRepository;
@@ -38,6 +41,7 @@ namespace CaaS.Core.Logic
             this.productRepository = productRepository;
             this.discountActionRepository = discountActionRepository;
             this.discountRuleRepository = discountRuleRepository;
+            this.customerRepository = customerRepository;
         }
 
         public async Task<Discount> Get(Guid appKey, int discountId)
@@ -76,14 +80,44 @@ namespace CaaS.Core.Logic
         {
             var cart = await cartRepository.Get(cartId) ?? throw new KeyNotFoundException($"The cart with id={cartId} is currently not available.");
             if (!cart.CustomerId.HasValue) throw new ArgumentException($"Cart {cart?.Id} is not yet qualified for discounts. Discounts must be applied during check out.");
+            var customer = await customerRepository.Get(cart.CustomerId.Value) ?? throw new KeyNotFoundException($"The cart with id={cartId} is currently not available.");
 
-            var allDiscounts = await discountRepository.GetByShopId(cartId);
+            await AddProductsToCart(appKey, cart, customer.ShopId);
+
+            var allDiscounts = await discountRepository.GetByShopId(customer.ShopId);
 
             IDiscountEngine discountEngine = new DiscountEngine(allDiscounts);
             // do not persist the cart, we are just using DiscountEngine to retrieve possible discounts
             discountEngine.ApplyValidDiscounts(cart);
 
             return cart.Discounts ?? new List<Discount>();
+        }
+
+        private async Task AddProductsToCart(Guid appKey, Cart cart, int shopId)
+        {
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+
+            // TODO util class for adding products
+            if (productCarts is not null && productCarts.Count > 0)
+            {
+                var productIds = productCarts.Select(x => x.ProductId);
+                var products = await productRepository.Get(productIds.ToList());
+
+                if (products is not null && products.Count > 0)
+                {
+                    if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                        throw new ArgumentException("No such product or coupon in shop");
+
+                    shopId = products.First().ShopId;
+                    await Check.ShopAuthorization(shopRepository, shopId, appKey);
+
+                    foreach (var pc in productCarts)
+                    {
+                        pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+                    }
+                }
+                cart.ProductCarts = productCarts.ToHashSet();
+            }
         }
 
         public async Task AddDiscountsToCart(Guid appKey, int cartId, IList<int> requestedDiscountIds)
@@ -94,6 +128,8 @@ namespace CaaS.Core.Logic
             Cart cart = await GetCartById(cartId);
             int shopId = await GetShopIdByCartId(cartId);
             await AuthorizationCheck(shopId, appKey);
+
+            await AddProductsToCart(appKey, cart, shopId);
 
             var discountsValidatedByShopId = await ValidateDiscountsByShopId(requestedDiscountIds, shopId);
             var validDiscounts = ValidateDiscountsByCart(cart, discountsValidatedByShopId);

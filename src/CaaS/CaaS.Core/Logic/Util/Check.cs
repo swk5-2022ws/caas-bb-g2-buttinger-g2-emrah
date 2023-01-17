@@ -1,4 +1,7 @@
 ﻿using CaaS.Core.Domainmodels;
+using CaaS.Core.Engines;
+using CaaS.Core.Interfaces.Engines;
+using CaaS.Core.Interfaces.Logic;
 using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Repository;
 using CaaS.Util;
@@ -87,7 +90,8 @@ namespace CaaS.Core.Logic.Util
         }
 
         public static async Task<Cart> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
-                                                        IShopRepository shopRepository, int id, Guid appKey)
+                                                        IShopRepository shopRepository, int id, Guid appKey, IDiscountLogic discountLogic, IDiscountCartRepository discountCartRepository,
+                                                        ICouponRepository couponRepository)
         {
             var cart = await CartAvailability(cartRepository, id);
 
@@ -110,11 +114,28 @@ namespace CaaS.Core.Logic.Util
             }
 
             cart.ProductCarts = productCarts.ToHashSet();
+
+            await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, products.First().ShopId, discountLogic, discountCartRepository);
+
+            var coupon = await couponRepository.GetByCartId(cart.Id);
+            cart.Coupon = coupon;
+
+
             return cart;
         }
 
+
+        private static async Task AddAlreadyAppliedDiscountsToCartIfStillValid(Guid appKey, Cart cart, int shopId, IDiscountLogic discountLogic, IDiscountCartRepository discountCartRepository)
+        {
+            var cartDiscounts = await discountCartRepository.GetByCartId(cart.Id);
+            var allDiscounts = await discountLogic.GetByShopId(appKey, shopId);
+            var discountsByCart = allDiscounts.Where(x => cartDiscounts.Any(y => y.DiscountId == x.Id));
+            IDiscountEngine discountEngine = new DiscountEngine(discountsByCart);
+            discountEngine.ApplyValidDiscounts(cart);
+        }
         public static async Task<IList<Cart>> CartAvailabilityWithReferences(ICartRepository cartRepository, IProductCartRepository productCartRepository, IProductRepository productRepository,
-                                                        IShopRepository shopRepository, List<int> ids, Guid appKey)
+                                                        IShopRepository shopRepository, List<int> ids, Guid appKey, IDiscountLogic discountLogic, IDiscountCartRepository discountCartRepository,
+                                                        ICouponRepository couponRepository)
         {
             var carts = await CartAvailability(cartRepository, ids);
 
@@ -139,7 +160,12 @@ namespace CaaS.Core.Logic.Util
             foreach (var cart in carts)
             {
                 cart.ProductCarts = productCarts.Where(pc => pc.CartId == cart.Id).ToHashSet();
+                await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, products.First().ShopId, discountLogic, discountCartRepository);
+                var coupon = await couponRepository.GetByCartId(cart.Id);
+                cart.Coupon = coupon;
             }
+
+           
             return carts;
         }
 

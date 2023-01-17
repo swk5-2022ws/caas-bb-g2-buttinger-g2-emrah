@@ -110,6 +110,20 @@ namespace CaaS.Api.Controllers
             }
         }
 
+        [HttpGet("cart/customer/{id}")]
+        public async Task<ActionResult<TCart>> GetByCustomerId([FromRoute] int id, [FromHeader] Guid appKey)
+        {
+            try
+            {
+                return Ok(mapper.Map<TCart>(await cartLogic.GetByCustomerId(id, appKey)));
+            }
+            catch (ArgumentException e)
+            {
+                logger.LogError($"Retrieval of a cart was not possible due to the following error: {e.Message}");
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpDelete("cart/{sessionId}/product/{productId}")]
         public async Task<ActionResult> Delete(string sessionId, int productId, [FromQuery] uint? amount, [FromHeader] Guid appKey)
         {

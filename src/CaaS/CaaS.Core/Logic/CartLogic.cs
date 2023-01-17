@@ -6,6 +6,7 @@ using CaaS.Core.Interfaces.Repository;
 using CaaS.Core.Logic.Util;
 using CaaS.Core.Repository;
 using CaaS.Util;
+using MySqlX.XDevAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +24,13 @@ namespace CaaS.Core.Logic
         private readonly IShopRepository shopRepository;
         private readonly IDiscountLogic discountLogic;
         private readonly IDiscountCartRepository discountCartRepository;
+        private readonly ICouponRepository couponRepository;
 
         public CartLogic(ICartRepository cartRepository, IProductRepository productRepository, IProductCartRepository productCartRepository, 
             ICustomerRepository customerRepository, IShopRepository shopRepository,
             IDiscountLogic discountLogic,
-            IDiscountCartRepository discountCartRepository)
+            IDiscountCartRepository discountCartRepository,
+            ICouponRepository couponRepository)
         {
             this.cartRepository = cartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(cartRepository));
             this.productCartRepository = productCartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(productCartRepository));
@@ -36,6 +39,7 @@ namespace CaaS.Core.Logic
             this.shopRepository = shopRepository ?? throw ExceptionUtil.ParameterNullException(nameof(shopRepository));
             this.discountLogic = discountLogic ?? throw ExceptionUtil.ParameterNullException(nameof(discountLogic));
             this.discountCartRepository = discountCartRepository ?? throw ExceptionUtil.ParameterNullException(nameof(discountCartRepository));
+            this.couponRepository = couponRepository;
         }
         public async Task<string> Create()
         {
@@ -115,16 +119,14 @@ namespace CaaS.Core.Logic
                     {
                         pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
                     }
-
-                    
-
                 }
                 cart.ProductCarts = productCarts.ToHashSet();
                 // must be executed after products have been applied
-                if(shopId.HasValue) await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, shopId.Value);
-
-                
+                if(shopId.HasValue) await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, shopId.Value);   
             }
+
+            var coupon = await couponRepository.GetByCartId(cart.Id);
+            cart.Coupon = coupon;
 
             return cart;
         }
@@ -140,12 +142,42 @@ namespace CaaS.Core.Logic
 
         public async Task<bool> ReferenceCustomerToCart(int customerId, string sessionId, Guid appKey)
         {
+            int? shopId = null;
             await Check.Customer(shopRepository, customerRepository, customerId, appKey);
 
             var cart = await Check.CartAvailability(cartRepository, sessionId);
             if (cart.CustomerId.HasValue) throw ExceptionUtil.ReferenceException(nameof(cart));
             cart.CustomerId = customerId;
             cart.ModifiedDate = DateTime.UtcNow;
+
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+
+            if (productCarts is not null && productCarts.Count > 0)
+            {
+                var productIds = productCarts.Select(x => x.ProductId);
+                var products = await productRepository.Get(productIds.ToList());
+
+
+                if (products is not null && products.Count > 0)
+                {
+                    if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                        throw new ArgumentException("No such product or coupon in shop");
+
+                    shopId = products.First().ShopId;
+                    await Check.ShopAuthorization(shopRepository, shopId.Value, appKey);
+
+                    foreach (var pc in productCarts)
+                    {
+                        pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+                    }
+                }
+                cart.ProductCarts = productCarts.ToHashSet();
+                // must be executed after products have been applied
+                if (shopId.HasValue) await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, shopId.Value);
+
+
+            }
+
             return await cartRepository.Update(cart);
         }
 
@@ -173,5 +205,54 @@ namespace CaaS.Core.Logic
             cart.ModifiedDate = DateTime.UtcNow;
             return await cartRepository.Update(cart);
         }
+
+        public async Task<Cart> GetByCustomerId(int customerId, Guid appKey)
+        {
+            int? shopId = null;
+
+            var cart = await cartRepository.GetByCustomerId(customerId);
+            if (cart is null) throw ExceptionUtil.NoSuchIdException(nameof(customerId));
+
+            if (cart.CustomerId.HasValue)
+            {
+                await Check.Customer(shopRepository, customerRepository, cart.CustomerId.Value, appKey);
+            }
+
+            var productCarts = await productCartRepository.GetByCartId(cart.Id);
+
+            if (productCarts is not null && productCarts.Count > 0)
+            {
+                var productIds = productCarts.Select(x => x.ProductId);
+                var products = await productRepository.Get(productIds.ToList());
+
+
+                if (products is not null && products.Count > 0)
+                {
+                    if (products.Select(x => x.ShopId).Distinct().Count() > 1)
+                        throw new ArgumentException("No such product or coupon in shop");
+
+                    shopId = products.First().ShopId;
+                    await Check.ShopAuthorization(shopRepository, shopId.Value, appKey);
+
+                    foreach (var pc in productCarts)
+                    {
+                        pc.Product = products.FirstOrDefault(x => x.Id == pc.ProductId);
+                    }
+
+
+
+                }
+                cart.ProductCarts = productCarts.ToHashSet();
+                // must be executed after products have been applied
+                if (shopId.HasValue) await AddAlreadyAppliedDiscountsToCartIfStillValid(appKey, cart, shopId.Value);
+            }
+
+            var coupon = await couponRepository.GetByCartId(cart.Id);
+            cart.Coupon = coupon;
+
+            return cart;
+        }
+
+
     }
 }

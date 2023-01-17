@@ -18,15 +18,11 @@ namespace CaaS.Core.Repository
                 Id = id
             });
 
-        public async Task<IList<Order>> GetOrdersByCustomerId(int id)
-        {
-            ICartRepository cartRepository = new CartRepository(template);
-            var cart = await cartRepository.GetByCustomerId(id);
 
-            if (cart is null) return new List<Order>();
+        public async Task<IList<Order>> GetOrdersByCustomerId(int id) =>
+            (IList<Order>)await template.QueryAsync(OrderMapping.ReadOrderOnly,
+                joins: $"INNER JOIN Cart c on c.Id = t.CartId AND c.CustomerId = {id}");
 
-            return await GetOrdersByCartId(cart.Id);
-        }
 
         public async Task<IList<Order>> GetOrdersByShopId(int id)
         {
@@ -43,9 +39,10 @@ namespace CaaS.Core.Repository
         }
 
         public async Task<IList<Order>> GetOrdersByCartId(int id) =>
-            (IList<Order>)await template.QueryAsync(OrderMapping.ReadOrderOnly, whereExpression: new
-            {
-                CartId = id
-            });
+            (IList<Order>)await template.QueryAsync(OrderMapping.ReadOrderOnly,
+                whereExpression: new
+                {
+                    CartId = id
+                });
     }
 }

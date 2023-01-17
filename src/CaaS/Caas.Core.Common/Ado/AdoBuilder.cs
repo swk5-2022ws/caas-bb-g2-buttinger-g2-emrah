@@ -226,9 +226,16 @@ namespace Caas.Core.Common.Ado
                 else
                 {
                     var sqlParameterName = AdoBuilder.GetAvailableParameterName(param.Key, alreadyIncludedSqlParameterNames);
-                    commandText += $" {(useWhere ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
+                    if(param.Value == null)
+                    {
+                        commandText += $" {(useWhere ? WHERE : AND)} {param.Key} IS NULL";
+                    } else
+                    {
+                        commandText += $" {(useWhere ? WHERE : AND)} {param.Key} = @{sqlParameterName}";
+                        AdoBuilder.AddParam(command, param.Value, sqlParameterName);
+                    }
                     useWhere = false;
-                    AdoBuilder.AddParam(command, param.Value, sqlParameterName);
+
                 }
             }
             commandText += TryGetSoftDeletionForCurrentWhereExpression(isSoftDeletePossible, isSoftDeleteExcluded, useWhere);

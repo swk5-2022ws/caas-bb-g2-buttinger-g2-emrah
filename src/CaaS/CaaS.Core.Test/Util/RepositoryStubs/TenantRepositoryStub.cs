@@ -17,10 +17,25 @@ namespace CaaS.Core.Test.Util.RepositoryStubs
             this.tenants = tenants;
         }
 
+        public Task<int> Create(Tenant tenant)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Tenant?> Get(int id)
         {
             tenants.TryGetValue(id, out Tenant? tenant);
             return Task.FromResult(tenant);
+        }
+
+        public Task<IEnumerable<Tenant>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Update(Tenant tenant)
+        {
+            throw new NotImplementedException();
         }
     }
 }

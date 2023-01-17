@@ -94,7 +94,7 @@ namespace CaaS.Api.Controllers
         }
 
         [HttpPost("cart/{id}/order")]
-        public async Task<ActionResult> Create([FromBody] int id, [FromHeader] Guid appKey)
+        public async Task<ActionResult> Create([FromRoute] int id, [FromHeader] Guid appKey)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace CaaS.Api.Controllers
                 return CreatedAtAction(
                     actionName: nameof(Create),
                     routeValues: new { orderId },
-                    value: orderId);
+                    value: new { OrderId = orderId });
             }
             catch(ArgumentNullException e)
             {

@@ -1,4 +1,6 @@
 using Caas.Core.Common.Attributes;
+using CaaS.Core.Engines;
+using CaaS.Core.Interfaces.Engines;
 using System;
 
 namespace CaaS.Core.Domainmodels;
@@ -51,6 +53,30 @@ public record Cart
 
             return price;
         }
+    }
+
+    [AdoIgnore]
+    public double DiscountedPrice
+    {
+        get
+        {
+            double price = 0.0;
+
+            if (Coupon != null)
+            {
+                price += Coupon.Value;
+            }
+
+            if (Discounts?.Count != 0)
+            {
+                IDiscountEngine discountEngine = new DiscountEngine(Discounts ?? new List<Discount>());
+                price += Price - discountEngine.CalculateDiscountPrice(this);
+            }
+            
+
+            return Math.Max(price, 0);
+        }
+        
     }
 
     

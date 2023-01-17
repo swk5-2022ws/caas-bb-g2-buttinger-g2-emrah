@@ -55,5 +55,7 @@ namespace CaaS.Core.Interfaces.Logic
         /// <param name="appKey">the appKey</param>
         /// <returns></returns>
         Task<Cart> Get(string sessionId, Guid appKey);
+
+        Task<Cart> GetByCustomerId(int customerId, Guid appKey);
     }
 }
